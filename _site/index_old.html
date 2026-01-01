@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Scaling Open-Ended Reasoning To Predict the Future</title>
+    <meta
+      name="description"
+      content="OpenForesight (dataset) and OpenForecaster (model): scaling open-ended reasoning for forecasting with retrieval, SFT, and RL."
+    />
+    <meta name="color-scheme" content="light" />
+    <link rel="stylesheet" href="assets/styles.css" />
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml" />
+    <meta property="og:title" content="Scaling Open-Ended Reasoning To Predict the Future" />
+    <meta
+      property="og:description"
+      content="OpenForesight (dataset) and OpenForecaster (model): scaling open-ended reasoning for forecasting with retrieval, SFT, and RL."
+    />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Scroll to top">OpenForecaster</a>
+      <nav class="nav">
+        <a href="#data">Data</a>
+        <a href="#training">Training</a>
+        <a href="#results">Results</a>
+      </nav>
+      <a class="topbar-cta" href="#resources">Resources</a>
+    </header>
+
+    <main id="top">
+      <section class="section hero" aria-label="Project overview">
+        <div class="container hero-wrap">
+          <div class="hero-copy">
+            <p class="kicker">OpenForesight dataset • OpenForecaster model</p>
+            <h1 class="title">Scaling Open-Ended Reasoning<br />To Predict the Future</h1>
+            <p class="authors">
+              Nikhil Chandak<sup>*</sup> · Shashwat Goel<sup>*</sup> · Ameya Prabhu<sup>†</sup> ·
+              Moritz Hardt<sup>†</sup> · Jonas Geiping<sup>†</sup>
+            </p>
+            <p class="affiliations">
+              Max Planck Institute for Intelligent Systems · ELLIS Institute Tübingen · Tübingen AI Center ·
+              University of Tübingen
+            </p>
+            <p class="footnote"><sup>*</sup>Equal contribution · <sup>†</sup>Equal co-supervision</p>
+
+            <div class="links" role="list" aria-label="Project links">
+              <a class="chip" role="listitem" data-link="arxiv" href="#" target="_blank" rel="noreferrer">
+                <span class="icon" aria-hidden="true" data-icon="arxiv"></span>
+                <span>arXiv</span>
+              </a>
+              <a class="chip" role="listitem" data-link="pdf" href="assets/paper.pdf" target="_blank" rel="noreferrer">
+                <span class="icon" aria-hidden="true" data-icon="pdf"></span>
+                <span>PDF</span>
+              </a>
+              <a class="chip" role="listitem" data-link="code" href="#" target="_blank" rel="noreferrer">
+                <span class="icon" aria-hidden="true" data-icon="github"></span>
+                <span>Code</span>
+              </a>
+              <a class="chip" role="listitem" data-link="dataset" href="#" target="_blank" rel="noreferrer">
+                <span class="icon" aria-hidden="true" data-icon="hf"></span>
+                <span>Dataset</span>
+              </a>
+              <a class="chip" role="listitem" data-link="discord" href="#" target="_blank" rel="noreferrer">
+                <span class="icon" aria-hidden="true" data-icon="discord"></span>
+                <span>Discord</span>
+              </a>
+            </div>
+          </div>
+
+	          <div class="hero-grid hero-grid--stack">
+	            <div class="hero-media">
+	              <figure class="figure">
+	                <img
+	                  src="assets/media/fig1.png"
+	                  alt="Overview figure showing question generation from news, the OpenForecaster pipeline, and final results."
+                  loading="eager"
+                />
+                <figcaption>
+                  End-to-end pipeline: generate open-ended forecasting questions from news, train with retrieval + SFT +
+                  RL, and evaluate on held-out test sets.
+	                </figcaption>
+	              </figure>
+	            </div>
+
+	            <details class="details abstract-details">
+	              <summary>Show abstract</summary>
+	              <div class="card abstract">
+	                <p>
+	                  High-stakes decision making involves forward-looking reasoning under uncertainty. In this work, we
+	                  train language models to make predictions on open-ended questions about the future. To scale up training
+	                  data, we continually synthesize novel forecasting questions from global events reported in daily news,
+	                  using a fully automated, careful curation recipe. We train the Qwen3 thinking models on our dataset,
+	                  OpenForesight. To prevent leakage of future information during training and evaluation, we use an
+	                  offline news corpus, both for data generation and retrieval in our forecasting system. Guided by a
+	                  small validation set, we show the benefits of retrieval, a supervised finetuning phase, and an improved
+	                  reward function for reinforcement learning (RL). Once we obtain our final forecasting system, we
+	                  perform held-out testing between May to August 2025. Our specialized model, OpenForecaster 8B, matches
+	                  much larger proprietary models, with our training improving the accuracy, calibration, and consistency
+	                  of predictions. We find calibration improvements from forecasting training generalize across popular
+	                  benchmarks. We will open-source our models, code, and data to make LLM based forecasting research
+	                  broadly accessible.
+	                </p>
+	              </div>
+	            </details>
+	          </div>
+	        </div>
+	      </section>
+
+      <section id="data" class="section">
+        <div class="container">
+          <h2>OpenForesight: Data</h2>
+          <figure class="figure">
+            <img src="assets/media/qgen_pipeline3.png" alt="Question generation pipeline diagram." loading="lazy" />
+            <figcaption>Generate → filter → format open-ended forecasting questions from daily news.</figcaption>
+          </figure>
+          <p class="below">
+            OpenForesight scales training by continuously synthesizing novel questions from global events, then
+            automatically curating for quality and answerability. We use an offline news corpus for both question
+            generation and retrieval to reduce leakage risk.
+          </p>
+          <details class="details">
+            <summary>Show dataset examples</summary>
+            <div class="examples-grid" role="list">
+              <article class="card example-card" role="listitem">
+                <h3 class="example-question">Host country of COP30 (Nov 2025)?</h3>
+                <p><span class="label">Background:</span> UNFCCC COP venue rotates among regions.</p>
+                <p>
+                  <span class="label">Resolution:</span> Host confirmed by UNFCCC/organizers; no later than COP30 start
+                  (Nov 2025).
+                </p>
+                <p><span class="label">Answer:</span> Brazil <span class="example-pill">string (country)</span></p>
+                <p class="example-source">
+                  <a
+                    href="https://www.dw.com/en/donald-trump-climate-policy-2025/a-71354256?maca=en-rss-en-all-1573-xml-atom"
+                    target="_blank"
+                    rel="noopener"
+                    >DW source</a
+                  >
+                </p>
+              </article>
+
+              <article class="card example-card" role="listitem">
+                <h3 class="example-question">Release month of Marvel’s Fantastic Four (2025)?</h3>
+                <p><span class="label">Background:</span> Reboot announced with lead cast; 2025 release slated.</p>
+                <p><span class="label">Resolution:</span> Month confirmed by Marvel/Disney; by Dec 2025.</p>
+                <p><span class="label">Answer:</span> July <span class="example-pill">string (month)</span></p>
+                <p class="example-source">
+                  <a
+                    href="https://www.forbes.com/sites/caileygleeson/2024/02/16/x-men-fans-push-back-against-anger-over-non-binary-character/"
+                    target="_blank"
+                    rel="noopener"
+                    >Forbes source</a
+                  >
+                </p>
+              </article>
+
+              <article class="card example-card" role="listitem">
+                <h3 class="example-question">
+                  First state to require Ten Commandments in public classrooms (by 2025)?
+                </h3>
+                <p><span class="label">Background:</span> Several U.S. states advance religion-in-school measures.</p>
+                <p><span class="label">Resolution:</span> First state enacts requirement; by Dec 31, 2025.</p>
+                <p><span class="label">Answer:</span> Louisiana <span class="example-pill">string (state name)</span></p>
+                <p class="example-source">
+                  <a
+                    href="https://www.forbes.com/sites/maryroeloffs/2024/06/20/louisianas-new-ten-commandments-law-is-latest-example-of-states-pushing-to-allow-religion-in-public-schools/"
+                    target="_blank"
+                    rel="noopener"
+                    >Forbes source</a
+                  >
+                </p>
+              </article>
+
+              <article class="card example-card" role="listitem">
+                <h3 class="example-question">African host of G20 Summit (Nov 2025)?</h3>
+                <p><span class="label">Background:</span> G20 presidency rotates; South Africa presiding from Dec 2024.</p>
+                <p><span class="label">Resolution:</span> G20/host government confirms location; by Nov 2025.</p>
+                <p><span class="label">Answer:</span> South Africa <span class="example-pill">string (country)</span></p>
+                <p class="example-source">
+                  <a href="https://www.dw.com/en/africa-in-2025-strengthening-democracy-key-to-growth/a-70945864" target="_blank" rel="noopener"
+                    >DW source</a
+                  >
+                </p>
+              </article>
+
+              <article class="card example-card" role="listitem">
+                <h3 class="example-question">Recipient of Lesotho–Botswana Transfer Scheme (by 2025)?</h3>
+                <p><span class="label">Background:</span> Regional pipeline to pump water from Lesotho via SA.</p>
+                <p><span class="label">Resolution:</span> ORASECOM or governments confirm recipient; by 2025.</p>
+                <p><span class="label">Answer:</span> Botswana <span class="example-pill">string (country)</span></p>
+                <p class="example-source">
+                  <a href="https://www.dw.com/en/lesotho-urged-to-compensate-villagers-for-water-projects/a-69352942" target="_blank" rel="noopener"
+                    >DW source</a
+                  >
+                </p>
+              </article>
+            </div>
+            <p class="muted details-note">
+              Examples from the paper appendix (see <a href="assets/paper.pdf" target="_blank" rel="noopener">paper.pdf</a>).
+            </p>
+          </details>
+	          <details class="details">
+	            <summary>Show filtering benefits (training curve)</summary>
+	            <figure class="figure compact tall">
+	              <img
+	                src="assets/media/filtering_training_curve.png"
+	                alt="Training curve showing the benefits of filtering and leakage removal."
+	                loading="lazy"
+	              />
+	              <figcaption>
+	                Benefits of the filtering recipe: without leakage removal the model can learn shortcuts; applying all filtering
+                steps yields faster and better learning.
+              </figcaption>
+            </figure>
+          </details>
+        </div>
+      </section>
+
+      <section id="training" class="section">
+        <div class="container">
+          <h2>OpenForecaster: Training</h2>
+          <figure class="figure">
+            <img src="assets/media/training_objectives.png" alt="Training objectives and ablations figure." loading="lazy" />
+            <figcaption>Recipe: retrieval + SFT + RL, with a forecasting reward to improve accuracy and calibration.</figcaption>
+          </figure>
+	          <p class="below">
+	            We start from Qwen3 thinking models, train with supervised finetuning on high-quality reasoning traces (with
+	            retrieved evidence), and then run RL with an improved reward that targets calibrated probabilities.
+	          </p>
+		        </div>
+		      </section>
+
+      <section id="results" class="section">
+        <div class="container">
+          <h2>Results</h2>
+
+          <div class="tabs" data-tabs="results">
+            <div class="tablist-wrap">
+              <div class="tablist" role="tablist" aria-label="Results">
+                <button class="tab" type="button" role="tab" aria-selected="true" aria-controls="res-0" id="res-tab-0">
+                  News: accuracy vs brier
+                </button>
+                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-1" id="res-tab-1">
+                  News: calibration curves
+                </button>
+                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-2" id="res-tab-2">
+                  Generalization (OOD)
+                </button>
+                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-3" id="res-tab-3">
+                  FutureX results
+                </button>
+                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-4" id="res-tab-4">
+                  Long-term consistency
+                </button>
+	                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-5" id="res-tab-5">
+	                  Metaculus: question Brier
+	                </button>
+	                <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="res-6" id="res-tab-6">
+	                  Llama / Gemma family
+	                </button>
+	              </div>
+	            </div>
+
+            <div class="panes" data-panes>
+              <div class="track">
+		              <section class="pane" role="tabpanel" id="res-0" aria-labelledby="res-tab-0">
+		                <figure class="figure with-legend">
+		                  <img src="assets/media/news5_scatter.png" alt="Accuracy vs Brier score scatter plot." loading="lazy" />
+		                  <div class="figure-legend">
+		                    <img src="assets/media/news5_scatter_legend.png" alt="Legend for the scatter plot." loading="lazy" />
+		                  </div>
+		                </figure>
+		                <div class="takeaway">
+		                  <strong>Takeaway:</strong> Held-out news test set (May–Aug 2025): forecasting training improves both
+		                  accuracy and calibration.
+		                </div>
+	              </section>
+
+	              <section class="pane" role="tabpanel" id="res-1" aria-labelledby="res-tab-1">
+	                <figure class="figure">
+	                  <img src="assets/media/news5_calibration.png" alt="Calibration curves comparing models." loading="lazy" />
+	                </figure>
+	                <div class="takeaway">
+	                  <strong>Takeaway:</strong> Forecasting training reduces overconfidence and improves calibration.
+	                </div>
+	              </section>
+
+	              <section class="pane" role="tabpanel" id="res-2" aria-labelledby="res-tab-2">
+	                <figure class="figure">
+	                  <img
+	                    src="assets/media/brier_comparison_ood.png"
+	                    alt="Brier score comparison on general benchmarks."
+	                    loading="lazy"
+	                  />
+	                </figure>
+	                <div class="takeaway">
+	                  <strong>Takeaway:</strong> Calibration improvements transfer to broader benchmarks.
+	                </div>
+	              </section>
+
+	              <section class="pane" role="tabpanel" id="res-3" aria-labelledby="res-tab-3">
+	                <figure class="figure">
+	                  <img
+	                    src="assets/media/futurex_results.png"
+	                    alt="Accuracy vs Brier score on the FutureX benchmark."
+	                    loading="lazy"
+	                  />
+	                  <figcaption>Accuracy vs Brier score on the resolved subset of FutureX (86 questions).</figcaption>
+	                </figure>
+	                <div class="takeaway">
+	                  <strong>Takeaway:</strong> Forecasting training improves both accuracy and calibration, though variance is high due to the small subset.
+	                </div>
+	              </section>
+
+	              <section class="pane" role="tabpanel" id="res-4" aria-labelledby="res-tab-4">
+	                <figure class="figure">
+	                  <img src="assets/media/long_term_consistency.svg" alt="Long-term consistency metrics figure." loading="lazy" />
+	                  <figcaption>Consistency checks on long-horizon (2028-resolution) forecasting questions.</figcaption>
+	                </figure>
+	                <div class="takeaway">
+	                  <strong>Takeaway:</strong> OpenForecaster-8B reduces arbitrage violations by 44% and frequentist violations by 19% (aggregated).
+	                </div>
+	              </section>
+
+		              <section class="pane" role="tabpanel" id="res-5" aria-labelledby="res-tab-5">
+		                <figure class="figure">
+		                  <img
+		                    src="assets/media/metaculus_brier_scores.png"
+		                    alt="Per-question Brier scores on Metaculus."
+		                    loading="lazy"
+		                  />
+		                  <figcaption>Brier scores on Metaculus questions (Oct 01–Nov 18, 2025).</figcaption>
+		                </figure>
+		                <div class="takeaway">
+		                  <strong>Takeaway:</strong> Forecasting training improves calibration on an external binary benchmark.
+		                </div>
+		              </section>
+
+		              <section class="pane" role="tabpanel" id="res-6" aria-labelledby="res-tab-6">
+		                <div class="grid two subgrid">
+		                  <figure class="figure compact">
+		                    <img
+		                      src="assets/media/llama_gemma_accuracy.png"
+		                      alt="Accuracy improvements for Llama and Gemma family models on the news test set."
+		                      loading="lazy"
+		                    />
+		                    <figcaption>Accuracy.</figcaption>
+		                  </figure>
+		                  <figure class="figure compact">
+		                    <img
+		                      src="assets/media/llama_gemma_brier.png"
+		                      alt="Brier score improvements for Llama and Gemma family models on the news test set."
+		                      loading="lazy"
+		                    />
+		                    <figcaption>Brier score.</figcaption>
+		                  </figure>
+		                </div>
+		                <div class="takeaway">
+		                  <strong>Takeaway:</strong> Training on our dataset improves accuracy and calibration for non-Qwen model families too.
+		                </div>
+		              </section>
+	              </div>
+	            </div>
+	          </div>
+	        </div>
+	      </section>
+
+      <section id="resources" class="section">
+        <div class="container">
+          <h2>Resources</h2>
+          <div class="grid two">
+            <div class="card">
+              <h3>Quick links</h3>
+              <ul class="linklist">
+                <li><a data-link="arxiv" href="#" target="_blank" rel="noreferrer">arXiv</a></li>
+                <li><a data-link="code" href="#" target="_blank" rel="noreferrer">Code (GitHub)</a></li>
+                <li><a data-link="dataset" href="#" target="_blank" rel="noreferrer">Dataset (Hugging Face)</a></li>
+                <li><a data-link="discord" href="#" target="_blank" rel="noreferrer">Discord</a></li>
+                <li><a href="assets/paper.pdf" target="_blank" rel="noreferrer">PDF (local)</a></li>
+              </ul>
+              <p class="muted">
+                Edit links in <code>assets/site.config.js</code>. You can also swap figures in
+                <code>assets/media/</code> without touching any code.
+              </p>
+            </div>
+
+            <div class="card">
+              <h3>Citation</h3>
+              <pre class="bibtex" aria-label="BibTeX citation">
+@article{openforesight2025,
+  title  = {Scaling Open-Ended Reasoning To Predict the Future},
+  author = {Chandak, Nikhil and Goel, Shashwat and Prabhu, Ameya and Hardt, Moritz and Geiping, Jonas},
+  year   = {2025}
+}
+              </pre>
+              <p class="muted">Replace with the final arXiv/venue BibTeX when available.</p>
+            </div>
+          </div>
+
+	          <footer class="footer">
+	            <span class="muted">Last updated: <time id="last-updated" datetime=""></time></span>
+	          </footer>
+	        </div>
+	      </section>
+    </main>
+
+    <script src="assets/site.config.js"></script>
+    <script src="assets/main.js"></script>
+  </body>
+</html>
