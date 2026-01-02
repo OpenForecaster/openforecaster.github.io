@@ -94,13 +94,13 @@ We built **OpenForecaster**, an 8B model trained to make predictions on open-end
 </div>
 
 # Why we care about language model forecasting {#motivation}
-Every day, we make decisions under uncertainty. We navigate incomplete information, competing explanations and conflicting evidence, across situations ranging from picking a gift for a friend's birthday, to high-stakes decisions with broad impact. 
+Every day, we make decisions under uncertainty. We navigate incomplete information, competing explanations and conflicting evidence, across situations ranging from picking a gift for a friend's birthday to high-stakes decisions with broad impact. 
 
-Under the hood of each decision lies a forecasting problems. What gift will my friend like the most? What will be the impact of this policy intervention? Which startup will win market share in a competitive sector? Which career will gain value in the next decades? Which experiment will lead to the most informative results for a research goal?
+Under the hood of each decision lies a forecasting problem. What gift will my friend like the most? What will be the impact of this policy intervention? Which startup will win market share in a competitive sector? Which career will gain value in the next decades? Which experiment will lead to the most informative results for a research goal?
 
-Apriori, making a forecast can almost feel like a subjective choice. Multiple options may be backed by reasonable arguments. This makes forecasting notoriously hard. Experts get it wrong all the time. This is by design--when making decisions with incomplete information, it is impossible to be perfect. There's probably a ceilng to predictability--we just don't know where it is. 
+At the outset, forecasting might seem subjective. Multiple options may be backed by reasonable arguments. Experts get it wrong all the time. This is by design--when making decisions with incomplete information, it is impossible to be perfect. There's probably a ceiling to predictability--we just don't know where it is. 
 
-Yet, research has shown that some "superforecasters" consistently outperform others. So there is signal amidst the noise. Most importantly, we eventually realize the correct outcome. This provides the "verifiable" signal needed for evaluations, and improvement. 
+Yet, there is signal amidst the noise. Most importantly, we eventually learn the correct outcome. This provides the "verifiable" signal needed for evaluations and improvement. 
 
 This is why forecasting has been a particularly successful application of Machine Learning--whether it be predicting prices, or the weather. Yet, traditional statistical and time-series models lack the expressivity to predict the kinds of questions we deal with in our day to day, which are expressible only in natural language, also called **judgemental forecasting**. 
 
@@ -109,11 +109,11 @@ Language models can change this. In principle, they can digest and synthesize hu
 So we ask:
 # How to train language model forecasters?
 
-Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we'd have to wait for (atleast) weeks before we get useful signal. Fortunately, LLM's know about the world only up to the date of their most recent training data, i.e. their "training cutoff". All events afterwards are effectively "in the future" for the model. How can we create forecasting questions about such events at scale?
+Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we'd have to wait for (at least) weeks before we get useful signal. Fortunately, LLMs know about the world only up to the date of their most recent training data, i.e. their "training cutoff". All events afterwards are effectively "in the future" for the model. We can exploit this to create forecasting questions at scale, treating post-cutoff events as the "future" that models must predict.
 
-In theory, there are new interesting events happening around the world everyday. Global news provides one way to capture them. In this work, we convert events reported in the news into open-ended forecasting questions. What do we mean by "open-ended"?
+There are new interesting events happening around the world every day. Global news provides one way to capture them. In this work, we convert events reported in the news into open-ended forecasting questions. What do we mean by "open-ended"?
 
-1) The *questions* can be expressed in natural language, opening up the space of possibile questions that can be forecasted.
+1) The *questions* can be expressed in natural language, opening up the space of possible questions that can be forecasted.
 
 2) The *outcome space* is not a pre-defined set of options, unlike binary or multiple choice questions. The model has to come up with the possibilities on its own.
 
@@ -124,7 +124,7 @@ For example, our automated pipeline creates forecasting questions like:
 We will describe the automated question creation process later, but before that it is important to define how the forecasting model's responses are scored.
 
 <details markdown="1">
-<summary>Why we dont use prediction markets, unlike prior work</summary>
+<summary>Why we don't use prediction markets, unlike prior work</summary>
 
 Prior work on judgemental forecasting evaluations has predominantly depended on prediction markets to source forecasting questions. Prediction markets like [Polymarket](https://polymarket.com/) and [Kalshi](https://kalshi.com/) are platforms where people make probabilistic predictions on questions like "Will Zohran Momdani win the New York elections in 2025?". However, there are a few drawbacks to relying on prediction markets for questions:
 
@@ -141,9 +141,9 @@ For each question, we ask the model for:
 - a **prediction** (a short string), and
 - a **probability** that its answer is correct.
 
-We can obviously calculate the accuracy of the predictions. But in forecasting, the reported probabilities are particularly important, as there is almost always some chance of being wrong. Good forecasts are *calibrated*, the reported probability reliably reflects the underlying uncertainty in the forecast. 
+We can obviously calculate the accuracy of the predictions. But in forecasting, the reported probabilities are particularly important, as there is almost always some chance of being wrong. We expect reliable forecasts to be *calibrated*: the forecast probabilities match long-run observed frequencies. 
 
-Intuitively, we want:
+We want a scoring rule that promotes both accuracy and calibration:
 
 | Probability | Correctness | Score |
 |---|---:|:---:|
@@ -157,7 +157,7 @@ We adapt the [multiclass brier score](https://statproofbook.github.io/D/bsr.html
 <details markdown="1">
 <summary>Formally</summary>
 
-The model proposes one answer `y` and a scalar probability `q ∈ [0,1]` for "my answer is correct". Let us say we grade the response $y$ to be correct if its semantically equivalent to the ground truth outcome $y^\star$, $c \;=\; \mathbb{1}[y \equiv y^\star]$, which is `1` when the response is deemed correct, and `0` otherwise. We will define how we check semantic equivalence in a bit.
+The model proposes one answer `y` and a scalar probability `q ∈ [0,1]` for "my answer is correct". Let us say we grade the response $y$ to be correct if it's semantically equivalent to the ground truth outcome $y^\star$, $c \;=\; \mathbb{1}[y \equiv y^\star]$, which is `1` when the response is deemed correct, and `0` otherwise. We will define how we check semantic equivalence in a bit.
 
 Then our brier score is:
 
@@ -188,7 +188,7 @@ So we use **answer matching**: another language model checks whether the predict
 [Our prior work](https://arxiv.org/abs/2507.02856) showed how now even small language models, like Qwen3-4B, can obtain high alignment with human grading on open-ended responses to questions from popular benchmarks like MMLU-Pro and GPQA-Diamond. Answer matching has been used across popular benchmarks released in 2025, such as Humanity's Last Exam (HLE), OpenAI's new FrontierScience, etc. In this work, we use:
 
 - For evaluation we use `Llama-4-Scout` as the matcher, as it obtained inter-human level grading alignment in our earlier study.
-- For training-time rewards we use `Qwen3-4B` (non-thinking) as the matcher, as its cheap, fast and accurate enough as a matcher. In the evaluations we did in this work, it agrees with Llama-4-Scout on around **97%** of graded responses, and our manual annotations found its judgements to be correct in at least **95%** cases.
+- For training-time rewards we use `Qwen3-4B` (non-thinking) as the matcher, as it's cheap, fast and accurate enough as a matcher. In the evaluations we did in this work, it agrees with Llama-4-Scout on around **97%** of graded responses, and our manual annotations found its judgements to be correct in at least **95%** cases.
 
 </details>
 
@@ -278,7 +278,7 @@ With data and metrics in place, the remaining question is: what does the trainin
 So instead, we use CCNews, a static monthly snapshot of global news. This, along with only retrieving articles up to one month before the resolution date, are safety measures for ensuring we don't leak future information to the model
 </details>
 
-**Reward Design.** For GRPO training, the main design question is the reward. We find opimizing accuracy alone deteriorates Brier score. Optimizing Brier score improves both, but leads to lower accuracy than optimizing accuracy. We hypothesise this is because optimizing Brier score discourages exploration on hard questions. When the model assigns low probability, making a correct prediction (or not) does not change the reward (Brier score) much. Indeed, we find after Brier score only training, the model reports "Unknown" with near-zero confidence on 40% samples! Thus, we propose optimizing Accuracy + Brier score. This incentivies making correct predictions even on hard questions with low confidence.
+**Reward Design.** For GRPO training, the main design question is the reward. We find optimizing accuracy alone deteriorates Brier score. Optimizing Brier score improves both, but leads to lower accuracy than optimizing accuracy. We hypothesise this is because optimizing Brier score discourages exploration on hard questions. When the model assigns low probability, making a correct prediction (or not) does not change the reward (Brier score) much. Indeed, we find after Brier score only training, the model reports "Unknown" with near-zero confidence on 40% samples! Thus, we propose optimizing Accuracy + Brier score. This incentivizes making correct predictions even on hard questions with low confidence.
 
 ![Reward ablation: accuracy-only vs Brier-only vs Accuracy+Brier.](assets/images/reward_ablation.png)
 
@@ -291,12 +291,12 @@ Putting it all together:
 - Initial model: Qwen3 8B thinking model
 - Retrieval: top-5 chunks using Qwen3-Embedding-8B (during training, we randomly vary between 0-5 chunks to make the model robust)
 - Train on ~**50k** free-form questions from `OpenForesight`, and 2k resolved **binary** Metaculus questions (from 2024) to also handle that format.
-- RL (GRPO) without normalization by standard deviation, rewarding: **Accuracy + Brier** for free-form, **Brier** for binary qustions.
+- RL (GRPO) without normalization by standard deviation, rewarding: **Accuracy + Brier** for free-form, **Brier** for binary questions.
 
 This leads to our trained model **OpenForecaster-8B**, for which we already showed you the results [at the top](#results).
 
 ## Does scaling data matter?
-The most illustrative way to prove this is on Llama-3.1-8B-Instruct, as it has not already undergone RL post-training. Below, we vary the training data size, seeing continued improvements as the training data increases. 
+To demonstrate this, we train Llama-3.1-8B-Instruct, as it has not already undergone RL post-training. Below, we vary the training data size, seeing continued improvements as the training data increases. 
 
 <div class="figure-grid">
   <div class="figure-cell">
@@ -310,7 +310,7 @@ The most illustrative way to prove this is on Llama-3.1-8B-Instruct, as it has n
 </div>
 
 
-With our training, Llama-3.1-8B-Instruct surpasses Qwen3-235B, and DeepSeek v3, almost matching R1! And we don't see any signs of saturation. Its plausible we could scale our recipe further, using not only larger models and more news data, but also more diverse sources of events to forecast (AGI wen? Retrieve frontier lab vagueposts to find out.)
+With our training, Llama-3.1-8B-Instruct surpasses Qwen3-235B, and DeepSeek v3, almost matching R1! And we don't see any signs of saturation. It's plausible we could scale our recipe further, using not only larger models and more news data, but also more diverse sources of events to forecast (AGI wen? Retrieve frontier lab vagueposts to find out.)
 
 # Conclusion
 There's lots to explore in how to train language models for forecasting, and many exciting applications ranging from investing to policy! We think forecasting is a rich setting for studying LLM decision making, search agents, continual learning (from new knowledge, as the world evolves), world modelling and much more. We are actively exploring these directions, and if you're interested in contributing, [reach out](mailto:shashwatnow@gmail.com). For more details, see our [paper](https://www.alphaxiv.org/abs/2512.25070). Do check out our released [data](https://huggingface.co/datasets/nikhilchandak/OpenForesight), [code](https://github.com/OpenForecaster/scaling-forecasting-training/tree/main), and [model](https://huggingface.co/nikhilchandak/OpenForecaster-8B), and let us know what you think! 

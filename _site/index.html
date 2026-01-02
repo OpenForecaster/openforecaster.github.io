@@ -132,13 +132,13 @@ You can use:
 </div>
 
     <h1 id="motivation">Why we care about language model forecasting</h1>
-    <p>Every day, we make decisions under uncertainty. We navigate incomplete information, competing explanations and conflicting evidence, across situations ranging from picking a gift for a friend’s birthday, to high-stakes decisions with broad impact.</p>
+    <p>Every day, we make decisions under uncertainty. We navigate incomplete information, competing explanations and conflicting evidence, across situations ranging from picking a gift for a friend’s birthday to high-stakes decisions with broad impact.</p>
 
-    <p>Under the hood of each decision lies a forecasting problems. What gift will my friend like the most? What will be the impact of this policy intervention? Which startup will win market share in a competitive sector? Which career will gain value in the next decades? Which experiment will lead to the most informative results for a research goal?</p>
+    <p>Under the hood of each decision lies a forecasting problem. What gift will my friend like the most? What will be the impact of this policy intervention? Which startup will win market share in a competitive sector? Which career will gain value in the next decades? Which experiment will lead to the most informative results for a research goal?</p>
 
-    <p>Apriori, making a forecast can almost feel like a subjective choice. Multiple options may be backed by reasonable arguments. This makes forecasting notoriously hard. Experts get it wrong all the time. This is by design–when making decisions with incomplete information, it is impossible to be perfect. There’s probably a ceilng to predictability–we just don’t know where it is.</p>
+    <p>At the outset, forecasting might seem subjective. Multiple options may be backed by reasonable arguments. Experts get it wrong all the time. This is by design–when making decisions with incomplete information, it is impossible to be perfect. There’s probably a ceiling to predictability–we just don’t know where it is.</p>
 
-    <p>Yet, research has shown that some “superforecasters” consistently outperform others. So there is signal amidst the noise. Most importantly, we eventually realize the correct outcome. This provides the “verifiable” signal needed for evaluations, and improvement.</p>
+    <p>Yet, there is signal amidst the noise. Most importantly, we eventually learn the correct outcome. This provides the “verifiable” signal needed for evaluations and improvement.</p>
 
     <p>This is why forecasting has been a particularly successful application of Machine Learning–whether it be predicting prices, or the weather. Yet, traditional statistical and time-series models lack the expressivity to predict the kinds of questions we deal with in our day to day, which are expressible only in natural language, also called <strong>judgemental forecasting</strong>.</p>
 
@@ -147,11 +147,11 @@ You can use:
     <p>So we ask:</p>
     <h1 id="how-to-train-language-model-forecasters">How to train language model forecasters?</h1>
 
-    <p>Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we’d have to wait for (atleast) weeks before we get useful signal. Fortunately, LLM’s know about the world only up to the date of their most recent training data, i.e. their “training cutoff”. All events afterwards are effectively “in the future” for the model. How can we create forecasting questions about such events at scale?</p>
+    <p>Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we’d have to wait for (at least) weeks before we get useful signal. Fortunately, LLMs know about the world only up to the date of their most recent training data, i.e. their “training cutoff”. All events afterwards are effectively “in the future” for the model. We can exploit this to create forecasting questions at scale, treating post-cutoff events as the “future” that models must predict.</p>
 
-    <p>In theory, there are new interesting events happening around the world everyday. Global news provides one way to capture them. In this work, we convert events reported in the news into open-ended forecasting questions. What do we mean by “open-ended”?</p>
+    <p>There are new interesting events happening around the world every day. Global news provides one way to capture them. In this work, we convert events reported in the news into open-ended forecasting questions. What do we mean by “open-ended”?</p>
 
-    <p>1) The <em>questions</em> can be expressed in natural language, opening up the space of possibile questions that can be forecasted.</p>
+    <p>1) The <em>questions</em> can be expressed in natural language, opening up the space of possible questions that can be forecasted.</p>
 
     <p>2) The <em>outcome space</em> is not a pre-defined set of options, unlike binary or multiple choice questions. The model has to come up with the possibilities on its own.</p>
 
@@ -164,7 +164,7 @@ You can use:
     <p>We will describe the automated question creation process later, but before that it is important to define how the forecasting model’s responses are scored.</p>
 
     <details>
-      <summary>Why we dont use prediction markets, unlike prior work</summary>
+      <summary>Why we don't use prediction markets, unlike prior work</summary>
 
       <p>Prior work on judgemental forecasting evaluations has predominantly depended on prediction markets to source forecasting questions. Prediction markets like <a href="https://polymarket.com/">Polymarket</a> and <a href="https://kalshi.com/">Kalshi</a> are platforms where people make probabilistic predictions on questions like “Will Zohran Momdani win the New York elections in 2025?”. However, there are a few drawbacks to relying on prediction markets for questions:</p>
 
@@ -185,9 +185,9 @@ You can use:
       <li>a <strong>probability</strong> that its answer is correct.</li>
     </ul>
 
-    <p>We can obviously calculate the accuracy of the predictions. But in forecasting, the reported probabilities are particularly important, as there is almost always some chance of being wrong. Good forecasts are <em>calibrated</em>, the reported probability reliably reflects the underlying uncertainty in the forecast.</p>
+    <p>We can obviously calculate the accuracy of the predictions. But in forecasting, the reported probabilities are particularly important, as there is almost always some chance of being wrong. We expect reliable forecasts to be <em>calibrated</em>: the forecast probabilities match long-run observed frequencies.</p>
 
-    <p>Intuitively, we want:</p>
+    <p>We want a scoring rule that promotes both accuracy and calibration:</p>
 
     <table>
       <thead>
@@ -226,7 +226,7 @@ You can use:
     <details>
       <summary>Formally</summary>
 
-      <p>The model proposes one answer <code class="language-plaintext highlighter-rouge">y</code> and a scalar probability <code class="language-plaintext highlighter-rouge">q ∈ [0,1]</code> for “my answer is correct”. Let us say we grade the response $y$ to be correct if its semantically equivalent to the ground truth outcome $y^\star$, $c \;=\; \mathbb{1}[y \equiv y^\star]$, which is <code class="language-plaintext highlighter-rouge">1</code> when the response is deemed correct, and <code class="language-plaintext highlighter-rouge">0</code> otherwise. We will define how we check semantic equivalence in a bit.</p>
+      <p>The model proposes one answer <code class="language-plaintext highlighter-rouge">y</code> and a scalar probability <code class="language-plaintext highlighter-rouge">q ∈ [0,1]</code> for “my answer is correct”. Let us say we grade the response $y$ to be correct if it’s semantically equivalent to the ground truth outcome $y^\star$, $c \;=\; \mathbb{1}[y \equiv y^\star]$, which is <code class="language-plaintext highlighter-rouge">1</code> when the response is deemed correct, and <code class="language-plaintext highlighter-rouge">0</code> otherwise. We will define how we check semantic equivalence in a bit.</p>
 
       <p>Then our brier score is:</p>
 
@@ -258,7 +258,7 @@ You can use:
 
       <ul>
         <li>For evaluation we use <code class="language-plaintext highlighter-rouge">Llama-4-Scout</code> as the matcher, as it obtained inter-human level grading alignment in our earlier study.</li>
-        <li>For training-time rewards we use <code class="language-plaintext highlighter-rouge">Qwen3-4B</code> (non-thinking) as the matcher, as its cheap, fast and accurate enough as a matcher. In the evaluations we did in this work, it agrees with Llama-4-Scout on around <strong>97%</strong> of graded responses, and our manual annotations found its judgements to be correct in at least <strong>95%</strong> cases.</li>
+        <li>For training-time rewards we use <code class="language-plaintext highlighter-rouge">Qwen3-4B</code> (non-thinking) as the matcher, as it’s cheap, fast and accurate enough as a matcher. In the evaluations we did in this work, it agrees with Llama-4-Scout on around <strong>97%</strong> of graded responses, and our manual annotations found its judgements to be correct in at least <strong>95%</strong> cases.</li>
       </ul>
 
     </details>
@@ -356,7 +356,7 @@ Ukraine’s parliament is scheduled to vote to appoint a new prime minister.</p>
       <p>So instead, we use CCNews, a static monthly snapshot of global news. This, along with only retrieving articles up to one month before the resolution date, are safety measures for ensuring we don’t leak future information to the model</p>
     </details>
 
-    <p><strong>Reward Design.</strong> For GRPO training, the main design question is the reward. We find opimizing accuracy alone deteriorates Brier score. Optimizing Brier score improves both, but leads to lower accuracy than optimizing accuracy. We hypothesise this is because optimizing Brier score discourages exploration on hard questions. When the model assigns low probability, making a correct prediction (or not) does not change the reward (Brier score) much. Indeed, we find after Brier score only training, the model reports “Unknown” with near-zero confidence on 40% samples! Thus, we propose optimizing Accuracy + Brier score. This incentivies making correct predictions even on hard questions with low confidence.</p>
+    <p><strong>Reward Design.</strong> For GRPO training, the main design question is the reward. We find optimizing accuracy alone deteriorates Brier score. Optimizing Brier score improves both, but leads to lower accuracy than optimizing accuracy. We hypothesise this is because optimizing Brier score discourages exploration on hard questions. When the model assigns low probability, making a correct prediction (or not) does not change the reward (Brier score) much. Indeed, we find after Brier score only training, the model reports “Unknown” with near-zero confidence on 40% samples! Thus, we propose optimizing Accuracy + Brier score. This incentivizes making correct predictions even on hard questions with low confidence.</p>
 
     <p><img src="assets/images/reward_ablation.png" alt="Reward ablation: accuracy-only vs Brier-only vs Accuracy+Brier." /></p>
 
@@ -370,13 +370,13 @@ Ukraine’s parliament is scheduled to vote to appoint a new prime minister.</p>
       <li>Initial model: Qwen3 8B thinking model</li>
       <li>Retrieval: top-5 chunks using Qwen3-Embedding-8B (during training, we randomly vary between 0-5 chunks to make the model robust)</li>
       <li>Train on ~<strong>50k</strong> free-form questions from <code class="language-plaintext highlighter-rouge">OpenForesight</code>, and 2k resolved <strong>binary</strong> Metaculus questions (from 2024) to also handle that format.</li>
-      <li>RL (GRPO) without normalization by standard deviation, rewarding: <strong>Accuracy + Brier</strong> for free-form, <strong>Brier</strong> for binary qustions.</li>
+      <li>RL (GRPO) without normalization by standard deviation, rewarding: <strong>Accuracy + Brier</strong> for free-form, <strong>Brier</strong> for binary questions.</li>
     </ul>
 
     <p>This leads to our trained model <strong>OpenForecaster-8B</strong>, for which we already showed you the results <a href="#results">at the top</a>.</p>
 
     <h2 id="does-scaling-data-matter">Does scaling data matter?</h2>
-    <p>The most illustrative way to prove this is on Llama-3.1-8B-Instruct, as it has not already undergone RL post-training. Below, we vary the training data size, seeing continued improvements as the training data increases.</p>
+    <p>To demonstrate this, we train Llama-3.1-8B-Instruct, as it has not already undergone RL post-training. Below, we vary the training data size, seeing continued improvements as the training data increases.</p>
 
     <div class="figure-grid">
   <div class="figure-cell">
@@ -389,7 +389,7 @@ Ukraine’s parliament is scheduled to vote to appoint a new prime minister.</p>
   </div>
 </div>
 
-    <p>With our training, Llama-3.1-8B-Instruct surpasses Qwen3-235B, and DeepSeek v3, almost matching R1! And we don’t see any signs of saturation. Its plausible we could scale our recipe further, using not only larger models and more news data, but also more diverse sources of events to forecast (AGI wen? Retrieve frontier lab vagueposts to find out.)</p>
+    <p>With our training, Llama-3.1-8B-Instruct surpasses Qwen3-235B, and DeepSeek v3, almost matching R1! And we don’t see any signs of saturation. It’s plausible we could scale our recipe further, using not only larger models and more news data, but also more diverse sources of events to forecast (AGI wen? Retrieve frontier lab vagueposts to find out.)</p>
 
     <h1 id="conclusion">Conclusion</h1>
     <p>There’s lots to explore in how to train language models for forecasting, and many exciting applications ranging from investing to policy! We think forecasting is a rich setting for studying LLM decision making, search agents, continual learning (from new knowledge, as the world evolves), world modelling and much more. We are actively exploring these directions, and if you’re interested in contributing, <a href="mailto:shashwatnow@gmail.com">reach out</a>. For more details, see our <a href="https://www.alphaxiv.org/abs/2512.25070">paper</a>. Do check out our released <a href="https://huggingface.co/datasets/nikhilchandak/OpenForesight">data</a>, <a href="https://github.com/OpenForecaster/scaling-forecasting-training/tree/main">code</a>, and <a href="https://huggingface.co/nikhilchandak/OpenForecaster-8B">model</a>, and let us know what you think!</p>
