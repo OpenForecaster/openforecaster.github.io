@@ -60,8 +60,10 @@ You can use:
 We built **OpenForecaster**, an 8B model trained to make predictions on open-ended forecasting questions. It is competitive with much larger proprietary models in held-out testing. We train it on our [OpenForesight dataset](https://huggingface.co/datasets/nikhilchandak/OpenForesight) which has 52k forecasting questions created automatically from global news. This improves forecasting accuracy, calibration, and consistency of long-term predictions. We open-source all artefacts (including code), and describe our approach in the blog below.
 
 <div class="figure-grid" id="results">
+  <div class="figure-grid-legend">
+    <img src="assets/images/test_scatter_legend.png" alt="Legend">
+  </div>
   <div class="figure-cell">
-    <img src="assets/images/test_scatter_legend.png" alt="Legend" style="margin-bottom: 4px; border: none; box-shadow: none;">
     <img src="assets/images/test_scatter.png" alt="Test set results">
     <span class="caption"><strong>OpenForesight Test Set, May-August 2025 (302 Qs)</strong>: OpenForecaster 8B is competitive with 100B+ models on both Brier score and accuracy.</span>
   </div>
