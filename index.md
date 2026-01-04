@@ -102,9 +102,10 @@ Crucially though, in forecasting we eventually learn the correct outcome. This p
 
 Yet, traditional statistical and time-series models lack the expressivity to predict the kinds of questions we deal with in our day to day, which are expressible only in natural language, also called **judgemental forecasting**. Language models can change this. 
 
-However, this requires different capabilities than solving a fully specified math or code problem--seeking new information, aggregating unreliable sources, updating beliefs coherently, and reporting appropriately hedged predictions. One could call it building a *world model* of events in society. 
+However, forecasting requires different capabilities than solving a fully specified math or code problem-- such as seeking new information, aggregating unreliable sources, updating beliefs coherently, and reporting appropriately hedged predictions. 
 
-So we ask:
+One could call it building a *world model* of events in society. 
+
 # How to train language model forecasters?
 
 Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we'd have to wait for (at least) weeks before we get useful signal. Fortunately, LLMs know about the world only up to the date of their most recent training data, i.e. their "training cutoff". All events afterwards are effectively "in the future" for the model. We can exploit this to create forecasting questions at scale, treating post-cutoff events as the "future" that models must predict.
