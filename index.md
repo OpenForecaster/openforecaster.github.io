@@ -197,21 +197,32 @@ So we use **answer matching**: another language model checks whether the predict
 
 *Figure: Our automated recipe to create forecasting questions from news.*
 
-We source news articles from **CommonCrawl News (CCNews)**: which provides monthly snapshots of articles across many news websites. For our training set, we obtain **248k** deduplicated English-language articles between June 2023 → April 2025, from 5 global news outlets: Forbes, CNN, Hindustan Times, Deutsche Welle, Irish Times
+We source news articles from **CommonCrawl News (CCNews)**, which provides monthly snapshots of articles across many news websites. Our pipeline then:
 
-We only train up to April 2025, as that's the release date of the Qwen3 models we use. This retains a large window of events for held-out testing.
+1) **Generate candidates.** For each article, a *sample creator* model proposes up to three forecasting questions.
 
-1) **Generate candidates.** For each article, we use DeepSeek-v3 to propose up to three forecasting questions. This way, initially, we generate ~**745k** question candidates.
+2) **Validate.** A *sample selector* model picks the best question according to our guidelines (genuinely future-facing, unambiguous resolution criteria, non-trivial).
 
-2) **Validate.** A different model (Llama-4-Maverick) picks the best question according to our guidelines.
+3) **Fix leakage.** Sometimes questions accidentally reveal the answer in the background or resolution criteria. The sample selector identifies and rewrites potential leaking spans, then we filter any remaining questions that contain the answer string.
 
-3) **Fix leakage.** Even after the validation step, sometimes questions accidentally reveal the answer in the background or resolution text. We ask an LLM (LLama-4-Maverick) to identify potential leaking spans and only rewrite those parts of the questions. Finally, we filter questions which contain the answer string in the question, background, or resolution criteria.
+We only keep questions with non-numeric, short (1-3 word) string answers. We apply the same recipe to create validation and test sets from a different set of held-out news sources, and later time periods.
 
-For this work, we only keep questions with non-numeric, short (1-3 word) string answers, resolving after January 2024. After filtering, we are left with **52,183** final samples (about **7%** of candidates). As a sanity check, when the source article is provided, `Qwen3-32B` can answer these questions at about **95%** accuracy, confirming the answers are grounded.
+<details markdown="1">
+<summary>Train, Val, Test Split Details</summary>
 
-We use the same recipe to create a 207 question validation set from The Guardian articles in July 2025. This helps us measure progress during development, and is what we report ablations on below. We create these questions using a stronger model (`o4-mini-high`) for higher quality.
+| Split | Questions | Sources | Time Period | Sample Creator | Sample Selector |
+|-------|-----------|---------|-------------|----------------|-----------------|
+| **Train** | 52,183 | Forbes, CNN, Hindustan Times, Deutsche Welle, Irish Times | Jun 2023 – Apr 2025 | `DeepSeek-v3` | `Llama-4-Maverick` |
+| **Validation** | 207 | The Guardian | Jul 2025 | `o4-mini-high` | `Llama-4-Maverick` |
+| **Test** | 302 | Al Jazeera, Time, The Independent, Fox News, NDTV | May – Aug 2025 | `o4-mini-high` | `Llama-4-Maverick` |
 
-Similarly, for our final evaluation, we create a held-out test set of **302** high-quality questions (from 1,000 initial candidates) resolving between **May–August 2025**. These are drawn from five diverse global news sources not used in training: Al Jazeera, Time, The Independent, Fox News, and NDTV. We ensure high quality and zero leakage via strict quality control: filtering with search-enabled models (`grok-4.1-fast`), fixing resolution dates to the earliest reported occurrence, and manual review.
+- Training uses articles up to April 2025 (Qwen3 release date), retaining a large window for held-out testing.
+- We use 248k deduplicated English-language articles for training.
+- Training set: ~7% of 745k candidates retained after filtering.
+- As sanity check: `Qwen3-32B` answers ~95% correctly when given the source article.
+- Test set additionally undergoes search-enabled fixing of resolution dates (using `grok-4.1-fast`) and manual review.
+
+</details>
 
 Below, we show the benefit of filtering when training Qwen3-8B with GRPO and Brier score as reward, as measured on the validation set.
 ![Training with and without the filtering recipe.](assets/images/filtering_ablation.png)
