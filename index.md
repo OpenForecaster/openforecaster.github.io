@@ -96,13 +96,13 @@ We built **OpenForecaster**, an 8B model trained to make predictions on open-end
 # Why we care about language model forecasting {#motivation}
 Every day, we make decisions under uncertainty. Under the hood, such decisions often involve a forecasting problem. What gift will my friend like the most? How will this policy intervention impact the economy? Which experiment will lead to the most informative results for a research goal?
 
-At the outset, forecasting might seem subjective. Multiple options may be backed by reasonable arguments. Experts get it wrong all the time. This is by design--when making decisions with incomplete information, it is impossible to be perfect. There's probably a ceiling to predictability--we just don't know where it is. 
+At the outset, forecasting might seem subjective. Multiple options may be backed by reasonable arguments. By design, experts get it wrong all the time--it is impossible to always be correct. There's probably a ceiling to predictability and we don't know where it is. 
 
-Crucially though, in forecasting we eventually learn the correct outcome. This provides the "verifiable" signal needed for evaluations and improvement. This is why forecasting has been a particularly successful application of Machine Learning--whether it be predicting prices, or the weather. 
+Crucially though, in forecasting we eventually learn the correct outcome. This provides the "verifiable" signal needed for evaluations and improvement. This is why forecasting has been a particularly successful application of ML--whether it be predicting prices, or the weather. 
 
 Yet, traditional statistical and time-series models lack the expressivity to predict the kinds of questions we deal with in our day to day, which are expressible only in natural language, also called **judgemental forecasting**. Language models can change this. 
 
-However, this requires qualitatively different capabilities than solving a fully specified math or code problem--seeking new information, aggregating unreliable sources, updating beliefs coherently and reporting appropriately hedged predictions. One could call it building a *world model* of events in society. 
+However, this requires different capabilities than solving a fully specified math or code problem--seeking new information, aggregating unreliable sources, updating beliefs coherently, and reporting appropriately hedged predictions. One could call it building a *world model* of events in society. 
 
 So we ask:
 # How to train language model forecasters?
