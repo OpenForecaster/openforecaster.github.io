@@ -9,8 +9,8 @@ description: "OpenForesight (dataset) and OpenForecaster (model): scaling open-e
   <div class="container">
     <h1 class="title">Scaling Open-Ended Reasoning<br>To Predict the Future</h1>
     <p class="authors">
-      Nikhil Chandak<sup>*</sup> · Shashwat Goel<sup>*</sup> · Ameya Prabhu<sup>†</sup> ·
-      Moritz Hardt<sup>†</sup> · Jonas Geiping<sup>†</sup>
+      <a href="https://nikhilchandak.github.io/" target="_blank">Nikhil Chandak</a><sup>*</sup> · <a href="https://shash42.github.io" target="_blank">Shashwat Goel</a><sup>*</sup> · <a href="https://ameya.prabhu.be/" target="_blank">Ameya Prabhu</a><sup>†</sup> ·
+      Moritz Hardt<sup>†</sup> · <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a><sup>†</sup>
     </p>
     <p class="affiliations">
       Max Planck Institute for Intelligent Systems · ELLIS Institute Tübingen · Tübingen AI Center ·
@@ -69,7 +69,7 @@ We built **OpenForecaster**, an 8B model trained to make predictions on open-end
   </div>
   <div class="figure-cell">
     <img src="assets/images/futurex_scatter.png" alt="FutureX results">
-    <span class="caption"><strong>FutureX July-August 2025 non-numeric (86 Qs)</strong>: OpenForecaster has a much higher accuracy than 100B+ models.</span>
+    <span class="caption"><strong>FutureX July-August 2025 non-numeric (86 Qs)</strong>: OpenForecaster has a much higher accuracy than 100B+ models. We limit to models released before April 2025 for a fair, equal knowledge cutoff comparison.</span>
   </div>
   <div class="figure-cell">
     <table>
@@ -77,17 +77,17 @@ We built **OpenForecaster**, an 8B model trained to make predictions on open-end
         <tr><th>Consistency Check</th><th>Arbitrage (↓)</th><th>Frequentist (↓)</th></tr>
       </thead>
       <tbody>
-        <tr><td>AND</td><td>−78%</td><td>−59%</td></tr>
-        <tr><td>Consequence</td><td>−66%</td><td>−31%</td></tr>
-        <tr><td>ExpEvidence</td><td>−64%</td><td>−31%</td></tr>
-        <tr><td>OR</td><td>−64%</td><td>−35%</td></tr>
-        <tr><td>Paraphrase</td><td>−50%</td><td>−27%</td></tr>
-        <tr><td>But</td><td>−47%</td><td>−17%</td></tr>
-        <tr><td>Negation</td><td>−32%</td><td>−11%</td></tr>
-        <tr><td><strong>Aggregated</strong></td><td><strong>−44%</strong></td><td><strong>−19%</strong></td></tr>
+        <tr><td>AND</td><td>−75%</td><td>−42%</td></tr>
+        <tr><td>Consequence</td><td>−67%</td><td>−39%</td></tr>
+        <tr><td>Paraphrase</td><td>−33%</td><td>−17%</td></tr>
+        <tr><td>But</td><td>−31%</td><td>−14%</td></tr>
+        <tr><td>AndOr</td><td>−25%</td><td>−9%</td></tr>
+        <tr><td>ExpEvidence</td><td>−18%</td><td>−19%</td></tr>
+        <tr><td>Negation</td><td>+46%</td><td>+37%</td></tr>
+        <tr><td><strong>Aggregated</strong></td><td><strong>−15%</strong></td><td><strong>−4%</strong></td></tr>
       </tbody>
     </table>
-    <span class="caption"><strong><a href="https://arxiv.org/abs/2412.18544" target="_blank">Consistency in long-term predictions</a>.</strong> Our training reduces logical violations in predictions up to 2028, making forecasts more reliable. </span>
+    <span class="caption"><strong><a href="https://arxiv.org/abs/2412.18544" target="_blank">Consistency in long-term (2025-2028) predictions</a>.</strong> Our training reduces logical violations in predictions, making forecasts more reliable. </span>
   </div>
   <div class="figure-cell">
     <img src="assets/images/ood_brier.png" alt="OOD calibration">
@@ -108,6 +108,14 @@ However, forecasting requires different capabilities than solving a fully specif
 
 One could call it building a *world model* of events in society. 
 
+<div class="example-box" markdown="1">
+
+**Example forecasting questions** in our dataset:
+- "Who will be confirmed as the new prime minister of Ukraine on 17 July 2025?"
+- "Which company will the US government buy a >5% stake in by September 2025?"
+
+</div>
+
 # How to train language model forecasters?
 
 Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we'd have to wait for (at least) weeks before we get useful signal. Fortunately, LLMs know about the world only up to the date of their most recent training data, i.e. their "training cutoff". All events afterwards are effectively "in the future" for the model. We can exploit this to create forecasting questions at scale, treating post-cutoff events as the "future" that models must predict.
@@ -117,10 +125,6 @@ There are new interesting events happening around the world every day. Global ne
 1) The *questions* can be expressed in natural language, opening up the space of possible questions that can be forecasted.
 
 2) The *outcome space* is not a pre-defined set of options, unlike binary or multiple choice questions. The model has to come up with the possibilities on its own.
-
-For example, our automated pipeline creates forecasting questions like:
-- "Who will be confirmed as the new prime minister of Ukraine on 17 July 2025?"
-- "Which company will the US government buy a >5% stake in by September 2025?"
 
 We will describe the automated question creation process later, but before that it is important to define how the forecasting model's responses are scored.
 
