@@ -108,14 +108,6 @@ However, forecasting requires different capabilities than solving a fully specif
 
 One could call it building a *world model* of events in society. 
 
-<div class="example-box" markdown="1">
-
-**Example forecasting questions** in our dataset:
-- "Who will be confirmed as the new prime minister of Ukraine on 17 July 2025?"
-- "Which company will the US government buy a >5% stake in by September 2025?"
-
-</div>
-
 # How to train language model forecasters?
 
 Training data is the primary bottleneck for training AI forecasters. Making the model predict events that are truly in the future would be too slow a feedback loop: we'd have to wait for (at least) weeks before we get useful signal. Fortunately, LLMs know about the world only up to the date of their most recent training data, i.e. their "training cutoff". All events afterwards are effectively "in the future" for the model. We can exploit this to create forecasting questions at scale, treating post-cutoff events as the "future" that models must predict.
@@ -125,6 +117,14 @@ There are new interesting events happening around the world every day. Global ne
 1) The *questions* can be expressed in natural language, opening up the space of possible questions that can be forecasted.
 
 2) The *outcome space* is not a pre-defined set of options, unlike binary or multiple choice questions. The model has to come up with the possibilities on its own.
+
+<div class="example-box" markdown="1">
+
+**Example forecasting questions** in our dataset:
+- "Who will be confirmed as the new prime minister of Ukraine on 17 July 2025?"
+- "Which company will the US government buy a >5% stake in by September 2025?"
+
+</div>
 
 We will describe the automated question creation process later, but before that it is important to define how the forecasting model's responses are scored.
 
