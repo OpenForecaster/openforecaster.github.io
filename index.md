@@ -122,7 +122,7 @@ There are new interesting events happening around the world every day. Global ne
 
 **Example forecasting questions** in our dataset:
 - "Who will be confirmed as the new prime minister of Ukraine on 17 July 2025?"
-- "Which company will the US government buy a >5% stake in by September 2025?"
+- "Who will be named as Procter & Gamble's Chief Executive Officer by July 31, 2025?"
 
 </div>
 
