@@ -29,7 +29,7 @@ nav: futuresim
     </p>
 
     <div class="resource-links" id="resources">
-      <a class="chip" href="#">
+      <a class="chip" href="https://www.alphaxiv.org/abs/2605.15188" target="_blank" rel="noreferrer">
         <span class="icon" aria-hidden="true" data-icon="arxiv"></span>
         <span>Paper</span>
       </a>
@@ -37,7 +37,7 @@ nav: futuresim
         <span class="icon" aria-hidden="true" data-icon="github"></span>
         <span>Code</span>
       </a>
-      <a class="chip" href="#">
+      <a class="chip" href="https://huggingface.co/spaces/nikhilchandak/futuresim-agent-trajectories" target="_blank" rel="noreferrer">
         <span class="icon" aria-hidden="true" data-icon="pdf"></span>
         <span>Trajectories</span>
       </a>
@@ -68,7 +68,7 @@ FutureSim captures several properties which we think are uniquely important for 
 
 5. **Epistemic humility in world-modelling**: Having overconfident beliefs makes one commit to wrong actions, while underconfidence leads to inaction. In FutureSim, agents must maintain calibrated predictions, by recognizing what they don't know, while still making useful inferences and extrapolations. They must weigh relevant evidence based on learnt priors about how the world evolves.
 
-6. **Economically valuable**: Reasoning about uncertain future events and acting accordingly is a central challenge when making decisions.
+6. **Economically valuable**: Reasoning about uncertain future events and acting accordingly is a central challenge when making decisions. As an anecdote, some of the questions in our dataset have prediction markets with millions of dollars in volume being traded.
 
 ### Sample Agent Trajectory compared to Prediction Markets
 

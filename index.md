@@ -21,18 +21,18 @@ nav: landing
         <div class="project-body">
           <h3>Scaling Open-Ended Reasoning to Predict the Future</h3>
           <p class="project-summary">Training OpenForecaster on OpenForesight improves open-ended forecasting accuracy, calibration, and consistency.</p>
-          <p class="project-authors">Nikhil Chandak, Shashwat Goel, Ameya Prabhu, Moritz Hardt, Jonas Geiping</p>
+          <p class="project-authors">Nikhil Chandak<sup>*</sup>, Shashwat Goel<sup>*</sup>, Ameya Prabhu, Moritz Hardt, Jonas Geiping</p>
         </div>
       </a>
 
       <a class="project-card" href="{{ '/futuresim/' | relative_url }}">
-        <figure class="project-media project-media--contain">
+        <figure class="project-media project-media--contain project-media--futuresim">
           <img src="{{ '/futuresim/figures/main_fig/futuresim-env2-colored.png' | relative_url }}" alt="FutureSim environment diagram.">
         </figure>
         <div class="project-body">
-          <h3>FutureSim</h3>
+          <h3>FutureSim: Replaying World Events to Evaluate Adaptive Agents</h3>
           <p class="project-summary">Evaluates how forecasting agents adapt their beliefs as new information arrives over real-world time.</p>
-          <p class="project-authors">Shashwat Goel, Nikhil Chandak, Arvindh Arun, Ameya Prabhu, Steffen Staab, Moritz Hardt, Maksym Andriushchenko, Jonas Geiping</p>
+          <p class="project-authors">Shashwat Goel<sup>*</sup>, Nikhil Chandak<sup>*</sup>, Arvindh Arun<sup>*</sup>, Ameya Prabhu, Steffen Staab, Moritz Hardt, Maksym Andriushchenko, Jonas Geiping</p>
         </div>
       </a>
 
@@ -41,9 +41,9 @@ nav: landing
           <img src="{{ '/assets/images/pitfalls-jan6.webp' | relative_url }}" alt="Search bias example from the forecasting pitfalls post.">
         </figure>
         <div class="project-body">
-          <h3>LLM Forecasting Evaluations Need Fixing</h3>
+          <h3>Pitfalls in Evaluating LLM Forecasters</h3>
           <p class="project-summary">Shows how leakage, retrieval bias, unreliable cutoffs, and benchmark incentives can break LLM forecasting evaluations.</p>
-          <p class="project-authors">Daniel Paleka, Shashwat Goel, Jonas Geiping, Florian Tramèr</p>
+          <p class="project-authors">Daniel Paleka<sup>*</sup>, Shashwat Goel<sup>*</sup>, Jonas Geiping, Florian Tramèr</p>
         </div>
       </a>
     </div>
