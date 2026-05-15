@@ -4,7 +4,8 @@ Blog-style website for "Scaling Open-Ended Reasoning to Predict the Future".
 
 ## Structure
 
-- `index.md` — Main blog page (edit this to update content)
+- `scaling-data/index.md` — Scaling-data blog page served at `/scaling-data/`
+- `futuresim/index.md` — FutureSim blog page served at `/futuresim/`
 - `assets/images/` — Blog images (figures, plots, etc.)
 - `assets/styles.css` — Base styles
 - `assets/blog.css` — Blog-specific styles
@@ -33,9 +34,9 @@ bundle exec jekyll serve
 
 ## Editing the Blog
 
-1. Open `index.md`
+1. Open `scaling-data/index.md` or `futuresim/index.md`
 2. Edit the Markdown content between the `BLOG CONTENT STARTS HERE` and `BLOG CONTENT ENDS HERE` comments
-3. Add images to `assets/images/` and reference them as `assets/images/filename.png`
+3. Add images to `assets/images/` and reference them with `{{ '/assets/' | relative_url }}images/filename.png`
 4. Commit and push to deploy
 
 ## Collapsible Spoiler Example
@@ -55,4 +56,4 @@ Hidden content goes here. You can include:
 
 ## Updating Resource Links
 
-Edit the `href` values in `assets/site.config.js` (or directly in `index.md` hero section).
+Edit the `href` values in `assets/site.config.js` (or directly in `scaling-data/index.md` hero section).

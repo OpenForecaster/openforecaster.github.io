@@ -43,7 +43,7 @@
     el.innerHTML = icons[name];
   });
 
-  document.querySelectorAll('[data-tabs="results"]').forEach((root) => {
+  document.querySelectorAll("[data-tabs]").forEach((root) => {
     const tablist = root.querySelector('[role="tablist"]');
     const tabs = Array.from(root.querySelectorAll('[role="tab"]'));
     const panesRoot = root.querySelector("[data-panes]");
@@ -52,6 +52,7 @@
 
     const prefersReducedMotion =
       typeof window.matchMedia === "function" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const shouldAutoplay = root.dataset.autoplay === "true";
     const cycleMs = 6500;
     let activeIndex = 0;
     let timer = null;
@@ -69,6 +70,8 @@
         pane.setAttribute("aria-hidden", selected ? "false" : "true");
         pane.toggleAttribute("inert", !selected);
       });
+      root.style.setProperty("--active", String(index));
+      if (tablist) tablist.style.setProperty("--active", String(index));
       if (panesRoot) panesRoot.style.setProperty("--active", String(index));
       if (focus) tabs[index]?.focus();
     };
@@ -80,7 +83,7 @@
     };
 
     const start = () => {
-      if (prefersReducedMotion || userStopped || timer) return;
+      if (!shouldAutoplay || prefersReducedMotion || userStopped || timer) return;
       timer = window.setInterval(() => {
         setActive((activeIndex + 1) % tabs.length);
       }, cycleMs);
@@ -133,5 +136,40 @@
       if (document.hidden) stop();
       else start();
     });
+  });
+
+  document.querySelectorAll("[data-carousel]").forEach((root) => {
+    const slides = Array.from(root.querySelectorAll(".carousel-slide"));
+    const prev = root.querySelector("[data-carousel-prev]");
+    const next = root.querySelector("[data-carousel-next]");
+    if (slides.length === 0 || !prev || !next) return;
+
+    let activeIndex = 0;
+
+    const setActive = (index) => {
+      activeIndex = Math.max(0, Math.min(index, slides.length - 1));
+      root.style.setProperty("--active", String(activeIndex));
+
+      slides.forEach((slide, i) => {
+        const selected = i === activeIndex;
+        slide.setAttribute("aria-hidden", selected ? "false" : "true");
+        slide.toggleAttribute("inert", !selected);
+      });
+
+      prev.disabled = activeIndex === 0;
+      next.disabled = activeIndex === slides.length - 1;
+      root.style.setProperty("--carousel-height", `${slides[activeIndex].offsetHeight}px`);
+    };
+
+    prev.addEventListener("click", () => setActive(activeIndex - 1));
+    next.addEventListener("click", () => setActive(activeIndex + 1));
+    slides.forEach((slide) => {
+      slide.querySelectorAll("img").forEach((img) => {
+        img.addEventListener("load", () => setActive(activeIndex), { once: true });
+        if (img.complete) window.requestAnimationFrame(() => setActive(activeIndex));
+      });
+    });
+    window.addEventListener("resize", () => setActive(activeIndex));
+    setActive(0);
   });
 })();
