@@ -9,9 +9,13 @@ nav: futuresim
   <div class="container">
     <h1 class="title">FutureSim</h1>
     <p class="authors">
-      <a href="https://shash42.github.io" target="_blank">Shashwat Goel</a><sup>*</sup> ·
-      <a href="https://nikhilchandak.github.io/" target="_blank">Nikhil Chandak</a><sup>*</sup> ·
-      Arvindh Arun<sup>*</sup> ·
+      <strong>Co-leads:</strong>
+      <a href="https://shash42.github.io" target="_blank">Shashwat Goel</a> ·
+      <a href="https://nikhilchandak.github.io/" target="_blank">Nikhil Chandak</a> ·
+      Arvindh Arun
+    </p>
+    <p class="authors">
+      <strong>Advisors:</strong>
       <a href="https://ameya.prabhu.be/" target="_blank">Ameya Prabhu</a> ·
       Steffen Staab ·
       Moritz Hardt ·
@@ -20,9 +24,9 @@ nav: futuresim
     </p>
     <p class="affiliations">
       ELLIS Institute Tübingen · Max Planck Institute for Intelligent Systems ·
+      <br>
       Institute for AI, University of Stuttgart · Tübingen AI Center · University of Southampton
     </p>
-    <p class="footnote"><sup>*</sup>Equal contribution</p>
 
     <div class="resource-links" id="resources">
       <a class="chip" href="#">
@@ -44,7 +48,7 @@ nav: futuresim
 <article class="blog-content" markdown="1">
 <div class="container" markdown="1">
 
-We built FutureSim to evaluate how agents adapt their beliefs as new information arrives in the real-world. Agents have to forecast world events, deciding themselves which forecasts to update when based on daily news. This makes FutureSim long-horizon and open-ended, while being easily reproducible and grounded in an economically valuable real-world task. In this release we benchmark frontier agents in harnesses like Codex and Claude Code over a three-month simulation. We also show how FutureSim can support emerging research on test-time adaptation, epistemic humility, memory, search, inference-scaling, and multi-agent self-play. You can run FutureSim with your own dataset of chronological events!
+We built FutureSim, to evaluate how agents adapt their beliefs as new information arrives in the real-world. Agents have to forecast world events, deciding themselves when to update which forecasts, as daily news gets added to the environment. This makes FutureSim long-horizon and open-ended, while being easily reproducible and grounded in real-world data. In this release we benchmark frontier agents in harnesses like Codex and Claude Code over a three month simulation. We also show how FutureSim can support emerging research on test-time adaptation, epistemic humility, memory, search, inference-scaling, and multi-agent self-play. You can run FutureSim with your own dataset of chronological events!
 
 <section class="result-toggle" data-tabs="futuresim-results">
   <div class="result-toggle-tabs" role="tablist" aria-label="FutureSim result metric">
@@ -74,13 +78,13 @@ We built FutureSim to evaluate how agents adapt their beliefs as new information
 
 FutureSim captures several properties which we think are uniquely important for studying agent adaptation:
 
-1. **Ordered by real-world time**: Our world evolves over *time*, not in a random or arbitrary order. In FutureSim, each time-step corresponds to a date which is in the past for us, but beyond the knowledge cutoff of the agents. 
+1. **Chronological order**: Our world evolves over *time*, and not in a random or arbitrary order. In FutureSim, the tasks and context available at each time-step correspond to a real, dated snapshot of the world.
 
-2. **Based on real-world data**: Agents have to predict real-world events that have already occurred for us, extracted from time-stamped news documents. The context also updates based on CommonCrawl News, which has time-stamped snapshots that can't be updated in the future (which prevents leakage).
+2. **Based on real-world data**: Agents have to predict events that have already occurred for us, extracted from news documents. The context also updates based on CommonCrawl News, which has time-stamped snapshots that can't be updated in the future, preventing leakage.
 
 3. **Partial observability of large context**: The context consists of millions of documents. Agents have to use tools to actively seek information from the environment. We allow agent creators to define their own tools to explore this context, as long as they do not leak information beyond the current date of the simulation. In our experiments, we provide access to both terminal command based search over a time-gated article corpus, and a hybrid search tool (LanceDB) which allows controlling query date ranges.
 
-4. **Deciding when to update their attempt on which tasks**: Humans choose, and are not always told, what task merits their attention based on the context available at the time. In FutureSim, the environment maintains an overall task state, and agents can keep updating their attempts for chosen questions using the *submit_forecasts()* action. The only other action the environment encodes is *next_day()*, which agents can call once they think they've made sufficient use of the existing context.
+4. **Deciding when to update their attempt on which tasks**: Humans choose what task merits their attention based on the context available at the time. In FutureSim, the environment maintains an overall task state, and agents can keep updating their attempts for chosen questions using the *submit_forecasts()* action. The only other action the environment encodes is *next_day()*, which agents can call once they think they've made sufficient use of the existing context.
 
 5. **Epistemic humility in world-modelling**: Having overconfident beliefs makes one commit to wrong actions, while underconfidence leads to inaction. In FutureSim, agents must maintain calibrated predictions, by recognizing what they don't know, while still making useful inferences and extrapolations. They must weigh relevant evidence based on learnt priors about how the world evolves.
 
