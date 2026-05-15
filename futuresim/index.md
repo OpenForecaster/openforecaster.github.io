@@ -48,27 +48,7 @@ nav: futuresim
 <article class="blog-content" markdown="1">
 <div class="container" markdown="1">
 
-We built FutureSim, to evaluate how agents adapt their beliefs as new information arrives in the real-world. Agents have to forecast world events, deciding themselves when to update which forecasts, as daily news gets added to the environment. This makes FutureSim long-horizon and open-ended, while being easily reproducible and grounded in real-world data. In this release we benchmark frontier agents in harnesses like Codex and Claude Code over a three month simulation. We also show how FutureSim can support emerging research on test-time adaptation, epistemic humility, memory, search, inference-scaling, and multi-agent self-play. You can run FutureSim with your own dataset of chronological events!
-
-<section class="result-toggle" data-tabs="futuresim-results">
-  <div class="result-toggle-tabs" role="tablist" aria-label="FutureSim result metric">
-    <button id="futuresim-accuracy-tab" type="button" role="tab" aria-selected="true" aria-controls="futuresim-accuracy-panel">
-      Accuracy
-    </button>
-    <button id="futuresim-brier-tab" type="button" role="tab" aria-selected="false" aria-controls="futuresim-brier-panel" tabindex="-1">
-      Brier
-    </button>
-  </div>
-  <div class="result-toggle-panes" data-panes>
-    <figure id="futuresim-accuracy-panel" role="tabpanel" aria-labelledby="futuresim-accuracy-tab">
-      <img src="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}" alt="FutureSim model accuracy results">
-    </figure>
-    <figure id="futuresim-brier-panel" role="tabpanel" aria-labelledby="futuresim-brier-tab" aria-hidden="true" inert>
-      <img src="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}" alt="FutureSim model Brier score results">
-    </figure>
-  </div>
-</section>
-<p class="figure-note"> The <a href="#scoring">scoring section</a> has more information on how to interpret these results.</p>
+We built FutureSim, to evaluate how agents adapt their beliefs as new information arrives in the real-world. Agents have to forecast world events, deciding themselves when to update which forecasts, as daily news gets added to the environment. This makes FutureSim long-horizon and open-ended, while being easily reproducible and grounded in real event data. In this release we benchmark frontier agents in harnesses like Codex and Claude Code over a three month simulation. We also show how FutureSim can support emerging research on test-time adaptation, epistemic humility, memory, search, inference-scaling, and multi-agent self-play. You can run FutureSim with your own dataset of chronological events!
 
 ## Design {#design}
 
@@ -126,44 +106,62 @@ submit_forecasts(
 )
 ```
 
-Note that the probabilities do not need to sum to 1, we can still use a [proper scoring rule](https://statproofbook.github.io/P/bsr-spsr.html):
+Note that the probabilities do not need to sum to $1$; we can still use a [proper scoring rule](https://statproofbook.github.io/P/bsr-spsr.html):
 
-**Brier skill score**: For a resolved question with true answer `y`, forecasted outcomes `o`, and probabilities `p(o)`, we adapt the multi-class brier scoring rule:
+**Brier skill score**: For a resolved question with true answer $y$, let $\Omega$ be the set of outcomes submitted by the agent. For each single outcome $o \in \Omega$, $p(o)$ is the probability assigned to that outcome. If $y \notin \Omega$, we include $y$ in the sum with $p(y)=0$:
 
 $$
+\mathrm{BSS}(p, y) =
 1 -
 \sum_{o \in \Omega \cup \{y\}}
 \left(p(o) - \mathbf{1}[o = y]\right)^2
 $$
 
-Higher is better. Assigning all probability only to the correct answer gets `1`, no forecast abstentions (or 0 probability assigned) gets `0`, and assigning all probability to a wrong answer gets `-1`. If an agent assigns `X%` probability to an outcome, the score is optimized when that outcome is correct `X%` of the time.
+Brier skill score ranges from $-1$ to $1$, and higher is better. Assigning probability $1$ to the correct answer gets scored $1$, abstaining by assigning $0$ probability gets scored $0$, and assigning probability $1$ to a wrong answer gets scored $-1$. The score is optimized when outcomes assigned $X\%$ probability are correct $X\%$ of the time.
 
-**Accuracy** As its easier to interpret, we also measure accuracy of the outcome assigned the highest probability by the agent (top-1 accuracy).
+**Accuracy**: As its easier to interpret, we also measure accuracy of the outcome assigned the highest probability by the agent (top-1 accuracy).
 
 We prompt agents to maximize the sum of brier skill score over time-steps, which incentivizes correctness, calibration, as well as timeliness of predictions. 
 
-In our plots, we show the brier skill score and accuracy at each time-step based on the current predictions, but using the ground-truth answer that becomes available to the agent only later in the simulation (when it became known in the real-world). 
+In our plots, we show the brier skill score and accuracy at each time-step based on the current predictions, but using the ground-truth answer that becomes available to the agent only later in the simulation (corresponding to the date it became known). 
 
-### Data
+**Task**: We evaluate using [330 short-answer forecasting questions](https://huggingface.co/datasets/nikhilchandak/OpenForesight/viewer/default/aljazeera2026Q1) [created from](https://arxiv.org/abs/2512.25070) Al Jazeera news articles. Questions resolve between January 1 and March 28, 2026, after the knowledge cutoffs of the evaluated models, with the simulation starting on December 24, 2025 🎅🎄.
 
-We evaluate using [330 short-answer forecasting questions](https://huggingface.co/datasets/nikhilchandak/OpenForesight/viewer/default/aljazeera2026Q1) [created from](https://arxiv.org/abs/2512.25070) Al Jazeera news articles. Questions resolve between January 1 and March 28, 2026, after the knowledge cutoffs of the evaluated models, with the simulation starting on December 24, 2025.
+**Context corpus**: Agents interact with a date-gated CCNews corpus: 7.36M deduplicated articles from 141 sources. Agents can only access articles up to the current simulation date, with 244k new articles becoming available over the 88 day simulation period.
 
-Agents interact with a date-gated CCNews corpus: 7.36M deduplicated articles from 141 sources, with only articles up to the current simulation date available. Over the 88-day simulation, 244K new articles become available.
+Note that the absolute performances we report can be considered a lower-bound on agent performance. Access to a larger context corpus, better tools, and harness engineering to scale inference further would elicit higher performance. At the same time, care has to be taken to avoid leakage of future information. While we would much like to give agents access to the full internet, [search API's today do not support reliable date-cutoffs](https://arxiv.org/abs/2506.00723).
 
-Note that the absolute performances we report are a lower-bound on agent performance. Access to a larger context corpus, better tools, and harness engineering would elicit higher performance.
+## Frontier model evaluations {#benchmark}
 
-## Results {#results}
+<section class="result-toggle" data-tabs="futuresim-results">
+  <div class="result-toggle-tabs" role="tablist" aria-label="FutureSim result metric">
+    <button id="futuresim-accuracy-tab" type="button" role="tab" aria-selected="true" aria-controls="futuresim-accuracy-panel">
+      Accuracy
+    </button>
+    <button id="futuresim-brier-tab" type="button" role="tab" aria-selected="false" aria-controls="futuresim-brier-panel" tabindex="-1">
+      Brier
+    </button>
+  </div>
+  <div class="result-toggle-panes" data-panes>
+    <figure id="futuresim-accuracy-panel" role="tabpanel" aria-labelledby="futuresim-accuracy-tab">
+      <img src="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}" alt="FutureSim model accuracy results">
+    </figure>
+    <figure id="futuresim-brier-panel" role="tabpanel" aria-labelledby="futuresim-brier-tab" aria-hidden="true" inert>
+      <img src="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}" alt="FutureSim model Brier score results">
+    </figure>
+  </div>
+</section>
+<p class="figure-note"> The <a href="#scoring">scoring section</a> has more information on how to interpret these results.</p>
 
-### Frontier model evaluations
 We evaluate GPT 5.5 in Codex, Qwen3.6 Plus in OpenCode, and Opus 4.6, DeepSeek V4 Pro, and GLM 5.1 in Claude Code. In our paper, we also report improved results across agents from adding a common set of modifications (such as in memory management) to all harnesses, showing gains from further harness engineering as possible.
 
 We observe GPT 5.5 performs best on both accuracy and Brier skill score. Claude Opus 4.6 starts worse than GPT 5.5, but is also able to improve significantly from test-time adaptation. 
 
-Open-weight models lag behind, but show interesting trends. For example, while DeepSeek V4 Pro's adaptation at test-time helps it close the gap on GLM 5.1, Qwen 3.6 Plus worsens in Brier skill score during the simulation, overconfidently reinforcing its existing predictions. We provide more analysis in our paper.
+Open-weight models lag behind, but show interesting trends. For example, while DeepSeek V4 Pro's much better adaptation at test-time helps it close the gap on GLM 5.1, Qwen 3.6 Plus worsens in Brier skill score during the simulation, overconfidently reinforcing its existing predictions.
 
-### How researchers/developers can use FutureSim
+## How researchers/developers can use FutureSim {#experiments}
 
-We perform experiments to demonstrate how FutureSim can be used to study various interesting directions. Pick your favorite ones below :)
+Finally, we show how FutureSim flexible design enables experiments on various interesting research directions. Pick your favorite ones below :)
 
 <section class="capability-window" data-tabs="capability-results">
   <div class="capability-tabs" role="tablist" aria-label="FutureSim capability results">
@@ -213,7 +211,7 @@ We perform experiments to demonstrate how FutureSim can be used to study various
   </div>
 </section>
 
-We are excited to see how the community uses FutureSim!
+This was just a teaser ;) There are many interesting details and analysis in our [paper](https://www.alphaxiv.org/abs/2605.15188). Check them out, and [let us know](https://github.com/OpenForecaster/futuresim/issues) what you think!
 
 </div>
 </article>
