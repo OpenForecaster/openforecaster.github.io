@@ -23,7 +23,7 @@ nav: futuresim
       <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a>
     </p>
     <p class="affiliations">
-      ELLIS Institute Tübingen · Max Planck Institute for Intelligent Systems ·
+      ELLIS Institute Tübingen · Max Planck Institute for Intelligent Systems
       <br>
       Institute for AI, University of Stuttgart · Tübingen AI Center · University of Southampton
     </p>
@@ -88,7 +88,7 @@ FutureSim captures several properties which we think are uniquely important for 
 
 5. **Epistemic humility in world-modelling**: Having overconfident beliefs makes one commit to wrong actions, while underconfidence leads to inaction. In FutureSim, agents must maintain calibrated predictions, by recognizing what they don't know, while still making useful inferences and extrapolations. They must weigh relevant evidence based on learnt priors about how the world evolves.
 
-6. **Economically valuable**: Reasoning about uncertain future events and how the world will evolve is a central challenge when making decisions, including economically impactful ones.
+6. **Economically valuable**: Reasoning about uncertain future events and acting accordingly is a central challenge when making decisions.
 
 ### Sample Agent Trajectory compared to Prediction Markets
 
@@ -111,10 +111,10 @@ Some forecasting questions in our experiments overlap with Polymarket markets al
 
 ## Prediction task and scoring {#scoring}
 
-We use free-form forecasting questions, tasking agents to come up with multiple possible outcomes, and distribute probability over them. Here's a sample prediction GPT 5.5 submitted:
+We use free-form forecasting questions, tasking agents to come up with multiple possible outcomes, and distribute probability over them. Here's a sample prediction GPT 5.5 made on the Nepal elections:
 
 ```python
-mcp__forecast__submit_forecasts(
+submit_forecasts(
     question_id="nepal_pm",
     outcomes={
         "Balendra Shah": 0.34,
@@ -146,7 +146,7 @@ In our plots, we show the brier skill score and accuracy at each time-step based
 
 ### Data
 
-We evaluate using [330 short-answer forecasting questions](https://huggingface.co/datasets/nikhilchandak/OpenForesight/viewer/default/aljazeera2026Q1) [created from](https://arxiv.org/abs/2512.25070). Questions resolve between January 1 and March 28, 2026, after the knowledge cutoffs of the evaluated models. All questions are active from December 24, 2025 until their resolution date.
+We evaluate using [330 short-answer forecasting questions](https://huggingface.co/datasets/nikhilchandak/OpenForesight/viewer/default/aljazeera2026Q1) [created from](https://arxiv.org/abs/2512.25070) Al Jazeera news articles. Questions resolve between January 1 and March 28, 2026, after the knowledge cutoffs of the evaluated models, with the simulation starting on December 24, 2025.
 
 Agents interact with a date-gated CCNews corpus: 7.36M deduplicated articles from 141 sources, with only articles up to the current simulation date available. Over the 88-day simulation, 244K new articles become available.
 
