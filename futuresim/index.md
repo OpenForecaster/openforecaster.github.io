@@ -72,9 +72,7 @@ FutureSim captures several properties which we think are uniquely important for 
 
 ### Sample Agent Trajectory compared to Prediction Markets
 
-Some forecasting questions in our experiments overlap with Polymarket markets allowing comparative analysis. On several of these, GPT 5.5's updates track the human aggregate and the cited evidence is quite reasonable. On some markets, including the Super Bowl winner market with 700M$ traded in volume, GPT 5.5 sometimes even is ahead of the crowd aggregate. On some other markets, like the Grammy and UK District Election market, it was dramatically worse than the human aggregate.
-
-<div class="figure-carousel" data-carousel>
+<div class="figure-carousel mobile-only" data-carousel>
   <button class="carousel-button carousel-button--prev" type="button" data-carousel-prev aria-label="Previous prediction-market figure" disabled>&lsaquo;</button>
   <div class="carousel-viewport">
     <div class="carousel-track" data-carousel-track>
@@ -88,6 +86,17 @@ Some forecasting questions in our experiments overlap with Polymarket markets al
   </div>
   <button class="carousel-button carousel-button--next" type="button" data-carousel-next aria-label="Next prediction-market figure">&rsaquo;</button>
 </div>
+
+<section class="figure-pair figure-pair--polymarket desktop-only" aria-label="Prediction-market comparison figures">
+  <figure>
+    <img src="{{ '/futuresim/figures/results/polymarket_update.png' | relative_url }}" alt="GPT 5.5 and Polymarket update trajectory for the Nepal prime minister question.">
+  </figure>
+  <figure>
+    <img src="{{ '/futuresim/figures/results/polymarket_six_markets.png' | relative_url }}" alt="Prediction-market comparison across six overlapping Polymarket questions.">
+  </figure>
+</section>
+
+Some forecasting questions in our experiments overlap with Polymarket markets allowing comparative analysis. On several of these, GPT 5.5's updates track the human aggregate and the cited evidence is quite reasonable. On some markets, including the Super Bowl winner market with 700M$ traded in volume, GPT 5.5 sometimes even is ahead of the crowd aggregate. On some other markets, like the Grammy and UK District Election market, it was dramatically worse than the human aggregate.
 
 ## Prediction task and scoring {#scoring}
 
@@ -133,7 +142,7 @@ Note that the absolute performances we report can be considered a lower-bound on
 
 ## Frontier model evaluations {#benchmark}
 
-<section class="result-toggle" data-tabs="futuresim-results">
+<section class="result-toggle mobile-only" data-tabs="futuresim-results">
   <div class="result-toggle-tabs" role="tablist" aria-label="FutureSim result metric">
     <button id="futuresim-accuracy-tab" type="button" role="tab" aria-selected="true" aria-controls="futuresim-accuracy-panel">
       Accuracy
@@ -151,7 +160,17 @@ Note that the absolute performances we report can be considered a lower-bound on
     </figure>
   </div>
 </section>
-<p class="figure-note"> The <a href="#scoring">scoring section</a> has more information on how to interpret these results.</p>
+
+<section class="figure-pair figure-pair--main-results desktop-only" aria-label="FutureSim benchmark result figures">
+  <figure>
+    <figcaption>Accuracy</figcaption>
+    <img src="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}" alt="FutureSim model accuracy results">
+  </figure>
+  <figure>
+    <figcaption>Brier skill score</figcaption>
+    <img src="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}" alt="FutureSim model Brier score results">
+  </figure>
+</section>
 
 We evaluate GPT 5.5 in Codex, Qwen3.6 Plus in OpenCode, and Opus 4.6, DeepSeek V4 Pro, and GLM 5.1 in Claude Code. In our paper, we also report improved results across agents from adding a common set of modifications (such as in memory management) to all harnesses, showing gains from further harness engineering as possible.
 
@@ -176,36 +195,36 @@ Finally, we show how FutureSim flexible design enables experiments on various in
       <img class="capability-legend" src="{{ '/futuresim/figures/results/adaptation_legend.png' | relative_url }}" alt="Legend for test-time adaptation results.">
       <img src="{{ '/futuresim/figures/results/adaptation_main.png' | relative_url }}" alt="Test-time adaptation results.">
       <figcaption>
-        <strong>Setup:</strong> All agents start from Qwen3.6 Plus's weak initial forecasts, to maximize room to improve as news arrives and questions resolve.
-        <strong>Takeaway:</strong> GPT 5.5, Opus 4.6, and DeepSeek V4 Pro improve, but no agent reaches the no-prediction Brier baseline, showing that current agents can stay anchored to bad initial forecasts.
+        All agents start from Qwen3.6 Plus's weak initial forecasts, to maximize room to improve as news arrives and questions resolve.
+        DeepSeek V4 Pro shows strong adaptation, matching GPT 5.5, Opus 4.6. But no agent reaches the no-prediction Brier baseline ($0$), showing that current agents get anchored to bad starting points and do not update enough.
       </figcaption>
     </figure>
     <figure id="cap-memory-panel" role="tabpanel" aria-labelledby="cap-memory-tab" aria-hidden="true" inert>
       <img src="{{ '/futuresim/figures/results/memory.png' | relative_url }}" alt="Memory ablation results.">
       <figcaption>
-        <strong>Setup:</strong> We remove the ability to write and retrieve memory entries during the simulation.
-        <strong>Takeaway:</strong> Models perform worse without memory; useful memory stores search findings, resolved-question feedback, and calibrated priors across many simulated days.
+        We remove the ability to write memory entries during the simulation.
+        Models perform worse without memory; useful memories store search findings, reflections on resolved predictions, notes on calibration, source quality reflections etc.
       </figcaption>
     </figure>
     <figure id="cap-search-panel" role="tabpanel" aria-labelledby="cap-search-tab" aria-hidden="true" inert>
       <img src="{{ '/futuresim/figures/results/search.png' | relative_url }}" alt="Search ablation results.">
       <figcaption>
-        <strong>Setup:</strong> We compare daily context updates, no new articles after day 0, direct one-day-before forecasting, and single-query retrieval.
-        <strong>Takeaway:</strong> Fresh context and agentic search both matter. A single static retrieval query is much worse than letting the agent decide what to search for.
+        We compare daily context updates, no new articles after day 0, direct one-day-before forecasting, and single-query retrieval.
+        Utilizing fresh context as the corpus evolves and agentic search (compared to a single static query) both lead to significant improvements.
       </figcaption>
     </figure>
     <figure id="cap-inference-panel" role="tabpanel" aria-labelledby="cap-inference-tab" aria-hidden="true" inert>
       <img src="{{ '/futuresim/figures/results/inference_scaling.png' | relative_url }}" alt="Inference scaling results.">
       <figcaption>
-        <strong>Setup:</strong> We run GPT 5.5 at five reasoning-effort settings.
-        <strong>Takeaway:</strong> More inference compute improves FutureSim accuracy, though gains flatten at the highest settings.
+        We run GPT 5.5 at five reasoning-effort settings.
+        More inference compute improves FutureSim accuracy, though xhigh doesn't improve over high.
       </figcaption>
     </figure>
     <figure id="cap-multiagent-panel" role="tabpanel" aria-labelledby="cap-multiagent-tab" aria-hidden="true" inert>
       <img src="{{ '/futuresim/figures/results/multi_agent.png' | relative_url }}" alt="Multi-agent dynamics results.">
       <figcaption>
-        <strong>Setup:</strong> Three DeepSeek V3.2 agents forecast together while seeing the current aggregate prediction for each question.
-        <strong>Takeaway:</strong> Their forecasts move toward the aggregate over time, unlike independent single-agent runs where predictions diverge.
+        Three DeepSeek V3.2 agents forecast together while seeing the current aggregate prediction for each question.
+        Their forecasts move toward the aggregate over time, unlike independent single-agent runs where predictions diverge.
       </figcaption>
     </figure>
   </div>
