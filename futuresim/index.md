@@ -5,7 +5,7 @@ description: "We propose building simulations that evaluate adaptive agents by r
 nav: futuresim
 ---
 
-<section class="blog-hero">
+<section class="blog-hero futuresim-hero">
   <div class="container">
     <h1 class="title">FutureSim</h1>
     <p class="authors">
@@ -42,6 +42,12 @@ nav: futuresim
         <span>Trajectories</span>
       </a>
     </div>
+
+    <figure class="futuresim-hero-video">
+      <video controls playsinline preload="metadata" poster="{{ '/futuresim/figures/results/futuresim_combined_poster.jpg' | relative_url }}" aria-label="FutureSim combined agent trajectory and benchmark animation">
+        <source src="{{ '/futuresim/figures/results/futuresim_combined.mp4' | relative_url }}" type="video/mp4">
+      </video>
+    </figure>
   </div>
 </section>
 
