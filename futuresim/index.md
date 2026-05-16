@@ -44,8 +44,8 @@ nav: futuresim
     </div>
 
     <figure class="futuresim-hero-video">
-      <video controls playsinline preload="metadata" poster="{{ '/futuresim/figures/results/futuresim_combined_poster.jpg' | relative_url }}" aria-label="FutureSim combined agent trajectory and benchmark animation">
-        <source src="{{ '/futuresim/figures/results/futuresim_combined.mp4' | relative_url }}" type="video/mp4">
+      <video autoplay loop muted playsinline controls preload="auto" poster="{{ '/futuresim/figures/results/futuresim_combined_poster_v2.jpg' | relative_url }}" aria-label="FutureSim combined agent trajectory and benchmark animation">
+        <source src="{{ '/futuresim/figures/results/futuresim_combined_v2.mp4' | relative_url }}" type="video/mp4">
       </video>
     </figure>
   </div>
