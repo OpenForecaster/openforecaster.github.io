@@ -43,6 +43,21 @@
     el.innerHTML = icons[name];
   });
 
+  document.querySelectorAll("[data-desktop-controls]").forEach((video) => {
+    if (typeof window.matchMedia !== "function") return;
+    const desktop = window.matchMedia("(min-width: 769px)");
+    const syncControls = () => {
+      video.toggleAttribute("controls", desktop.matches);
+    };
+
+    syncControls();
+    if (typeof desktop.addEventListener === "function") {
+      desktop.addEventListener("change", syncControls);
+    } else if (typeof desktop.addListener === "function") {
+      desktop.addListener(syncControls);
+    }
+  });
+
   document.querySelectorAll("[data-tabs]").forEach((root) => {
     const tablist = root.querySelector('[role="tablist"]');
     const tabs = Array.from(root.querySelectorAll('[role="tab"]'));
