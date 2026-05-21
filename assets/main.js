@@ -43,56 +43,18 @@
     el.innerHTML = icons[name];
   });
 
-  document.querySelectorAll("[data-desktop-video-src]").forEach((root) => {
+  document.querySelectorAll("[data-desktop-controls]").forEach((video) => {
     if (typeof window.matchMedia !== "function") return;
-    const desktop = window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
-    const src = root.getAttribute("data-desktop-video-src");
-    const posterSrc = root.getAttribute("data-video-poster");
-    const label = root.getAttribute("data-video-label") || "";
-    const poster = root.querySelector(".futuresim-hero-poster");
-    let video = null;
-
-    const createVideo = () => {
-      const el = document.createElement("video");
-      el.autoplay = true;
-      el.loop = true;
-      el.muted = true;
-      el.playsInline = true;
-      el.controls = true;
-      el.preload = "auto";
-      if (posterSrc) el.poster = posterSrc;
-      if (label) el.setAttribute("aria-label", label);
-      el.setAttribute("webkit-playsinline", "");
-
-      const source = document.createElement("source");
-      source.src = src;
-      source.type = "video/mp4";
-      el.appendChild(source);
-
-      return el;
+    const desktop = window.matchMedia("(min-width: 769px)");
+    const syncControls = () => {
+      video.toggleAttribute("controls", desktop.matches);
     };
 
-    const syncVideo = () => {
-      const isDesktop = desktop.matches;
-
-      if (isDesktop && src) {
-        if (!video) video = createVideo();
-        if (!video.parentNode) root.insertBefore(video, poster || null);
-        if (poster) poster.hidden = true;
-      } else {
-        if (video) {
-          video.pause();
-          video.remove();
-        }
-        if (poster) poster.hidden = false;
-      }
-    };
-
-    syncVideo();
+    syncControls();
     if (typeof desktop.addEventListener === "function") {
-      desktop.addEventListener("change", syncVideo);
+      desktop.addEventListener("change", syncControls);
     } else if (typeof desktop.addListener === "function") {
-      desktop.addListener(syncVideo);
+      desktop.addListener(syncControls);
     }
   });
 
