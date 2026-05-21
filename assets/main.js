@@ -45,9 +45,33 @@
 
   document.querySelectorAll("[data-desktop-controls]").forEach((video) => {
     if (typeof window.matchMedia !== "function") return;
-    const desktop = window.matchMedia("(min-width: 769px)");
+    const desktop = window.matchMedia("(min-width: 769px) and (hover: hover) and (pointer: fine)");
+    const sources = Array.from(video.querySelectorAll("source")).map((source) => ({
+      el: source,
+      src: source.getAttribute("src"),
+    }));
+
     const syncControls = () => {
-      video.toggleAttribute("controls", desktop.matches);
+      const isDesktop = desktop.matches;
+      video.toggleAttribute("controls", isDesktop);
+      video.toggleAttribute("autoplay", isDesktop);
+      video.preload = isDesktop ? "auto" : "none";
+
+      sources.forEach(({ el, src }) => {
+        if (!src) return;
+        if (isDesktop && !el.getAttribute("src")) {
+          el.setAttribute("src", src);
+        } else if (!isDesktop && el.getAttribute("src")) {
+          el.removeAttribute("src");
+        }
+      });
+
+      if (!isDesktop) {
+        video.pause();
+        video.load();
+      } else if (!video.currentSrc) {
+        video.load();
+      }
     };
 
     syncControls();
@@ -88,7 +112,7 @@
       root.style.setProperty("--active", String(index));
       if (tablist) tablist.style.setProperty("--active", String(index));
       if (panesRoot) panesRoot.style.setProperty("--active", String(index));
-      if (focus) tabs[index]?.focus();
+      if (focus && tabs[index]) tabs[index].focus();
     };
 
     const stop = ({ permanent = false } = {}) => {
