@@ -37,7 +37,7 @@ nav: futuresim
         <span class="icon" aria-hidden="true" data-icon="github"></span>
         <span>Code</span>
       </a>
-      <a class="chip" href="#">
+      <a class="chip" href="{{ '/futuresim/traces/' | relative_url }}">
         <span class="icon" aria-hidden="true" data-icon="pdf"></span>
         <span>Trajectories</span>
       </a>

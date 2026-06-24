@@ -1,0 +1,91 @@
+{
+  "agent_slug": "glm-5.1",
+  "agent_name": "GLM 5.1",
+  "model": "glm-51",
+  "harness": "Claude Code",
+  "seed_label": "r02",
+  "run_id": "26-05-04-18-41-13",
+  "sim_date": "2026-03-05",
+  "events": [
+    {
+      "idx": 2345,
+      "turn": 1105,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-03-05",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "Bash {\"command\": \"python3 -c \\\"\\nimport csv\\nfrom datetime import datetime\\n\\nwith open('market.csv', 'r') as f:\\n    reader = csv.DictReader(f)\\n    rows = list(reader)\\\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_66fd6b9d9e71443181ae0bc7",
+          "name": "Bash",
+          "input": {
+            "command": "python3 -c \"\nimport csv\nfrom datetime import datetime\n\nwith open('market.csv', 'r') as f:\n    reader = csv.DictReader(f)\n    rows = list(reader)\n\n# Find questions resolving Mar 5-12 that have bad predictions\nupcoming = []\nfor r in rows:\n    if r['is_resolved'] == 'False':\n        try:\n            res_date = datetime.strptime(r['resolution_date'], '%Y-%m-%d')\n            if datetime(2026, 3, 5) <= res_date <= datetime(2026, 3, 15):\n                upcoming.append(r)\n        except:\n            pass\n\nfor r in sorted(upcoming, key=lambda x: x['resolution_date'])[:15]:\n    pred = r.get('my_prediction', 'None')\n    print(f\\\"qid {r['qid']}: {r['title'][:70]}... | Res: {r['resolution_date']}\\\")\n    print(f\\\"  Pred: {pred[:80]}\\\")\n    print()\n\"\n",
+            "description": "Check upcoming questions and current predictions"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2346,
+      "turn": 1105,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-03-05",
+      "time": "18:48:16",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_66fd6b9d9e71443181ae0bc7",
+          "content": "qid 681301: Which district in southern Lebanon will be reported as the site of a b... | Res: 2026-03-06\n  Pred: {\"Tyre\": 0.25, \"Bint Jbeil\": 0.2, \"Marjayoun\": 0.15, \"Nabatieh\": 0.1}\n\nqid 758920: Who will be sworn in as Nepal's prime minister on March 27, 2026?... | Res: 2026-03-06\n  Pred: {\"Khadga Prasad Sharma Oli\": 0.2, \"Pushpa Kamal Dahal\": 0.2, \"Sher Bahadur Deuba\n\nqid 893235: Which country will the United States have previously accused of the sc... | Res: 2026-03-06\n  Pred: {\"United States\": 0.3, \"Israel\": 0.25, \"Saudi Arabia\": 0.1, \"United Kingdom\": 0.\n\nqid 276362: What Beirut coastal district will Lebanese health officials identify a... | Res: 2026-03-07\n  Pred: {\"Raouche\": 0.2, \"Ain al-Mreisseh\": 0.15, \"Ramlet al-Baida\": 0.15, \"Minet al-Hos\n\nqid 578870: Which Beirut district will an Israeli strike on an apartment that kill... | Res: 2026-03-07\n  Pred: {\"Achrafieh\": 0.2, \"Hamra\": 0.15, \"Raouche\": 0.15, \"Bachoura\": 0.1}\n\nqid 830793: Which country's embassy will Norwegian police say may have been delibe... | Res: 2026-03-07\n  Pred: {\"Russia\": 0.25, \"Israel\": 0.2, \"United States\": 0.15, \"Iran\": 0.1}\n\nqid 338215: What embassy in Oslo will Norwegian police say was targeted in a bombi... | Res: 2026-03-07\n  Pred: {\"Russian embassy\": 0.3, \"Israeli embassy\": 0.2, \"US embassy\": 0.15, \"Iranian em\n\nqid 179817: Who will Sri Lanka name as its new men's cricket coach by March 2026?... | Res: 2026-03-08\n  Pred: {\"Chaminda Vaas\": 0.2, \"Hashan Tillakaratne\": 0.15, \"Sanath Jayasuriya\": 0.15, \"\n\nqid 271330: Which country will Australia's prime minister say will receive missile... | Res: 2026-03-08\n  Pred: {\"Ukraine\": 0.3, \"Israel\": 0.2, \"Taiwan\": 0.15, \"Philippines\": 0.1}\n\nqid 304016: Which airline will suspend its 2026 financial outlook by mid-March 202... | Res: 2026-03-08\n  Pred: {\"Emirates\": 0.25, \"Qatar Airways\": 0.2, \"Lufthansa\": 0.15, \"British Airways\": 0\n\nqid 309487: Which Ukrainian region will a Ukrainian major-general say has been alm... | Res: 2026-03-08\n  Pred: {\"Kherson\": 0.25, \"Zaporizhzhia\": 0.2, \"Donetsk\": 0.15, \"Luhansk\": 0.1}\n\nqid 605397: Which Iran-backed Iraqi group will say four of its members were killed... | Res: 2026-03-09\n  Pred: {\"Hashd al-Shaabi\": 0.2, \"Kataib Hezbollah\": 0.2, \"Asaib Ahl al-Haq\": 0.15, \"Har\n\nqid 935869: Who will have scored the only goal in the first leg before Liverpool’s... | Res: 2026-03-09\n  Pred: {\"Mohamed Salah\": 0.2, \"Rafael Leao\": 0.15, \"Victor Osimhen\": 0.15, \"Kylian Mbap\n\nqid 932855: Which team will China face in its AFC Women’s Asian Cup quarterfinal o... | Res: 2026-03-09\n  Pred: {\"Japan\": 0.2, \"South Korea\": 0.2, \"Australia\": 0.15, \"Vietnam\": 0.1}\n\nqid 399040: Which country will Iran try to move its 2026 World Cup group-stage mat... | Res: 2026-03-09\n  Pred: {\"Azerbaijan\": 0.2, \"Turkey\": 0.2, \"Oman\": 0.15, \"Qatar\": 0.1}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2347,
+      "turn": 1106,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-03-05",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_8bdcdb0060854b4bbae485e5",
+          "name": "mcp__forecast__next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 2348,
+      "turn": 1106,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-03-05",
+      "time": "18:48:23",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_8bdcdb0060854b4bbae485e5",
+          "content": "{\"result\":\"Day advanced to 2026-03-06.\\n11,112 new articles have been published since your last update and are available via the search_news tool. New date directories are also now present in articles/.\\n\\n## RESULTS SINCE YOUR LAST SESSION (2026-03-05 -> 2026-03-06)\\n\\n- \\\"Which district in southern Lebanon will be reported as the site of a building heavily damaged in an Israeli air strike, by March 10, 2026?\\\"\\n  Your prediction distribution: {Tyre: 0.25, Bint Jbeil: 0.20, Marjayoun: 0.15, Nabatieh: 0.10} | Truth: Tyre district\\n  Brier: +0.36 | TW-Score: +36.50\\n- \\\"Who will be sworn in as Nepal's prime minister on March 27, 2026?\\\"\\n  Your prediction distribution: {Khadga Prasad Sharma Oli: 0.20, Pushpa Kamal Dahal: 0.20, Sher Bahadur Deuba: 0.15, Sushil Koirala: 0.10} | Truth: Balendra Shah\\n  Brier: -0.11 | TW-Score: -11.25\\n- \\\"Which country will the United States have previously accused of the school attack, according to international news reporting by 31 March 2026?\\\"\\n  Your prediction distribution: {United States: 0.30, Israel: 0.25, Saudi Arabia: 0.10, United Kingdom: 0.10} | Truth: Iran\\n  Brier: -0.17 | TW-Score: -17.25\\n\\n## YOUR CUMULATIVE PERFORMANCE TILL TODAY\\n- Total Predictions: 330 (244 resolved, 86 active)\\n- accuracy: 10.0% | brier skill score: 0.008 | time weighted score: -821.08\\n  accuracy = fraction of ALL questions (resolved + active) where your top outcome matched the truth (0 credit for questions you did not predict or that have not resolved); brier skill score = mean brier skill score across ALL questions (0 for questions you did not predict or that have not resolved); time weighted score = sum of brier skill scores across all resolved questions, across all days you held your respective predictions\"}",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}

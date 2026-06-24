@@ -1,0 +1,76 @@
+---
+layout: default
+title: "FutureSim Traces"
+description: "Browse official FutureSim leaderboard agent traces by agent, run, and simulation day."
+nav: futuresim-traces
+---
+
+<link rel="stylesheet" href="{{ '/assets/traces.css' | relative_url }}">
+
+<section class="trace-shell" data-trace-app>
+  <header class="trace-header">
+    <div>
+      <p class="trace-kicker">FutureSim official runs</p>
+      <h1>Agent trace viewer</h1>
+    </div>
+    <div class="trace-header-meta" id="trace-build-meta">Loading trace index...</div>
+  </header>
+
+  <section class="trace-controls" aria-label="Trace selection controls">
+    <label>
+      <span>Model</span>
+      <select id="trace-agent"></select>
+    </label>
+    <label>
+      <span>Run / seed</span>
+      <select id="trace-run"></select>
+    </label>
+    <label>
+      <span>Simulation day</span>
+      <select id="trace-day"></select>
+    </label>
+    <label class="trace-toggle">
+      <input id="trace-expand-env" type="checkbox">
+      <span>Expand environment outputs</span>
+    </label>
+  </section>
+
+  <section class="trace-trajectory" aria-label="Run trajectory chart">
+    <div class="trace-trajectory-header">
+      <div>
+        <h2 id="trace-trajectory-title">Run trajectories</h2>
+        <p id="trace-trajectory-meta"></p>
+      </div>
+      <div class="trace-segmented" role="group" aria-label="Trajectory metric">
+        <button type="button" data-trace-metric="brier_skill_score" aria-pressed="true">Brier skill score</button>
+        <button type="button" data-trace-metric="top1_accuracy" aria-pressed="false">Top 1 accuracy</button>
+      </div>
+    </div>
+    <div id="trace-trajectory-chart" class="trace-chart"></div>
+  </section>
+
+  <section class="trace-summary" id="trace-summary" aria-live="polite"></section>
+
+  <main class="trace-layout">
+    <aside class="trace-rail">
+      <div class="trace-card">
+        <h2>Day Activity</h2>
+        <dl id="trace-day-stats"></dl>
+      </div>
+      <div class="trace-card">
+        <h2>Tool Mix</h2>
+        <div id="trace-tool-list" class="trace-tool-list"></div>
+      </div>
+    </aside>
+    <section class="trace-panel" aria-label="Agent trace">
+      <div id="trace-status" class="trace-status">Choose a trace to load.</div>
+      <div id="trace-events" class="trace-events"></div>
+    </section>
+  </main>
+</section>
+
+<script src="{{ '/futuresim/traces/config.js' | relative_url }}"></script>
+<script>
+  window.FSIM_TRACE_DATA_BASE = window.FSIM_TRACE_DATA_BASE || "{{ '/futuresim/traces/data/' | relative_url }}";
+</script>
+<script src="{{ '/assets/traces.js' | relative_url }}"></script>

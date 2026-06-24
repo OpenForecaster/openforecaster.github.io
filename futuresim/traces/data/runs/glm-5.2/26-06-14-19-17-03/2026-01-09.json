@@ -1,0 +1,438 @@
+{
+  "agent_slug": "glm-5.2",
+  "agent_name": "GLM 5.2",
+  "model": "glm-52",
+  "harness": "Claude Code",
+  "seed_label": "r01",
+  "run_id": "26-06-14-19-17-03",
+  "sim_date": "2026-01-09",
+  "events": [
+    {
+      "idx": 72768,
+      "turn": 651,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "API Error: 400 [1301][System detected potentially unsafe or sensitive content in input or generation. Please avoid using prompts that may generate sensitive content. Thank you for your cooperation.][202606150216333cff51f",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "API Error: 400 [1301][System detected potentially unsafe or sensitive content in input or generation. Please avoid using prompts that may generate sensitive content. Thank you for your cooperation.][202606150216333cff51fd71ba4613]"
+        }
+      ]
+    },
+    {
+      "idx": 73252,
+      "turn": 652,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "Let me reorient by checking the current state and what's resolving soon.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Let me reorient by checking the current state and what's resolving soon."
+        }
+      ]
+    },
+    {
+      "idx": 73253,
+      "turn": 653,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "Bash {\"command\": \"cd \\\"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_ce78080b417644b7bc0eee50",
+          "name": "Bash",
+          "input": {
+            "command": "cd \"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm-52[1m]_001/workspace\"\nls *.json 2>/dev/null; echo \"---state---\"; cat state.json 2>/dev/null | head -30\necho \"---predictions dir latest---\"; ls predictions/ 2>/dev/null | tail -5",
+            "description": "Check state files"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 73254,
+      "turn": 653,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:17:18",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_ce78080b417644b7bc0eee50",
+          "content": "(eval):2: no matches found: *.json\n---state---\n---predictions dir latest---\n2026-01-02.json\n2026-01-03.json\n2026-01-06.json\n2026-01-07.json\n2026-01-08.json",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 73305,
+      "turn": 654,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "Bash {\"command\": \"cd \\\"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_916a30fdcda94babaf6f1c8c",
+          "name": "Bash",
+          "input": {
+            "command": "cd \"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm-52[1m]_001/workspace\"\nexport PATH=\"$HOME/.local/bin:$PATH\"\npython3 << 'EOF'\nimport csv\nrows=list(csv.DictReader(open('market.csv')))\nactive=[r for r in rows if r['is_resolved'].strip() in ('False','')]\nresolved=[r for r in rows if r['is_resolved'].strip() in ('True','true','1',) or (r['ground_truth'].strip() and r['ground_truth'].strip()!='')]\n# careful: is_resolved col\nprint(\"Total:\",len(rows),\"is_resolved True:\",sum(1 for r in rows if r['is_resolved'].strip()=='True'))\npred=sum(1 for r in rows if r['my_prediction'].strip())\nprint(\"With my_prediction:\",pred)\n# soonest resolving active\nfrom collections import Counter\n# find questions resolving Jan 9-15\nprint(\"\\n=== Active questions resolving Jan 9-15 ===\")\nfor r in sorted(active,key=lambda x:x['resolution_date']):\n    if r['resolution_date']<='2026-01-15':\n        print(f\"[{r['resolution_date']}] {r['qid']}: {r['title'][:75]}\")\nEOF",
+            "description": "Check market status and soon-resolving questions"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 73306,
+      "turn": 654,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:17:34",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_916a30fdcda94babaf6f1c8c",
+          "content": "Total: 330 is_resolved True: 31\nWith my_prediction: 327\n\n=== Active questions resolving Jan 9-15 ===\n[2026-01-10] 291796: Which Indian state will India report as having the two confirmed Nipah viru\n[2026-01-10] 69214: Which Iranian province will state television say lost 30 police and securit\n[2026-01-10] 934187: Who will rank first for prime minister in the National Institute of Develop\n[2026-01-11] 783773: Which foreign country will Somalia's Minister of State for Foreign Affairs \n[2026-01-11] 118127: Which country will President Cyril Ramaphosa reportedly order excluded from\n[2026-01-11] 138247: What organization will Syrian intelligence sources say contributed fighters\n[2026-01-11] 80352: Which cabinet department’s funding bill will Senate Democrats insist must b\n[2026-01-11] 474377: Who will take charge of Manchester United in the Manchester derby against M\n[2026-01-11] 666021: Which country will Somalia say it has severed all agreements with by Januar\n[2026-01-11] 756891: Which armed group will Syrian authorities say sent fighters with new reinfo\n[2026-01-12] 98159: Which club will Atletico Madrid defeat away to reach the Copa del Rey semif\n[2026-01-12] 117844: Who will be named as the Ukrainian opposition leader charged in a parliamen\n[2026-01-12] 359260: Which pro-Israel group will agree to wind down its operations in New York u\n[2026-01-13] 756639: Which Southeast Asian U.S. treaty ally will be included in an indefinite U.\n[2026-01-13] 806810: What will be the name of the Palestinian body set to take over Gaza's secur\n[2026-01-13] 214384: Which northeastern US state will be named as the target of a newly announce\n[2026-01-13] 71: Who will be named to lead the Palestinian technocratic committee set to adm\n[2026-01-13] 75613: In which country will Representative Thomas Massie say Venezuelan oil proce\n[2026-01-14] 279531: What region will be described as the place where a “big armada” is forming \n[2026-01-14] 521564: By 31 January 2026, who will be identified as the migrant worker whose deat\n[2026-01-14] 39911: What foreign basketball league will U.S. prosecutors say was targeted in th\n[2026-01-14] 736847: Which country will be named by the end of February 2026 as facing a possibl\n[2026-01-14] 793465: Who will defeat Venus Williams in the first round of the 2026 Australian Op\n[2026-01-15] 406433: Which club will be reported to have agreed in principle to sign Marc Guehi \n[2026-01-15] 579233: What language will Syria formally declare a \"national language\" by January \n[2026-01-15] 599463: Which governor will the US Department of Justice open an investigation into\n[2026-01-15] 172391: What festival will Syria declare a paid national holiday by January 18, 202\n[2026-01-15] 972999: Which country will say it is set to provide Ukraine with combat planes shor",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 74656,
+      "turn": 655,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "I'm at 2026-01-09 with 31 resolved, 327 active forecasts. Last batch taught me candidate SETS must include non-obvious answers (Oresar = Lviv, Morocco SF = Nigeria, trade = Taiwan). Two questions resolve tomorrow (Jan 10",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "I'm at 2026-01-09 with 31 resolved, 327 active forecasts. Last batch taught me candidate SETS must include non-obvious answers (Oresar = Lviv, Morocco SF = Nigeria, trade = Taiwan). Two questions resolve tomorrow (Jan 10). Given the People's Party won the Thai party-list poll, let me shift the PM-survey forecast toward Pita, and broaden the Iran-province one. Let me also check the AFCON QF/SF bracket for the final-related questions."
+        }
+      ]
+    },
+    {
+      "idx": 74657,
+      "turn": 656,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "mcp__forecast__submit_forecasts {\"outcomes\": {\"Anutin Charnvirakul\": 0.12, \"Paetongtarn Shinawatra\": 0.26, \"Pita Limjaroenrat\": 0.3}, \"question_id\": \"934187\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_3cad5e95a6be4044a2a2f62c",
+          "name": "mcp__forecast__submit_forecasts",
+          "input": {
+            "outcomes": {
+              "Pita Limjaroenrat": 0.3,
+              "Paetongtarn Shinawatra": 0.26,
+              "Anutin Charnvirakul": 0.12
+            },
+            "question_id": "934187",
+            "previous_outcomes": {
+              "Paetongtarn Shinawatra": 0.3,
+              "Pita Limjaroenrat": 0.26,
+              "Anutin Charnvirakul": 0.14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 74658,
+      "turn": 657,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "mcp__forecast__submit_forecasts {\"outcomes\": {\"Kurdistan\": 0.14, \"Sistan-Baluchestan\": 0.5, \"Tehran\": 0.1, \"West Azerbaijan\": 0.07}, \"question_id\": \"69214\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_14923e4a99af46cc8a978cd9",
+          "name": "mcp__forecast__submit_forecasts",
+          "input": {
+            "outcomes": {
+              "Sistan-Baluchestan": 0.5,
+              "Kurdistan": 0.14,
+              "Tehran": 0.1,
+              "West Azerbaijan": 0.07
+            },
+            "question_id": "69214",
+            "previous_outcomes": {
+              "Sistan-Baluchestan": 0.6,
+              "Kurdistan": 0.14,
+              "West Azerbaijan": 0.08,
+              "Khuzestan": 0.06
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 74659,
+      "turn": 658,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "Bash {\"command\": \"cd \\\"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_87b133184ea04400b23763a9",
+          "name": "Bash",
+          "input": {
+            "command": "cd \"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm-52[1m]_001/workspace\"\necho \"=== AFCON QF (Jan 9-10) + SF bracket ===\"\nfor d in 09 10; do\n  f=\"articles/2026/01/$d/articles.jsonl\"\n  [ -f \"$f\" ] && echo \"--Jan $d--\" && grep -ohiE \"[A-Za-z ]+ [0-9]+-[0-9]+ [A-Za-z ]+\" \"$f\" 2>/dev/null | grep -iE \"Morocco|Cameroon|Nigeria|Egypt|Algeria|Ivory|Senegal|Mali\" | sed 's/^ *//;s/ *$//' | sort | uniq -c | sort -rn | head -10\ndone",
+            "description": "Update 934187/69214, check AFCON QF"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 74660,
+      "turn": 658,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:18:08",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_3cad5e95a6be4044a2a2f62c",
+          "content": "{\"result\":\"Prediction recorded for question 934187: {'Pita Limjaroenrat': 0.3, 'Paetongtarn Shinawatra': 0.26, 'Anutin Charnvirakul': 0.12}\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 74661,
+      "turn": 658,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:18:08",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_14923e4a99af46cc8a978cd9",
+          "content": "{\"result\":\"Prediction recorded for question 69214: {'Sistan-Baluchestan': 0.5, 'Kurdistan': 0.14, 'Tehran': 0.1, 'West Azerbaijan': 0.07}\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 74662,
+      "turn": 658,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:18:08",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_87b133184ea04400b23763a9",
+          "content": "Exit code 1\n=== AFCON QF (Jan 9-10) + SF bracket ===\n--Jan 09--\n      3 man Mali 1-0 on Friday to book a semi\n      3 man Mali 1-0 in the last eight on Friday\n      2 while Nigeria were 3-0 up\n      2 nMorocco made it 2-0 minutes later to kill off the contest when Saibari was left unmarked at the back post and had time to control the ball and fire low into the far corner of the net\n      2 nMorocco made it 2-0 minutes later to kill off\n      2 Senegal beat Mali 1-0 to reach AFCON\n      2 Recalled striker Iliman Ndiaye scored in the first half to give Senegal a 1-0 victory over\n      2 Africa Cup of Nations as hosts Morocco defeated Cameroon 2-0 in their quarterfinal clash on Friday to keep alive their hopes of a first continental\n      2 Africa Cup of Nations as hosts Morocco defeated Cameroon 2-0 in their quarter\n      1 s Malika Mor 5-0 and will meet Manju Rani",
+          "is_error": true
+        }
+      ]
+    },
+    {
+      "idx": 75871,
+      "turn": 659,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "AFCON QF (Jan 9): **Senegal 1-0 Mali** and **Morocco 2-0 Cameroon**. Combined with 459037 resolving to **Nigeria**, the SFs are: **Morocco v Nigeria** and **Senegal v (Algeria/Ivory Coast winner)**. So the losing finalis",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "AFCON QF (Jan 9): **Senegal 1-0 Mali** and **Morocco 2-0 Cameroon**. Combined with 459037 resolving to **Nigeria**, the SFs are: **Morocco v Nigeria** and **Senegal v (Algeria/Ivory Coast winner)**. So the losing finalist (573851 CAS appeal) is most likely the SF1 winner (Senegal), NOT Nigeria. Let me update 573851."
+        }
+      ]
+    },
+    {
+      "idx": 75872,
+      "turn": 660,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "mcp__forecast__submit_forecasts {\"outcomes\": {\"Algeria\": 0.16, \"Egypt\": 0.05, \"Ivory Coast\": 0.12, \"Nigeria\": 0.08, \"Senegal\": 0.24}, \"question_id\": \"573851\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_c711501e8af04f7eab52477a",
+          "name": "mcp__forecast__submit_forecasts",
+          "input": {
+            "outcomes": {
+              "Senegal": 0.24,
+              "Algeria": 0.16,
+              "Ivory Coast": 0.12,
+              "Nigeria": 0.08,
+              "Egypt": 0.05
+            },
+            "question_id": "573851",
+            "previous_outcomes": {
+              "Algeria": 0.16,
+              "Nigeria": 0.14,
+              "Egypt": 0.12,
+              "Ivory Coast": 0.1,
+              "Senegal": 0.06
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 75873,
+      "turn": 660,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:18:37",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_c711501e8af04f7eab52477a",
+          "content": "{\"result\":\"Prediction recorded for question 573851: {'Senegal': 0.24, 'Algeria': 0.16, 'Ivory Coast': 0.12, 'Nigeria': 0.08, 'Egypt': 0.05}\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 75874,
+      "turn": 661,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "Bash {\"command\": \"cd \\\"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_1f1bb7f5587347cf831da007",
+          "name": "Bash",
+          "input": {
+            "command": "cd \"/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37/claude_code_aljazeeraQ12026v37_glm52_r00/26-06-14-19-17-03/agents/minimalHarness_glm-52[1m]_001/workspace\"\ncat >> memory/MEMORY.md << 'EOF'\n\n## Day 18: 2026-01-09 (resumed)\n- Last batch (31 resolved, cum TW -373.55): 45659=Indonesia, 459037=NIGEDIA(! Morocco SF opp=Nigeria not Senegal), 46876=Taiwan, 797906=Supreme Military Committee, 891998=Marta Kostyuk.\n- AFCON QF Jan 9: Senegal 1-0 Mali; Morocco 2-0 Cameroon. => SFs: Morocco v Nigeria, Senegal v (Algeria/IC winner Jan 10).\n- Lesson: my bracket-half reasoning was wrong (Nigeria in Morocco's SF). Sim timeline diverges.\n- Updated: 934187 (Pita 0.3, People's Party momentum), 69214 (Sistan 0.5 + Tehran/Kurdistan), 573851 (Senegal 0.24 - SF1 winner is losing finalist).\n- 3 resolve Jan 10: 291796(Kerala 0.66), 69214(done), 934187(done).\n- PENDING: 799398(final penalty - Hakimi 0.3), AFCON SF Jan 14, final Jan 18. AusOpen R1 starting ~Jan 12.\nEOF\necho done",
+            "description": "Log day 18"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 75875,
+      "turn": 661,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:18:47",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_1f1bb7f5587347cf831da007",
+          "content": "done",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 75876,
+      "turn": 662,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-09",
+      "time": "",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "mcp__forecast__next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_c18762408a35444b8cf7f5a7",
+          "name": "mcp__forecast__next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 75877,
+      "turn": 662,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-01-09",
+      "time": "18:19:06",
+      "session": "4f3a7800-7d6e-4837-97fb-3d347dc568fd",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_c18762408a35444b8cf7f5a7",
+          "content": "{\"result\":\"Day advanced to 2026-01-10.\\n9,637 new articles have been published since your last update and are available via the search_news tool. New date directories are also now present in articles/.\\n296 question(s) are still active. Re-read market.csv, scan today's news, and resubmit any forecast where new evidence has shifted your view before calling next_day again. A forecast is never \\\"done\\\" while its question is still active.\\n**IMPORTANT**: 7 question(s) resolve tomorrow (2026-01-11): ['118127', '138247', '474377', '783773', '666021', '80352', '756891']. Make sure your prediction on each is up-to-date before calling next_day — stale forecasts might hurt your performance.\\n\\n## RESULTS SINCE YOUR LAST SESSION (2026-01-09 -> 2026-01-10)\\n\\n- \\\"Who will Chelsea appoint as its next permanent head coach by January 31, 2026?\\\"\\n  Your prediction distribution: {Enzo Maresca: 0.28, Graham Potter: 0.14, Thomas Tuchel: 0.10, Roberto Mancini: 0.08} | Truth: Liam Rosenior\\n  Brier: -0.11 | TW-Score: -11.44\\n- \\\"Who will Volodymyr Zelenskyy nominate as Ukraine's defence minister by January 31, 2026?\\\"\\n  Your prediction distribution: {Rustem Umerov: 0.55, Oleksandr Kamyshin: 0.10, Kyrylo Budanov: 0.08} | Truth: Mykhailo Fedorov\\n  Brier: -0.32 | TW-Score: -31.89\\n- \\\"What town outside Charlotte, North Carolina, will authorities name by January 2026 as the planned location of the alleged New Year's Eve attack?\\\"\\n  Your prediction distribution: {Concord: 0.22, Gastonia: 0.18, Huntersville: 0.14, Kannapolis: 0.12} | Truth: Mint Hill\\n  Brier: -0.11 | TW-Score: -11.48\\n- \\\"Which Austrian alpine skier will be ruled out of the Milano Cortina Winter Olympics after a training crash, by 2 January 2026?\\\"\\n  Your prediction distribution: {Marco Schwarz: 0.26, Manuel Feller: 0.14, Vincent Kriechmayr: 0.10} | Truth: Katharina Liensberger\\n  Brier: -0.10 | TW-Score: -9.72\\n- \\\"Which U.S. state will report that its measles outbreak has grown to 185 cases by January 2026?\\\"\\n  Your prediction distribution: {Texas: 0.68, New Mexico: 0.10, Kansas: 0.06, Ohio: 0.04} | Truth: South Carolina\\n  Brier: -0.48 | TW-Score: -40.53\\n- \\\"What country will Bangladesh ask the ICC to move its 2026 Men’s T20 World Cup matches to by 7 January 2026?\\\"\\n  Your prediction distribution: {United Arab Emirates: 0.38, Sri Lanka: 0.22, India: 0.15, Oman: 0.06} | Truth: Sri Lanka\\n  Brier: +0.22 | TW-Score: +27.59\\n- \\\"Who will be sworn in as Venezuela’s interim president by January 2026?\\\"\\n  Your prediction distribution: {Edmundo Gonzalez: 0.40, Maria Corina Machado: 0.28, Juan Guaido: 0.08, Dinorah Figuera: 0.06, Antonio Ledezma: 0.04} | Truth: Delcy Rodriguez\\n  Brier: -0.25 | TW-Score: -34.85\\n- \\\"Which Morocco player will be out of the tournament with a calf injury before the quarterfinal against Cameroon on January 9, 2026?\\\"\\n  Your prediction distribution: {Achraf Hakimi: 0.15, Hakim Ziyech: 0.12, Nayef Aguerd: 0.09, Soufiane Rahimi: 0.08, Brahim Diaz: 0.06} | Truth: Azzedine Ounahi\\n  Brier: -0.05 | TW-Score: -7.93\\n- \\\"Which country will receive free Starlink broadband service through February 3, 2026, according to SpaceX?\\\"\\n  Your prediction distribution: {Gaza: 0.20, Ukraine: 0.18, Yemen: 0.13, Iran: 0.10, Lebanon: 0.06} | Truth: Venezuela\\n  Brier: -0.10 | TW-Score: -17.66\\n- \\\"Who will Volodymyr Zelenskyy appoint as Ukraine's economic development adviser by January 6, 2026?\\\"\\n  Your prediction distribution: {Yulia Svyrydenko: 0.20, Mykhailo Fedorov: 0.15, Oleksandr Kamyshin: 0.10, Rostyslav Bilenkyi: 0.06} | Truth: Chrystia Freeland\\n  Brier: -0.08 | TW-Score: -3.24\\n- \\\"Which armed group will Syria name as the target of a military operation in Aleppo by 31 January 2026?\\\"\\n  Your prediction distribution: {ISIS: 0.30, SDF: 0.24, Assad loyalists: 0.16, Hezbollah: 0.10} | Truth: SDF\\n  Brier: +0.30 | TW-Score: +29.68\\n- \\\"Which Iranian military complex will satellite imagery show by February 19, 2026, to contain a newly built facility hidden under a concrete protective shield?\\\"\\n  Your prediction distribution: {Natanz: 0.38, Fordow: 0.20, Isfahan: 0.16, Khondab: 0.10} | Truth: Parchin\\n  Brier: -0.22 | TW-Score: -22.00\\n- \\\"Who will Denmark and Greenland request a meeting with by January 13, 2026, over the Greenland dispute?\\\"\\n  Your prediction distribution: {Donald Trump: 0.60, Marco Rubio: 0.10, Pete Hegseth: 0.05, Elon Musk: 0.04} | Truth: Marco Rubio\\n  Brier: -0.17 | TW-Score: -39.57\\n- \\\"Which team will knock DR Congo out of AFCON 2025 in January 2026?\\\"\\n  Your prediction distribution: {Algeria: 0.42, Nigeria: 0.10, Senegal: 0.08, Egypt: 0.07, Morocco: 0.05} | Truth: Algeria\\n  Brier: +0.64 | TW-Score: +44.75\\n- \\\"What country will British MPs urge global sporting authorities to exclude from hosting the 2026 FIFA World Cup by January 2026?\\\"\\n  Your prediction distribution: {Israel: 0.40, Saudi Arabia: 0.20, Russia: 0.10, Qatar: 0.07} | Truth: United States\\n  Brier: -0.21 | TW-Score: -21.49\\n- \\\"Which US state will officials describe as the site of the largest federal immigration enforcement operation ever carried out by January 25, 2026?\\\"\\n  Your prediction distribution: {California: 0.28, Texas: 0.24, New York: 0.12, Florida: 0.08} | Truth: Minnesota\\n  Brier: -0.16 | TW-Score: -15.68\\n- \\\"Which federal agency will be identified as employing the agents accused in the fatal shooting of a woman in Minneapolis by 31 January 2026?\\\"\\n  Your prediction distribution: {DEA: 0.32, FBI: 0.20, US Marshals: 0.14, ATF: 0.10} | Truth: ICE\\n  Brier: -0.17 | TW-Score: -17.20\\n- \\\"What peace body will Qatar's prime minister say Qatar has been invited to join in January 2026?\\\"\\n  Your prediction distribution: {Gulf Cooperation Council: 0.18, Arab League: 0.15, Organization of Islamic Cooperation: 0.13, United Nations: 0.10} | Truth: Board of Peace\\n  Brier: -0.08 | TW-Score: -8.18\\n- \\\"Where will Danish and Greenlandic diplomats visit for talks with senior U.S. officials on Greenland by January 14, 2026?\\\"\\n  Your prediction distribution: {Washington DC: 0.35, New York: 0.20, Nuuk: 0.12, Copenhagen: 0.08} | Truth: White House\\n  Brier: -0.18 | TW-Score: -18.33\\n- \\\"Where will Mark Carney travel immediately after Beijing on his international trip in January 2026?\\\"\\n  Your prediction distribution: {Washington DC: 0.28, Ottawa: 0.16, New York: 0.12, Toronto: 0.08} | Truth: Qatar\\n  Brier: -0.12 | TW-Score: -12.48\\n- \\\"What will the NATO Arctic mission involving Swedish patrols over Greenland be called by February 14, 2026?\\\"\\n  Your prediction distribution: {Operation Nordic Shield: 0.14, Operation Northern Watch: 0.10, Nordic Sentinel: 0.09, Arctic Guardian: 0.07} | Truth: Arctic Sentry\\n  Brier: -0.04 | TW-Score: -4.26\\n- \\\"Where will Israeli forces raid a Palestinian wedding ceremony and detain several men, as reported by January 11, 2026?\\\"\\n  Your prediction distribution: {Jenin: 0.34, Tulkarm: 0.22, Nablus: 0.16, Hebron: 0.08} | Truth: occupied East Jerusalem\\n  Brier: -0.20 | TW-Score: -19.60\\n- \\\"By January 10, 2026, which country’s embassy in Kyiv will report it was damaged during attacks?\\\"\\n  Your prediction distribution: {Albania: 0.16, Georgia: 0.12, Poland: 0.10, Portugal: 0.07} | Truth: Qatar\\n  Brier: -0.05 | TW-Score: -5.49\\n- \\\"Which party will lead the National Institute of Development Administration's party-list poll released on January 30, 2026, ahead of Thailand's February 8, 2026 election?\\\"\\n  Your prediction distribution: {Pheu Thai: 0.30, People's Party: 0.26, Bhumjaithai: 0.16, United Thai Nation: 0.08} | Truth: People's Party\\n  Brier: +0.33 | TW-Score: +33.04\\n- \\\"Which aircraft carrier will U.S. media report was diverted from maneuvers in the South China Sea to the Middle East by January 31, 2026?\\\"\\n  Your prediction distribution: {USS Carl Vinson: 0.35, USS Ronald Reagan: 0.20, USS Gerald R. Ford: 0.12, USS Nimitz: 0.08} | Truth: USS Abraham Lincoln\\n  Brier: -0.18 | TW-Score: -30.01\\n- \\\"Which Ukrainian city will Russia say it struck with an Oreshnik missile by January 2026?\\\"\\n  Your prediction distribution: {Dnipro: 0.50, Kyiv: 0.15, Kharkiv: 0.08, Odesa: 0.05} | Truth: Lviv\\n  Brier: -0.28 | TW-Score: -47.66\\n- \\\"Which country will become the first in the world to formally ban the AI chatbot Grok by 12 January 2026?\\\"\\n  Your prediction distribution: {Turkey: 0.30, Italy: 0.14, China: 0.12, France: 0.10, Germany: 0.06} | Truth: Indonesia\\n  Brier: -0.14 | TW-Score: -20.44\\n- \\\"Which country will face host Morocco in the AFCON 2025 semifinal in Rabat on 14 January 2026?\\\"\\n  Your prediction distribution: {Senegal: 0.50, Mali: 0.20, Ivory Coast: 0.05, Egypt: 0.04} | Truth: Nigeria\\n  Brier: -0.29 | TW-Score: -10.95\\n- \\\"Which economy will the United States' goods trade deficit with double in 2025, according to the annual trade report released by February 2026?\\\"\\n  Your prediction distribution: {China: 0.38, Mexico: 0.24, Vietnam: 0.16, Ireland: 0.08} | Truth: Taiwan\\n  Brier: -0.23 | TW-Score: -23.40\\n- \\\"What military body will President Rashad al-Alimi announce to integrate anti-Houthi forces into Yemen’s military by January 2026?\\\"\\n  Your prediction distribution: {Ministry of Defense: 0.20, Presidential Guard: 0.15, Southern Transitional Council: 0.14, First Armored Division: 0.08} | Truth: Supreme Military Committee\\n  Brier: -0.09 | TW-Score: -8.85\\n- \\\"Who will Aryna Sabalenka face in the Brisbane International women’s singles final by January 11, 2026?\\\"\\n  Your prediction distribution: {Elena Rybakina: 0.32, Qinwen Zheng: 0.14, Mirra Andreeva: 0.12, Jessica Pegula: 0.08} | Truth: Marta Kostyuk\\n  Brier: -0.14 | TW-Score: -14.28\\n- \\\"Which Indian state will India report as having the two confirmed Nipah virus cases recorded since December 2025, by January 2026?\\\"\\n  Your prediction distribution: {Kerala: 0.66, West Bengal: 0.07, Karnataka: 0.04, Tamil Nadu: 0.04} | Truth: West Bengal\\n  Brier: -0.30 | TW-Score: -42.32\\n- \\\"Which Iranian province will state television say lost 30 police and security personnel during the protests, by 11th January 2026?\\\"\\n  Your prediction distribution: {Sistan-Baluchestan: 0.50, Kurdistan: 0.14, Tehran: 0.10, West Azerbaijan: 0.07} | Truth: Isfahan\\n  Brier: -0.28 | TW-Score: -38.34\\n- \\\"Who will rank first for prime minister in the National Institute of Development Administration survey released by January 30, 2026, ahead of Thailand's February 8, 2026 election?\\\"\\n  Your prediction distribution: {Pita Limjaroenrat: 0.30, Paetongtarn Shinawatra: 0.26, Anutin Charnvirakul: 0.12} | Truth: Natthaphong Ruengpanyawut\\n  Brier: -0.17 | TW-Score: -17.69\\n\\n## YOUR CUMULATIVE PERFORMANCE TILL TODAY\\n- Total Predictions: 327 (34 resolved, 296 active)\\n- accuracy: 0.3% | brier skill score: -0.012 | time weighted score: -471.90\\n  accuracy = fraction of ALL questions (resolved + active) where your top outcome matched the truth (0 credit for questions you did not predict or that have not resolved); brier skill score = mean brier skill score across ALL questions (0 for questions you did not predict or that have not resolved); time weighted score = sum of brier skill scores across all resolved questions, across all days you held your respective predictions\"}",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}

@@ -1,0 +1,314 @@
+{
+  "agent_slug": "gpt-5.5",
+  "agent_name": "GPT 5.5",
+  "model": "gpt-55",
+  "harness": "Codex",
+  "seed_label": "r02",
+  "run_id": "26-05-04-02-00-26",
+  "sim_date": "2026-02-03",
+  "events": [
+    {
+      "idx": 3620,
+      "turn": 2731,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Feb 3 resolved four questions. The Saif burial update and California map forecast were right; the Ukraine market-shelling city was Druzhkivka and Saleh Mohammadi’s city was Qom, both outside the old sets. I’m scanning Fe",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Feb 3 resolved four questions. The Saif burial update and California map forecast were right; the Ukraine market-shelling city was Druzhkivka and Saleh Mohammadi’s city was Qom, both outside the old sets. I’m scanning Feb 3 articles for the Feb 5-Feb 12 active questions now."
+        }
+      ]
+    },
+    {
+      "idx": 3621,
+      "turn": 2732,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os\\npath='articles/2026/02/03/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.path.\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os\npath='articles/2026/02/03/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-02-03': usable+=1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Feb3',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'883856 Moscow officer': lambda t: ('shot in moscow' in t) or ('senior military officer' in t and 'moscow' in t) or 'yaroslav moskalik' in t,\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n'630740 Lebanon collapse': lambda t: ('leban' in t and ('building collapse' in t or 'residential building' in t) and ('15' in t or 'dead' in t or 'killed' in t)),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t or 'cortina' in t)) or ('vonn' in t and 'olympic' in t),\n'14689 school shooting country': lambda t: ('secondary school' in t and 'shooting' in t) or ('school shooting' in t and ('germany' in t or 'sweden' in t or 'canada' in t or 'france' in t or 'austria' in t)),\n'739916 carrier': lambda t: ('uss abraham lincoln' in t and ('carrier' in t or 'strike group' in t)) or ('aircraft carrier' in t and 'middle east' in t),\n'318661 Colombia peace': lambda t: ('colombia' in t and 'peace talks' in t) or ('eln' in t and 'peace talks' in t),\n'312764 Egypt planning': lambda t: ('egypt' in t and 'planning minister' in t) or ('minister of planning' in t and 'egypt' in t),\n'527803 Canada school town': lambda t: ('school shooting' in t and 'canada' in t) or ('la loche' in t and 'shooting' in t),\n'795774 French activist': lambda t: ('far-right activist' in t and 'france' in t) or ('macron' in t and 'meloni' in t and ('killed' in t or 'activist' in t)),\n'398988 Lebanon abduction': lambda t: ('israel' in t and 'abducted' in t and 'lebanon' in t) or ('southern lebanon' in t and 'official' in t and 'abducted' in t),\n'487245 address tension': lambda t: ('address' in t and 'president' in t and ('iran' in t or 'venezuela' in t or 'china' in t or 'russia' in t)),\n'745180 Cyclone Gezani': lambda t: 'gezani' in t or ('madagascar' in t and 'cyclone' in t),\n'613203 Tractor AFC': lambda t: ('tractor' in t and ('afc' in t or 'champions league' in t or 'playoff' in t)),\n'538697 Gaza troops': lambda t: ('8000 troops' in t or '8,000 troops' in t or ('troops' in t and 'gaza' in t and ('ready' in t or 'june' in t))),\n'304287 Bangladesh opposition': lambda t: ('bangladesh' in t and ('opposition' in t or 'election' in t or 'parliament' in t)) or 'jamaat-e-islami' in t,\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-02-03': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            for kw in ['moscow','narges','washington post','super bowl','building collapse','downhill','school shooting','abraham lincoln','peace talks','planning minister','canada','far-right','abducted','address','gezani','tractor','gaza','bangladesh']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1300]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1800]))\n            if len(hits)>=8: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3622,
+      "turn": 2733,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os\\npath='articles/2026/02/03/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.path.\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os\npath='articles/2026/02/03/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-02-03': usable+=1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Feb3',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'883856 Moscow officer': lambda t: ('shot in moscow' in t) or ('senior military officer' in t and 'moscow' in t) or 'yaroslav moskalik' in t,\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n'630740 Lebanon collapse': lambda t: ('leban' in t and ('building collapse' in t or 'residential building' in t) and ('15' in t or 'dead' in t or 'killed' in t)),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t or 'cortina' in t)) or ('vonn' in t and 'olympic' in t),\n'14689 school shooting country': lambda t: ('secondary school' in t and 'shooting' in t) or ('school shooting' in t and ('germany' in t or 'sweden' in t or 'canada' in t or 'france' in t or 'austria' in t)),\n'739916 carrier': lambda t: ('uss abraham lincoln' in t and ('carrier' in t or 'strike group' in t)) or ('aircraft carrier' in t and 'middle east' in t),\n'318661 Colombia peace': lambda t: ('colombia' in t and 'peace talks' in t) or ('eln' in t and 'peace talks' in t),\n'312764 Egypt planning': lambda t: ('egypt' in t and 'planning minister' in t) or ('minister of planning' in t and 'egypt' in t),\n'527803 Canada school town': lambda t: ('school shooting' in t and 'canada' in t) or ('la loche' in t and 'shooting' in t),\n'795774 French activist': lambda t: ('far-right activist' in t and 'france' in t) or ('macron' in t and 'meloni' in t and ('killed' in t or 'activist' in t)),\n'398988 Lebanon abduction': lambda t: ('israel' in t and 'abducted' in t and 'lebanon' in t) or ('southern lebanon' in t and 'official' in t and 'abducted' in t),\n'487245 address tension': lambda t: ('address' in t and 'president' in t and ('iran' in t or 'venezuela' in t or 'china' in t or 'russia' in t)),\n'745180 Cyclone Gezani': lambda t: 'gezani' in t or ('madagascar' in t and 'cyclone' in t),\n'613203 Tractor AFC': lambda t: ('tractor' in t and ('afc' in t or 'champions league' in t or 'playoff' in t)),\n'538697 Gaza troops': lambda t: ('8000 troops' in t or '8,000 troops' in t or ('troops' in t and 'gaza' in t and ('ready' in t or 'june' in t))),\n'304287 Bangladesh opposition': lambda t: ('bangladesh' in t and ('opposition' in t or 'election' in t or 'parliament' in t)) or 'jamaat-e-islami' in t,\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-02-03': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            for kw in ['moscow','narges','washington post','super bowl','building collapse','downhill','school shooting','abraham lincoln','peace talks','planning minister','canada','far-right','abducted','address','gezani','tractor','gaza','bangladesh']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1300]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1800]))\n            if len(hits)>=8: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_3",
+          "content": "exists True\nlines 3121 usable<=Feb3 2915 latest_dates ['2026-02-05', '2026-02-06', '2026-02-07', '2026-02-08', '2026-02-09', '2026-02-10', '2026-02-18', '2026-02-20', '2026-02-26', '2026-03-02']\n\n## 883856 Moscow officer hits 0\n\n## 198725 Narges exile hits 0\n\n## 456284 WaPo publisher hits 0\n\n## 180958 Super Bowl hits 8\n- 2026-02-03 www.irishtimes.com Government officials say funding wasn’t a factor in NFL decision not to return this year | a nine-game series of international games to include maiden fixtures for Paris and Melbourne, while previous hosts London (three games), Munich, Madrid, Mexico City and Rio de Janeiro are also on the schedule. Speaking in California in the build-up to Sunday’s Super Bowl between the Seattle Seahawks and New England Patriots in Santa Clara, Goodell said that while the NFL intends to return to Dublin in the future, there would be no game in Ireland in 2026. “We did have a wonderful time and I think both clubs had a great time and our fans had a spectacular time,” said Goodell. “One of the things about that game that stands out to me is that it felt like the entire island was in support of this. “That game had more people come from the [United] States for an international game than any game in our history of the international series, and I think that’s a tribute to Ireland. “The absolute answer is we will be back, I would guess that will we be back in a few years. We’ve got to work with the officials on that and when that happens but I would expect that to happen and that’s our intention.” Goodell has said his ideal would be eventually to see 16 overseas games per season. “The NFL are looking to expand the number of international games they will have and they want to have a number of different options,” added McKenna. “They are well established in London and fairly established in Germany so now they are looking at the potential of other markets, including the likes of Spain, Paris, Ireland. They are going to Australia for the first time too, so they want to establish different options. “When you think of the competition, you \n- 2026-02-03 www.straitstimes.com Bay Area ready for Super Bowl as it gears up for World Cup | SAN FRANCISCO, California, Feb 2 - The Bay Area is set to achieve an unprecedented sporting feat as Levi's Stadium becomes the first venue in the world to host both a Super Bowl and a FIFA World Cup match in the same year. Although the region's World Cup hosting duties have been known since FIFA unveiled the tournament schedule details in December, the Bay Area Host Committee used a press conference on Monday to highlight its momentum as it kicks off Super Bowl week. The Super Bowl between the Seattle Seahawks and the New England Patriots is scheduled for Sunday. Levi's Stadium in Santa Clara will host six World Cup matches in June and July, making it the only venue globally to stage both the Super Bowl and FIFA's signature tournament within months of each other. \"Brandon Schneider and the Golden State Warriors put on a great All-Star Game,\" San Francisco 49ers President Al Guido said. \"I know that we're going to put on a great Super Bowl and a couple of months from now, we'll host the World Cup, being the only region and only stadium to host both in the same calendar year.\" The Bay Area hosted the NBA All-Star Game at San Francisco's Chase Center in February last year, with festivities occurring also in Oakland. Guido cited that event as proof of the region's ability to execute major sporting spec\n- 2026-02-03 www.straitstimes.com Patriots' Gonzalez set to make Super Bowl history as first Colombian heritage player | SAN JOSE, California, Feb 2 - New England Patriots cornerback Christian Gonzalez will become the first player of Colombian heritage to compete in a Super Bowl when his team takes on the Seattle Seahawks on Sunday, living out what he calls a childhood dream. \"You've always imagined it. You're dreaming about it as a kid, young kid playing ball,\" Gonzalez told reporters on Opening Night on Monday ahead of Super Bowl LX. \"You watch all the Super Bowls growing up every year ... I think it's a pretty cool feeling.\" The 2023 first-round draft pick (17th overall) has emerged as a key figure for New England, highlighted by his crucial interception of Denver Broncos quarterback Jarrett Stidham with 2:18 remaining in the AFC Championship game, a play made in blizzard conditions that helped secure the Patriots' Super Bowl berth. Gonzalez credited head coach Mike Vrabel, himself a former Patriots linebacker, for transforming the team's defensive culture since taking over. \"Vrabel has done an amazing job just coming in and getting everybody ready, getting everybody brought in,\" Gonzalez said. \"It's been a lot of fun playing with Vrabel and doing it for him.\" The cornerback, known for his laid-back demeanor off the field - including an iconic white suit with the Colombian flag lining worn on draft day - said his style \"has e\n- 2026-02-02 www.foxnews.com Super Bowl LX: Ex-NFL star gives Sam Darnold edge over Drake Maye | NEWYou can now listen to Fox News articles! The two quarterbacks facing off against each other in Super Bowl LX — Seattle Seahawks' Sam Darnold and New England Patriots' Drake Maye — have taken different roads in the NFL to get to the biggest game of their careers to date. Ultimately, one will walk away a champion, while the other will think about what they might have done differently to hoist the Vince Lombardi Trophy instead. So, who has the quarterback edge? Former NFL quarterback Ryan Fitzpatrick, who currently works as a panelist for Amazon Prime Video's \"Thursday Night Football,\" has watched both quarterbacks all season long, and their playoff matchups leading up to this point. He knows which quarterback comes into this game playing better than the other. CLICK HERE FOR MORE SPORTS COVERAGE ON FOXNEWS.COM \"Sam’s in a great groove right now, and I would give the edge to Sam and the Seahawks for sure,\" he told Fox News Digital, while recapping his vacation in Aruba on behalf of the Aruba Tourism Authority. Darnold has only played two playoff games given the Seahawks’ No. 1-seed status in the NFC. He didn’t have to do much against the San Francisco 49ers, as Kenneth Walker III scored three touchdowns and rushed for over 100 yards. Still, Darnold was able to complete 70% of his\n- 2026-02-03 www.foxnews.com Patriots' Robert Kraft missing out on Hall of Fame | with Bill Belichick, according to multiple reports on Tuesday. Kraft was in the same category with Belichick, Ken Anderson, Roger Craig and L.C. Greenwood. Pro Football Hall of Famers were tasked with choosing three of the five from the group and it appeared the two architects of the Patriots’ six Super Bowl titles will not be inducted into Canton this time around. CLICK HERE FOR MORE SPORTS COVERAGE ON FOXNEWS.COM The 84-year-old billionaire had been a Patriots season-ticket holder since the 1970s and was able to finally buy the team in 1994. Bill Parcells was the team’s head coach when he took over and Pete Carroll was at the helm for three seasons before Belichick joined the team. With Belichick, the Patriots had the most success. He made the decision to put Tom Brady into a game for an injured Drew Bledsoe and, really, the rest was history. The Kraft-Belichick-Brady era garnered the Patriots six Super Bowl titles. Kraft’s tenure now has the Patriots at the forefront of a seventh Super Bowl championship against the Seattle Seahawks on Sunday. But much like with the Belichick snub, NFL fans were as perplexed with Kraft being left off the ballot as well. BILL BELICHICK'S HALL OF FAME SNUB IS 'ASININE,' ROB GRONKOWSKI SAYS NFL Commissioner Roger Goodell on Monday expressed support for Belichick and Kraft’s Hall of Fame status while maintaining that the league had nothing to really do with the voting process. \"Bill Belichick’s record goes without saying – same with the Patriots and Robert Kraft, who is also a candidate,\" he said at a pre-Super Bowl LX press conference. They’re spectacular. They’ve contributed to much to thi\n- 2026-02-03 www.foxnews.com Patriots QB Drake Maye 'turned corner' in shoulder injury recovery | NEWYou can now listen to Fox News articles! There is some concern for New England Patriots quarterback Drake Maye heading into Super Bowl LX, but the second-year signal caller isn’t worried about his injury designation. Maye came into the week in Santa Clara with a shoulder ailment, though he and his coaching staff downplayed the severity of it before the big game. \"I feel good. I'll be just fine,\" Maye said on Super Bowl opening night, via NFL.com. \"I threw a good bit. I threw as much as I would at a normal practice. I felt great and looking forward to getting back out there Wednesday and Thursday for practice and Friday to get ready for a normal week of prep.\" CLICK HERE FOR MORE SPORTS COVERAGE ON FOXNEWS.COM Maye was officially listed as questionable on the Patriots’ bye week before heading out west. He also dealt with an illness. But he said he has \"turned a corner\" since landing in San Francisco on Sunday. PATRIOTS' DRAKE MAYE RANKS WIFE'S VIRAL TIKTOK BAKING RECIPES AHEAD OF SUPER BOWL LX \"I felt good from the flight and throwing out there today. I think it turned the corner, and I really had no doubt being 100% for the game, this is the Super Bowl,\" he said. \"We get two weeks to prepare for it and do whatever we got to do to get it right. I've got confidence and feel good.\" There’s no doubt Maye, an MVP candidate this year, is going to be doing everything possible to be 100% for Sunday’s matchup at Levi’s Stadium. Maye heads into this contest as the potential yo\n- 2026-02-02 www.foxnews.com Super Bowl LX: Patriots' Drake Maye ranks wife's baking recipes | NEWYou can now listen to Fox News articles! You never know what will be asked at during Super Bowl media availabilities, but for New England Patriots quarterback Drake Maye, he doesn’t mind a little ranking question regarding his wife, Ann Michael’s, baking. Maye, who has helped lead the Patriots to the \"Big Game\" in Santa Clara this week in just his second NFL season, was asked to rank four of his wife’s recipes, which has been talked about throughout the season. Ann Michael shares her recipes on TikTok, some of which going viral during what she called \"Bakemas\" for the holiday season. The Patriots’ signal caller already knew what his top choice would be in the kitchen. CLICK HERE FOR MORE SPORTS COVERAGE ON FOXNEWS.COM \"Cinnamon roll snickerdoodle, she just made those for the O-line this week,\" Maye said with a smile. That’s my No. 1.\" After that, he had to give it some thought. \"Puppy chow, I’ll put puppy chow No. 3. Pistachio bread, I think it’s good. I’m not a fan, [so] I’ll put that at four. The crumble copycat sugar cookie? Yeah, put that at No. 2.\" DRAKE MAYE ‘SUPER BOWL’ GUY, FORMER COACH SAYS AS PATRIOTS QB REACHED NFL'S BIGGEST STAGE With nerves and anticipation high for everyone on the Patriots and Seattle Seahawks entering this week, questions like these perhaps make\n- 2026-02-02 www.foxnews.com Russell Wilson slams Epstein link after name appears in emails | plane until his deal is signed, could be 2 weeks, or 2 months or more. He took many photos and video during the flight, with his wife or girlfriend Ciara (she’s a fairly popular singer).\" Visoski picked Epstein’s brain on a potential deal he could offer Wilson. A representative for the Super Bowl champion told The Seattle Times that \"never purchased the aircraft, nor was he aware that any aircraft discussed by third parties had any connection to Epstein.\" The emails were released last week as part of the Justice Department’s dump of more than 3 million documents related to the investigation of the human trafficker and child sex offender. Epstein was found dead in a Manhattan federal jail cell Aug. 10, 2019. It was later ruled a suicide. CLICK HERE TO DOWNLOAD THE FOX NEWS APP He faced up to 45 years in prison for crimes related to the sex trafficking of minors.\n\n## 630740 Lebanon collapse hits 0\n\n## 534224 downhill women hits 8\n- 2026-02-03 www.thedailybeast.com Secret Hidden in 450-Year-Old Painting of Anne Boleyn May Solve ‘Sixth Finger’ Mystery | nnifer Siebel in 2008. Lindsey Vonn is refusing to abandon her Olympic plans despite revealing she suffered a “completely” ruptured ACL following a crash last week. The three-time Olympic medalist addressed reporters Tuesday after injuring her left knee during a downhill race at a World Cup event in Switzerland on Friday. Vonn said she is currently “not in pain,” though she acknowledged the initial crash was painful and serious. Despite the diagnosis, Vonn struck a determined tone. “I have not cried,” she said, adding, “I think I’m still able to fight, and I will do everything in my power to be in that starting gate.” Hours after the crash, Vonn signaled she wasn’t backing down, posting on Instagram that her “Olympic dream is not over.” She doubled down on that message during the press conference, saying she intends to test her knee in practice over the next few days. The 41-year-old is hoping to compete in downhill events next Sunday, which would put her on track to become the oldest alpine skier to compete at the Olympics if she makes it to the start gate. Scouted selects products independently. If you purchase something from our posts, we may earn a small commission. Sleep can be hard to come by these days. From city noise and snoring partners to late-night scrolling and spiraling thoughts, there’s a lot that can get in the way of a good night’s rest. In fact, research suggests that one in three adults doesn’t get enough sleep. (Hello, fellow insomniacs!) Luckily, you don’t have to accept exhaustion as your default—Ozlo Sleepbuds can help improve sleep hygiene sans habit-forming treatments or sleeping in separate rooms \n- 2026-02-03 www.thedailybeast.com Tennis Legend Erupts at Young Fan After Australian Open | sed. The Daily Beast has contacted Delta for comment. Lindsey Vonn is refusing to abandon her Olympic plans despite revealing she suffered a “completely” ruptured ACL following a crash last week. The three-time Olympic medalist addressed reporters Tuesday after injuring her left knee during a downhill race at a World Cup event in Switzerland on Friday. Vonn said she is currently “not in pain,” though she acknowledged the initial crash was painful and serious. Despite the diagnosis, Vonn struck a determined tone. “I have not cried,” she said, adding, “I think I’m still able to fight, and I will do everything in my power to be in that starting gate.” Hours after the crash, Vonn signaled she wasn’t backing down, posting on Instagram that her “Olympic dream is not over.” She doubled down on that message during the press conference, saying she intends to test her knee in practice over the next few days. The 41-year-old is hoping to compete in downhill events next Sunday, which would put her on track to become the oldest alpine skier to compete at the Olympics if she makes it to the start gate. A centuries-old rumor about England’s most notorious queen may finally be put to rest. Researchers examining a 450-year-old portrait of Anne Boleyn say they have uncovered evidence that the painting was deliberately altered to counter claims that the queen had a “sixth finger,” a charge that circulated after her execution and was used to label her as unnatural. The finding centers on the Hever “Rose” portrait, held at Hever Castle in Kent, England, which scientists studied using advanced imaging techniques. “Scientific imaging carried out\n- 2026-02-03 www.thedailybeast.com Gavin Newsom’s Ex Speaks Out After Memoir Details Messy Breakup | rd-winning filmmaker Jennifer Siebel in 2008. Lindsey Vonn is refusing to abandon her Olympic plans despite revealing she suffered a “completely” ruptured ACL following a crash last week. The three-time Olympic medalist addressed reporters Tuesday after injuring her left knee during a downhill race at a World Cup event in Switzerland on Friday. Vonn said she is currently “not in pain,” though she acknowledged the initial crash was painful and serious. Despite the diagnosis, Vonn struck a determined tone. “I have not cried,” she said, adding, “I think I’m still able to fight, and I will do everything in my power to be in that starting gate.” Hours after the crash, Vonn signaled she wasn’t backing down, posting on Instagram that her “Olympic dream is not over.” She doubled down on that message during the press conference, saying she intends to test her knee in practice over the next few days. The 41-year-old is hoping to compete in downhill events next Sunday, which would put her on track to become the oldest alpine skier to compete at the Olympics if she makes it to the start gate. Scouted selects products independently. If you purchase something from our posts, we may earn a small commission. Sleep can be hard to come by these days. From city noise and snoring partners to late-night scrolling and spiraling thoughts, there’s a lot that can get in the way of a good night’s rest. In fact, research suggests that one in three adults doesn’t get enough sleep. (Hello, fellow insomniacs!) Luckily, you don’t have to accept exhaustion as your default—Ozlo Sleepbuds can help improve sleep hygiene sans habit-forming treatments or slee\n- 2026-02-03 www.thedailybeast.com Celebrated Soap Actress Dies at Age 97 |  while Newsom married award-winning filmmaker Jennifer Siebel in 2008. Lindsey Vonn is refusing to abandon her Olympic plans despite revealing she suffered a “completely” ruptured ACL following a crash last week. The three-time Olympic medalist addressed reporters Tuesday after injuring her left knee during a downhill race at a World Cup event in Switzerland on Friday. Vonn said she is currently “not in pain,” though she acknowledged the initial crash was painful and serious. Despite the diagnosis, Vonn struck a determined tone. “I have not cried,” she said, adding, “I think I’m still able to fight, and I will do everything in my power to be in that starting gate.” Hours after the crash, Vonn signaled she wasn’t backing down, posting on Instagram that her “Olympic dream is not over.” She doubled down on that message during the press conference, saying she intends to test her knee in practice over the next few days. The 41-year-old is hoping to compete in downhill events next Sunday, which would put her on track to become the oldest alpine skier to compete at the Olympics if she makes it to the start gate. Scouted selects products independently. If you purchase something from our posts, we may earn a small commission. Sleep can be hard to come by these days. From city noise and snoring partners to late-night scrolling and spiraling thoughts, there’s a lot that can get in the way of a good night’s rest. In fact, research suggests that one in three adults doesn’t get enough sleep. (Hello, fellow insomniacs!) Luckily, you don’t have to accept exhaustion as your default—Ozlo Sleepbuds can help improve sleep hygiene sans habit-f\n- 2026-02-03 www.thedailybeast.com Michelin Guide Restaurant’s Health Rating Slashed After Disturbing Discovery | ra Bed System is second to none. Lindsey Vonn is refusing to abandon her Olympic plans despite revealing she suffered a “completely” ruptured ACL following a crash last week. The three-time Olympic medalist addressed reporters Tuesday after injuring her left knee during a downhill race at a World Cup event in Switzerland on Friday. Vonn said she is currently “not in pain,” though she acknowledged the initial crash was painful and serious. Despite the diagnosis, Vonn struck a determined tone. “I have not cried,” she said, adding, “I think I’m still able to fight, and I will do everything in my power to be in that starting gate.” Hours after the crash, Vonn signaled she wasn’t backing down, posting on Instagram that her “Olympic dream is not over.” She doubled \n[...truncated]",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3623,
+      "turn": 2734,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Two Feb 3 signals are actionable: Lindsey Vonn now says she has a complete ACL rupture, which cuts U.S. downhill silver odds despite her intent to try; and Super Bowl coverage continues to give Seattle the cleaner quarte",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Two Feb 3 signals are actionable: Lindsey Vonn now says she has a complete ACL rupture, which cuts U.S. downhill silver odds despite her intent to try; and Super Bowl coverage continues to give Seattle the cleaner quarterback/team edge while Drake Maye manages a shoulder issue."
+        }
+      ]
+    },
+    {
+      "idx": 3624,
+      "turn": 2735,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Austria\": 0.17, \"Germany\": 0.05, \"Italy\": 0.25, \"Switzerland\": 0.23, \"United States\": 0.09}, \"question_id\": \"534224\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_5",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "534224",
+            "outcomes": {
+              "Italy": 0.25,
+              "Switzerland": 0.23,
+              "Austria": 0.17,
+              "United States": 0.09,
+              "Germany": 0.05
+            },
+            "previous_outcomes": {
+              "Italy": 0.23,
+              "Switzerland": 0.21,
+              "United States": 0.14,
+              "Austria": 0.14,
+              "Germany": 0.05
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3625,
+      "turn": 2735,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_5",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 534224: {'Italy': 0.25, 'Switzerland': 0.23, 'Austria': 0.17, 'United States': 0.09, 'Germany': 0.05}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 534224: {'Italy': 0.25, 'Switzerland': 0.23, 'Austria': 0.17, 'United States': 0.09, 'Germany': 0.05}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3626,
+      "turn": 2736,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"New England Patriots\": 0.34, \"Seattle Seahawks\": 0.66}, \"question_id\": \"180958\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_6",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "180958",
+            "outcomes": {
+              "Seattle Seahawks": 0.66,
+              "New England Patriots": 0.34
+            },
+            "previous_outcomes": {
+              "Seattle Seahawks": 0.63,
+              "New England Patriots": 0.37
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3627,
+      "turn": 2736,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_6",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 180958: {'Seattle Seahawks': 0.66, 'New England Patriots': 0.34}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 180958: {'Seattle Seahawks': 0.66, 'New England Patriots': 0.34}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3628,
+      "turn": 2737,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Those updates are recorded. I’ll write the Feb 3 notes with the resolution lessons and today’s article-driven moves, then advance.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Those updates are recorded. I’ll write the Feb 3 notes with the resolution lessons and today’s article-driven moves, then advance."
+        }
+      ]
+    },
+    {
+      "idx": 3631,
+      "turn": 2738,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Feb 3 notes are saved. I’m ending the simulated day now.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Feb 3 notes are saved. I’m ending the simulated day now."
+        }
+      ]
+    },
+    {
+      "idx": 3632,
+      "turn": 2739,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_10",
+          "name": "next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 3635,
+      "turn": 2740,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "The harness is now on Feb 4. I’m reading the refreshed market and then checking today’s articles for the Feb 5-Feb 12 questions.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The harness is now on Feb 4. I’m reading the refreshed market and then checking today’s articles for the Feb 5-Feb 12 questions."
+        }
+      ]
+    },
+    {
+      "idx": 3636,
+      "turn": 2741,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(35))\nprint('\\\\nResolved on/after 2026-02-03:')\nfor r in resolved:\n    if r['resolution_date']>='2026-02-03':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-14:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-14':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3637,
+      "turn": 2742,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-03",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(35))\nprint('\\\\nResolved on/after 2026-02-03:')\nfor r in resolved:\n    if r['resolution_date']>='2026-02-03':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-14:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-14':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_1",
+          "content": "state_exists False\nrows 330 active 195 resolved 135\nactive_without_prediction 0\nactive_pred_dates [('2025-12-24', 185), ('2026-02-03', 2), ('2026-01-01', 2), ('2025-12-26', 1), ('2025-12-25', 1), ('2026-01-12', 1), ('2025-12-29', 1), ('2026-01-16', 1), ('2026-01-11', 1)]\n\nResolved on/after 2026-02-03:\n\nQ 336425 resdate 2026-02-03 GT Druzhkivka\ntitle: Which eastern Ukrainian city will be identified as the site of a deadly market shelling by February 4, 2026?\nmy: {\"Kostiantynivka\": 0.18, \"Kupiansk\": 0.1, \"Donetsk\": 0.08, \"Pokrovsk\": 0.06, \"Kharkiv\": 0.04} date 2025-12-24\n\nQ 426743 resdate 2026-02-03 GT Bani Walid\ntitle: In which town will Saif al-Islam Gaddafi be buried by February 10, 2026?\nmy: {\"Bani Walid\": 0.3, \"Zintan\": 0.24, \"Sirte\": 0.22, \"Sabha\": 0.05, \"Tripoli\": 0.03} date 2026-02-02\n\nQ 57193 resdate 2026-02-03 GT California\ntitle: Which state will the U.S. Supreme Court let keep its new congressional map by February 2026 after rejecting a Republican lawsuit?\nmy: {\"California\": 0.86, \"Louisiana\": 0.04, \"Alabama\": 0.025, \"North Carolina\": 0.02, \"New York\": 0.015} date 2026-01-25\n\nQ 579252 resdate 2026-02-03 GT Qom\ntitle: In which city will Amnesty International say wrestler Saleh Mohammadi has been sentenced to public execution, by February 14, 2026?\nmy: {\"Kermanshah\": 0.18, \"Sanandaj\": 0.12, \"Tehran\": 0.08, \"Karaj\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nActive upcoming <=2026-02-14:\n\nQ 883856 resdate 2026-02-05\ntitle: Who will Russian authorities identify as the senior military officer shot in Moscow by February 28, 2026?\nmy: {\"Yaroslav Moskalik\": 0.08, \"Igor Kirillov\": 0.06, \"Sergei Surovikin\": 0.04, \"Andrei Mordvichev\": 0.03, \"Vladimir Shamanov\": 0.03} date 2025-12-24\n\nQ 198725 resdate 2026-02-06\ntitle: To which Iranian city will Narges Mohammadi be exiled for two years under a new sentence by February 2026?\nmy: {\"Zanjan\": 0.18, \"Qazvin\": 0.12, \"Semnan\": 0.08, \"Tabriz\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nQ 456284 resdate 2026-02-06\ntitle: Who will take over as publisher of The Washington Post immediately after Will Lewis steps aside, by February 2026?\nmy: {\"Matt Murray\": 0.18, \"Patty Stonesifer\": 0.12, \"David Shipley\": 0.08, \"Sally Buzbee\": 0.05, \"Kathy Baird\": 0.04} date 2025-12-24\n\nQ 180958 resdate 2026-02-07\ntitle: Which NFL team will win Super Bowl LX in February 2026?\nmy: {\"Seattle Seahawks\": 0.66, \"New England Patriots\": 0.34} date 2026-02-03\n\nQ 630740 resdate 2026-02-08\ntitle: Which Lebanese city will be reported as the site of a residential building collapse that kills at least 15 people in early February 2026, as confirmed by February 28, 2026?\nmy: {\"Tripoli\": 0.18, \"Beirut\": 0.16, \"Sidon\": 0.1, \"Tyre\": 0.06, \"Baalbek\": 0.04} date 2025-12-24\n\nQ 534224 resdate 2026-02-07\ntitle: Which country will the silver medalist in the women’s downhill alpine skiing event at the Milan-Cortina Winter Olympics represent by 8 February 2026?\nmy: {\"Italy\": 0.25, \"Switzerland\": 0.23, \"Austria\": 0.17, \"United States\": 0.09, \"Germany\": 0.05} date 2026-02-03\n\nQ 14689 resdate 2026-02-09\ntitle: What country will be identified as the location of a fatal mass shooting at a secondary school by February 11, 2026?\nmy: {\"Germany\": 0.12, \"Sweden\": 0.1, \"Canada\": 0.08, \"France\": 0.06, \"Austria\": 0.04} date 2025-12-24\n\nQ 739916 resdate 2026-02-12\ntitle: Which aircraft carrier will join the USS Abraham Lincoln carrier strike group in the Middle East by the end of March 2026?\nmy: {\"USS Gerald R. Ford\": 0.22, \"USS Harry S. Truman\": 0.12, \"USS Carl Vinson\": 0.08, \"USS Nimitz\": 0.06, \"USS Theodore Roosevelt\": 0.05} date 2025-12-24\n\nQ 318661 resdate 2026-02-08\ntitle: Which armed group will Colombia announce it is resuming peace talks with by February 2026?\nmy: {\"National Liberation Army\": 0.35, \"ELN\": 0.12, \"Segunda Marquetalia\": 0.1, \"Estado Mayor Central\": 0.08} date 2025-12-24\n\nQ 312764 resdate 2026-02-09\ntitle: Who will be named Egypt’s minister of planning in the cabinet reshuffle by 15 February 2026?\nmy: {\"Rania Al-Mashat\": 0.3, \"Hala El-Said\": 0.1, \"Maya Morsy\": 0.06, \"Ahmed Kouchouk\": 0.05} date 2025-12-24\n\nQ 527803 resdate 2026-02-09\ntitle: What town will authorities identify as the site of a deadly school shooting in Canada by February 11, 2026?\nmy: {\"La Loche\": 0.08, \"Red Deer\": 0.06, \"Brandon\": 0.05, \"Saskatoon\": 0.05, \"Prince Albert\": 0.04} date 2025-12-24\n\nQ 795774 resdate 2026-02-12\ntitle: By the end of February 2026, which French city will be identified as the place where a French far-right activist was killed, leading to a public dispute between Emmanuel Macron and Giorgia Meloni?\nmy: {\"Lyon\": 0.14, \"Grenoble\": 0.1, \"Marseille\": 0.08, \"Nice\": 0.06, \"Paris\": 0.04} date 2025-12-24\n\nQ 398988 resdate 2026-02-08\ntitle: Which Lebanese group will say, by February 2026, that Israel abducted one of its officials in a raid in southern Lebanon?\nmy: {\"Hezbollah\": 0.45, \"Amal Movement\": 0.08, \"Lebanese Forces\": 0.03} date 2025-12-24\n\nQ 487245 resdate 2026-02-09\ntitle: What country will be named as a source of tensions surrounding the U.S. president's late-February 2026 address?\nmy: {\"Iran\": 0.25, \"Venezuela\": 0.14, \"China\": 0.08, \"Russia\": 0.06, \"Israel\": 0.05} date 2025-12-24\n\nQ 745180 resdate 2026-02-09\ntitle: Which earlier cyclone will humanitarian officials say Gezani's Madagascar landfall likely rivals by February 13, 2026?\nmy: {\"Cyclone Freddy\": 0.25, \"Cyclone Batsirai\": 0.16, \"Cyclone Gamane\": 0.1, \"Cyclone Idai\": 0.06, \"Cyclone Gafilo\": 0.05} date 2025-12-24\n\nQ 613203 resdate 2026-02-11\ntitle: Which club will Tractor FC play in the AFC Asian Champions League Elite playoff on April 13-14, 2026?\nmy: {\"Al Nassr\": 0.12, \"Al Wasl\": 0.1, \"Al Hilal\": 0.08, \"Sharjah\": 0.06, \"Al Ahli\": 0.05} date 2025-12-24\n\nQ 652747 resdate 2026-02-13\ntitle: What toxin will five European governments say tissue samples conclusively found in Alexey Navalny's body, by February 2026?\nmy: {\"Novichok\": 0.65, \"A-234\": 0.08, \"Sarin\": 0.03, \"Ricin\": 0.02} date 2025-12-24\n\nQ 538697 resdate 2026-02-08\ntitle: Which country's military will say by February 18, 2026 that up to 8,000 troops could be ready by the end of June for a possible Gaza mission?\nmy: {\"Indonesia\": 0.25, \"Turkey\": 0.16, \"Egypt\": 0.1, \"Italy\": 0.08, \"Pakistan\": 0.06} date 2025-12-24\n\nQ 304287 resdate 2026-02-12\ntitle: Which party will emerge as the main opposition in Bangladesh's new parliament after the 2026 election, based on seat results reported by February 13, 2026?\nmy: {\"Jamaat-e-Islami\": 0.82, \"National Citizens Party\": 0.05, \"Bangladesh Nationalist Party\": 0.03, \"Awami League\": 0.01, \"Jatiya Party\": 0.01} date 2026-01-01\n\nQ 901381 resdate 2026-02-13\ntitle: Which two cities will be linked by the high-speed rail section that authorities investigate for burned cables during the 2026 Winter Olympics, by February 14, 2026?\nmy: {\"Milan and Verona\": 0.16, \"Milan and Venice\": 0.12, \"Milan and Bologna\": 0.1, \"Verona and Venice\": 0.06, \"Brescia and Verona\": 0.04} date 2025-12-24\n",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}

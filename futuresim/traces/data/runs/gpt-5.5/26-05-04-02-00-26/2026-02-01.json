@@ -1,0 +1,262 @@
+{
+  "agent_slug": "gpt-5.5",
+  "agent_name": "GPT 5.5",
+  "model": "gpt-55",
+  "harness": "Codex",
+  "seed_label": "r02",
+  "run_id": "26-05-04-02-00-26",
+  "sim_date": "2026-02-01",
+  "events": [
+    {
+      "idx": 3581,
+      "turn": 2702,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Feb 1 adds two misses: Thorbjorn Jagland for the Norway corruption question and Project Vault for the minerals stockpile. I’m scanning Feb 1 articles for the six Feb 2 questions and the early-February watch list.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Feb 1 adds two misses: Thorbjorn Jagland for the Norway corruption question and Project Vault for the minerals stockpile. I’m scanning Feb 1 articles for the six Feb 2 questions and the early-February watch list."
+        }
+      ]
+    },
+    {
+      "idx": 3582,
+      "turn": 2703,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os, re\\npath='articles/2026/02/01/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.p\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os, re\npath='articles/2026/02/01/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-02-01': usable+=1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Feb1',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'220862 League Cup': lambda t: ('league cup final' in t or 'carabao cup final' in t) and ('manchester city' in t or 'man city' in t or 'city' in t),\n'492629 Harden Clippers': lambda t: 'james harden' in t or ('harden' in t and 'clippers' in t and 'trade' in t),\n'243685 Myanmar panel': lambda t: ('five-member panel' in t and 'myanmar' in t) or ('national security and peace commission' in t) or ('myanmar' in t and 'panel' in t),\n'955662 Brazil bus crash': lambda t: ('bus crash' in t and ('brazil' in t or 'minas gerais' in t or 'bahia' in t or 'parana' in t or 'sao paulo' in t) and ('16' in t or 'people' in t or 'dead' in t or 'killed' in t)),\n'453736 Libya killed': lambda t: ('mohammed al-haddad' in t or 'muhammad ali' in t or 'saif al-islam gaddafi' in t or 'khalifa haftar' in t) and ('killed' in t or 'death' in t or 'libya' in t),\n'976004 Libya forensic': lambda t: ('forensic' in t and 'libya' in t) or 'libyan killing probe' in t,\n'995305 market fire': lambda t: ('market' in t and 'fire' in t and ('huge' in t or 'massive' in t or 'large' in t or 'major' in t or 'engulf' in t)),\n'883856 Moscow officer': lambda t: ('shot in moscow' in t) or ('senior military officer' in t and 'moscow' in t) or 'yaroslav moskalik' in t,\n'630740 Lebanon collapse': lambda t: ('leban' in t and ('building collapse' in t or 'residential building' in t) and ('15' in t or 'dead' in t or 'killed' in t)),\n'336425 Ukraine market shelling': lambda t: ('market shelling' in t) or ('market' in t and 'shelling' in t and ('ukraine' in t or 'ukrainian' in t or 'kostiantynivka' in t or 'kupiansk' in t)),\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t or 'cortina' in t)) or ('vonn' in t and 'olympic' in t),\n'426743 Saif burial': lambda t: 'saif al-islam' in t and ('buried' in t or 'burial' in t or 'funeral' in t or 'killed' in t),\n'57193 SCOTUS map': lambda t: ('supreme court' in t and 'congressional map' in t) or ('california' in t and 'congressional map' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'318661 Colombia peace': lambda t: ('colombia' in t and 'peace talks' in t) or ('eln' in t and 'peace talks' in t),\n'398988 Lebanon abduction': lambda t: ('israel' in t and 'abducted' in t and 'lebanon' in t) or ('southern lebanon' in t and 'official' in t and 'abducted' in t),\n'579252 Saleh city': lambda t: 'saleh mohammadi' in t or ('wrestler' in t and 'public execution' in t),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n'538697 Gaza troops': lambda t: ('8000 troops' in t or '8,000 troops' in t or ('troops' in t and 'gaza' in t and ('ready' in t or 'june' in t))),\n'14689 school shooting country': lambda t: ('secondary school' in t and 'shooting' in t) or ('school shooting' in t and ('germany' in t or 'sweden' in t or 'canada' in t or 'france' in t or 'austria' in t)),\n'527803 Canada school town': lambda t: ('school shooting' in t and 'canada' in t) or ('la loche' in t and 'shooting' in t),\n'312764 Egypt planning': lambda t: ('egypt' in t and 'planning minister' in t) or ('minister of planning' in t and 'egypt' in t),\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-02-01': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            for kw in ['league cup','james harden','myanmar','bus crash','haddad','forensic','market','moscow','building collapse','market shelling','narges','downhill','saif','supreme court','washington post','peace talks','abducted','saleh','super bowl','gaza','school shooting','planning minister']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1200]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1700]))\n            if len(hits)>=6: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3583,
+      "turn": 2704,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os, re\\npath='articles/2026/02/01/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.p\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os, re\npath='articles/2026/02/01/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-02-01': usable+=1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Feb1',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'220862 League Cup': lambda t: ('league cup final' in t or 'carabao cup final' in t) and ('manchester city' in t or 'man city' in t or 'city' in t),\n'492629 Harden Clippers': lambda t: 'james harden' in t or ('harden' in t and 'clippers' in t and 'trade' in t),\n'243685 Myanmar panel': lambda t: ('five-member panel' in t and 'myanmar' in t) or ('national security and peace commission' in t) or ('myanmar' in t and 'panel' in t),\n'955662 Brazil bus crash': lambda t: ('bus crash' in t and ('brazil' in t or 'minas gerais' in t or 'bahia' in t or 'parana' in t or 'sao paulo' in t) and ('16' in t or 'people' in t or 'dead' in t or 'killed' in t)),\n'453736 Libya killed': lambda t: ('mohammed al-haddad' in t or 'muhammad ali' in t or 'saif al-islam gaddafi' in t or 'khalifa haftar' in t) and ('killed' in t or 'death' in t or 'libya' in t),\n'976004 Libya forensic': lambda t: ('forensic' in t and 'libya' in t) or 'libyan killing probe' in t,\n'995305 market fire': lambda t: ('market' in t and 'fire' in t and ('huge' in t or 'massive' in t or 'large' in t or 'major' in t or 'engulf' in t)),\n'883856 Moscow officer': lambda t: ('shot in moscow' in t) or ('senior military officer' in t and 'moscow' in t) or 'yaroslav moskalik' in t,\n'630740 Lebanon collapse': lambda t: ('leban' in t and ('building collapse' in t or 'residential building' in t) and ('15' in t or 'dead' in t or 'killed' in t)),\n'336425 Ukraine market shelling': lambda t: ('market shelling' in t) or ('market' in t and 'shelling' in t and ('ukraine' in t or 'ukrainian' in t or 'kostiantynivka' in t or 'kupiansk' in t)),\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t or 'cortina' in t)) or ('vonn' in t and 'olympic' in t),\n'426743 Saif burial': lambda t: 'saif al-islam' in t and ('buried' in t or 'burial' in t or 'funeral' in t or 'killed' in t),\n'57193 SCOTUS map': lambda t: ('supreme court' in t and 'congressional map' in t) or ('california' in t and 'congressional map' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'318661 Colombia peace': lambda t: ('colombia' in t and 'peace talks' in t) or ('eln' in t and 'peace talks' in t),\n'398988 Lebanon abduction': lambda t: ('israel' in t and 'abducted' in t and 'lebanon' in t) or ('southern lebanon' in t and 'official' in t and 'abducted' in t),\n'579252 Saleh city': lambda t: 'saleh mohammadi' in t or ('wrestler' in t and 'public execution' in t),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n'538697 Gaza troops': lambda t: ('8000 troops' in t or '8,000 troops' in t or ('troops' in t and 'gaza' in t and ('ready' in t or 'june' in t))),\n'14689 school shooting country': lambda t: ('secondary school' in t and 'shooting' in t) or ('school shooting' in t and ('germany' in t or 'sweden' in t or 'canada' in t or 'france' in t or 'austria' in t)),\n'527803 Canada school town': lambda t: ('school shooting' in t and 'canada' in t) or ('la loche' in t and 'shooting' in t),\n'312764 Egypt planning': lambda t: ('egypt' in t and 'planning minister' in t) or ('minister of planning' in t and 'egypt' in t),\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-02-01': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            for kw in ['league cup','james harden','myanmar','bus crash','haddad','forensic','market','moscow','building collapse','market shelling','narges','downhill','saif','supreme court','washington post','peace talks','abducted','saleh','super bowl','gaza','school shooting','planning minister']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1200]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1700]))\n            if len(hits)>=6: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_3",
+          "content": "exists True\nlines 1866 usable<=Feb1 1754 latest_dates ['2026-02-02', '2026-02-03', '2026-02-04', '2026-02-05', '2026-02-06', '2026-02-07', '2026-02-08', '2026-02-09', '2026-02-10', '2026-02-21']\n\n## 220862 League Cup hits 0\n\n## 492629 Harden Clippers hits 1\n- 2026-02-01 www.cbsnews.com Nikola Jokic returns from knee injury to lead Nuggets past Clippers, 122-109 | ded absences from starters Cameron Johnson and Christian Braun. Jokic's 29th double-double of the season came despite being on a minutes restriction imposed by coach David Adelman. The 30-year-old Serbian was limited to 25 minutes, his second-fewest in a game this season. James Harden had 25 points and nine assists for Los Angeles. The Clippers had won 16 of their previous 19, the best win percentage in that NBA during that period. Jokic scored 11 points over a stretch of 3:47 in the fourth quarter that extended Denver's lead from five to 16. The Nuggets improved to 7-3 this season in the second game of a back-to-back. Jamal Murray had 22 points, and Peyton Watson added 21 for Denver. Murray, who made four of his five 3-pointers and had a team-high nine assists, scored at least 20 points in a game for the 35th time this season, matching a career high. Up next Nuggets: Host Oklahoma City on Sunday night. Clippers: At Phoenix on Sunday night.\n\n## 243685 Myanmar panel hits 0\n\n## 955662 Brazil bus crash hits 0\n\n## 453736 Libya killed hits 0\n\n## 976004 Libya forensic hits 0\n\n## 995305 market fire hits 6\n- 2026-02-01 www.koreaherald.com Warsh 'regime change' faces steep hurdles at sprawling US Fed | hat can get through the Fed's Board of Governors, get sign-off from Trump and Treasury Secretary Scott Bessent, and clear the US Congress if it involves amending the Federal Reserve Act. Change, in other words, may ​be easier said than done. Warsh \"is a pragmatist who won't want to lose market trust by making cuts that aren't warranted. His long history of concern about inflation suggests that he won't allow the economy to overheat,\" said Heather Long, chief economist for Navy Federal Credit Union. \"He's been an outspoken critic of the Fed's balance sheet ‍and groupthink. More clarity is needed on how far he intends to go\" in pursuing other changes at the Fed. It also may take more ‍than just \"breaking some heads\" at the Fed, as Warsh put it in a July interview on Fox News, speaking of the people who are about to become his colleagues. The Fed ‌particularly in the last 20 years ​has become a complex, hybrid beast that grew with an expansion of power during the financial crisis and through the pandemic. That may be just what ‍Warsh and Treasury's Bessent, in recent writing, have in mind in their criticisms. The Fed's mix of monetary policy powers, considered its sole province, along with the sort of regulatory authority that is usually situated in the executive branch, and controlling legislation set by Congress, has left even Supreme ‌Court justices puzzled about exactly where the Fed fits in the federal system. It's a nerdy legal issue with deep ramifications. The question came up as the court considered whether Trump could\n- 2026-02-01 www.straitstimes.com Warsh ‘regime change’ faces steep hurdles at sprawling US central bank | hrough the Fed’s board of governors, get sign-off from Mr Trump and Treasury Secretary Scott Bessent and clear the US Congress if it involves amending the Federal Reserve Act. Change, in other words, may be easier said than done. Mr Warsh “is a pragmatist who won’t want to lose market trust by making cuts that aren’t warranted. His long history of concern about inflation suggests that he won’t allow the economy to overheat”, said Ms Heather Long, chief economist for Navy Federal Credit Union. “He’s been an outspoken critic of the Fed’s balance sheet and groupthink. More clarity is needed on how far he intends to go” in pursuing other changes at the Fed, she added. It also may take more than just “breaking some heads” at the Fed, as Mr Warsh put it in an interview in July 2025 on Fox News, speaking of the people who are about to become his colleagues. The Fed particularly in the last 20 years has become a complex, hybrid beast that grew with an expansion of power during the financial crisis and through the Covid-19 pandemic. That may be just what Mr Warsh and Mr Bessent, in recent writing, have in mind in their criticisms. The Fed’s mix of monetary policy powers, considered its sole province, along with a regulatory authority usually situated in the executive branch, and controlling legislation set by Congress, has puzzled even Supreme Court justices about where the Fed fits in the federal system. It is a nerdy legal issue with deep ramifications. The question came up as the court considered whether Mr Trump could fire Fed go\n- 2026-02-01 www.straitstimes.com India budget makes bet on manufacturing; transaction tax hike spooks markets | - India made a fresh bet on its manufacturing sector in its annual budget, but the Narendra Modi-led government’s reform plans fell short of expectations as the global economic order undergoes profound changes wrought by the Trump administration. The absence of ambitious reforms and an increase in the transaction tax on derivatives spooked equity markets which fell 1 per cent in a special trading session for the Feb 1 budget proposals. The Indian economy has remained one of the fastest growing major economies, with gross domestic product (GDP) growth expected at 7.4 per cent in the financial year ending March 31, 2026. But foreign investors have sold a record amount of Indian equities, with sales adding up to US$22 billion (S$28 billion) since January 2025, and the rupee has weakened sharply to all-time lows. The government will look to strengthen the country’s manufacturing sector, Finance Minister Nirmala Sitharaman said in her budget speech, as she laid out priorities for Asia’s third-biggest economy and pledged to accelerate growth amid a volatile global environment. It will also continue to focus on strengthening government finances, by bringing down the federal government debt-to-GDP ratio to 55.6 per cent in the next financial year from 56.1 \n- 2026-01-31 www.aljazeera.com Gaza’s collapsing economy drives youth to create unconventional solutions | tly rising and no stable income, it became impossible to rely on this work to meet even my basic needs.” With limited prospects in Gaza’s overstretched healthcare system, she made a difficult decision to leave her field entirely. Al-Maghrabi instead shifted into social media marketing and e-commerce, working online to generate a modest income. As al-Maghrabi recounted, she graduated as a nurse and began training in the hospital. During that training, she also took several design courses and tried to find work in that field, but she was unable to reach clients and earn an income. She then decided to take marketing courses instead of waiting for someone else to promote her work, allowing her to market herself effectively. After gaining experience in marketing, she began working in e-commerce and digital marketing. “This isn’t what I studied or planned for,” she said. “But even though the income is limited, it helps me cover my daily expenses and survive under these conditions.” Economic crisis Al-Maghrabi’s experience reflects a broader phenomenon in Gaza, where years of compounded crises have pushed unemployment to unprecedented levels. According to the Palestinian Central Bureau of Statistics’ 2024 figures, the overall unemployment rate in Gaza is 69 percent, rising to approximately 80 percent among 15- to 29-year-olds. The population under 30 accounts for approximately 70 percent of Gaza’s residents, meaning the majority of the community faces severe economic challenges, with a significant portion of young people holding un\n- 2026-01-31 www.aljazeera.com Iran’s president says Trump, Netanyahu, EU stirred tensions during protests | ump’s ‘madman theory’ reshape Iran and the Middle East? list 4 of 4Israel cleared to buy $6.6bn in US attack helicopters, assault vehicles end of list “In any normal protest, they don’t pick up guns, they don’t kill military personnel, they don’t set fire to ambulances and markets, and we should sit with the protesters, listen to their words and concerns, and resolve them; we are ready to listen,” he added. “Everyone knows that the issue was not just a social protest,” Pezeshkian said, claiming that the foreign powers “took advantage of our problems”, “provoked us” and “sought to divide our society”. Iranian authorities acknowledge that thousands were killed during the recent protests, giving a toll of more than 3,000 deaths, but say the majority were members of the security forces or bystanders killed by “rioters”. But rights groups warn the toll is likely far higher, with estimates in the tens of thousands. For several weeks, Trump has been threatening to launch a military strike on Iran over its deadly protest crackdown earlier this month – protests Tehran repeatedly claimed were incited by foreign powers. A US naval strike group has been in Middle Eastern waters since Monday, and Trump warned it was “ready, willing and able” to hit Iran “if necessary”. Iranian Foreign Minister Abbas Araghchi said on Friday the country is ready for “fair and equitable” talks with the US, adding: “Iran has no problem with negotiations, but negotiations cannot take place under the shadow of threats. “I should also state unequivocally that I\n- 2026-02-01 www.aljazeera.com Campaign to boycott Israel looks to future after Gaza ‘ceasefire’ | icularly among young people horrified by the death rained upon Gaza. And importantly, there have been economic consequences for Israel and some of those doing business in it – echoing the boycott movement against apartheid South Africa in the 1980s. Companies such as the French supermarket chain Carrefour were forced to close a number of outlets in the Middle East amid public anger over its links to Israeli firms operating in illegal settlements in the occupied West Bank. Other companies associated with Israel’s actions, including Airbnb – which allows Israelis in illegal settlements to rent their properties – and Microsoft, whose Azure cloud services have supported the Israeli military, have all faced internal dissent and reputational damage because of their ties to the Israeli government. As a consequence of public pressure, pension funds from around the world, including Spain, Norway, Denmark, France and Ireland, have divested from Israeli assets linked to settlements, or withdrawn investments from companies tied to Israel. “BDS and boycotts have changed Israel’s global trade landscape,” Avi Balashnikov, chairman of the Israel Export Institute, conceded in September 2024. “We fight every day, hour by hour, for Israeli industry abroad,” he added. “Economic boycotts and BDS organisations present major challenges, and in some countries, we are forced to operate under the radar.” Moving spotlight Despite a US-brokered “ceasefire“, Israeli attacks on Gaza have killed more than 500 people since the agreement was reached in Octo\n\n## 883856 Moscow officer hits 0\n\n## 630740 Lebanon collapse hits 0\n\n## 336425 Ukraine market shelling hits 0\n\n## 198725 Narges exile hits 0\n\n## 534224 downhill women hits 6\n- 2026-02-01 www.thedailybeast.com Iconic ‘Sanford and Son’ Actor Dies at Age 79 | Melania’s eponymous documentary ranked far behind its other competitors during the opening weekend. It made a paltry $7 million dollars on its opening weekend, compared to its $40 million production budget and $35 million marketing budget. Horror movie Send Help and the sci-fi Iron Lung took the box office crown away from first lady Melania Trump. Box office frontrunner Send Help made almost triple that of Trump’s pet project at a stunning $20 million debut, according to industry estimates. Video game YouTuber Markiplier’s Iron Lung came in a close second at an impressive $18 million at the North American box office. Melania did better than Hollywood insiders expected, who projected a $5 million opening, but it was not enough to turn a profit. In fourth place was Disney’s Zootopia 2, which took in $5.8 million. Action thriller Shelter had a disappointing opening week, ranking fifth at $5.5 million. Mercy, Marty Supreme, and The Housemaid also appeared in the top 10. Iconic 70s actor Demond Wilson has died at age 79. Wilson is best known for starring as Lamont Sanford, Fred Sanford’s son, in Sanford and Son, one of the first television programs with a mostly Black cast. Wilson served in the Vietnam War and received the Purple Heart before he began acting. The show ran for six seasons and was a big hit for audiences nationwide. Afterward, Wilson aimed to go back to serving his community. While he made a handful of film appearances, he decided tha\n- 2026-02-01 www.thedailybeast.com ‘SNL’ Pays Tribute to Comedy Star After Death | Beloved comedy actress Catherine O’Hara, who died on Friday at the age of 71, received a touching tribute on SNL. Producers played an image of her on screen to conclude this weekend’s show. SNL also posted a similar tribute to the Home Alone actress on X with a heart emoji. O’Hara has been close to the show for decades. She was cast on the show in 1981. She left, however, to return to the show, “Second City Television,” which secured a new deal for more seasons at the same time. For her, it proved to be the right decision, as the show ran for 8 years and won a Primetime Emmy Award. She returned to SNL as a host, leading the show twice in the early ’90s. O’Hara passed away from an unidentified illness on Friday. Reports find that she was facing breathing difficulties before her passing. O’Hara is survived by her husband, Bo Welch, 74, and two sons, Matthew, 31, and Luke, 29. Snoop Dogg’s granddaughter, Codi Dreaux Broadus, has passed away, his daughter, Cori Broadus, has announced. Sharing the news on Instagram, the legendary rapper’s youngest child wrote: “Monday; I lost the love of my life. My Codi” over a black-and-white image of her holding the baby. “I been the saddest since u \n- 2026-02-01 www.thedailybeast.com ‘80s Star Doesn’t Want to See Her Movies Remade | eland Security has “fallen short of its goals when it comes to detaining immigrants despite high-profile enforcement actions.” It noted that while there were 40,000 people in ICE detention at the start of Trump’s presidency, that number has only risen to 73,000. Joe Gomes, an analyst at Noble Capital Markets, told the outlet, “Despite record funding that came through the One Big Beautiful Bill last year, the increase in detainees has risen slower than a lot of people had originally anticipated.” Cannibalistic jellyfish have flooded the waters of a major tourist destination, multiplying rapidly and destroying fishermen’s livelihoods. The creature is the warty comb jelly, also known as the sea walnut, which has spread throughout Venice’s lagoon system after arriving from the western Atlantic, likely via ships’ ballast water. Researchers say the species’ sudden dominance reflects environmental shifts that have made once-hostile waters newly welcoming. Rising water temperatures and favorable salinity linked to “ongoing climate change” are thought to have helped the species proliferate. The animal is best known for its ability to eat its own offspring and for possessing a transient anus that appears only during defecation. Researchers from the University of Padua and the National Institute of Oceanography and Applied Geophysics say jellyfish numbers have exploded, creating acute problems for local fishermen. The jellies clog nets and devour fish eggs, larvae, and plankton—key building blocks of the lagoon’s ecosystem. Known forma\n- 2026-02-01 www.thedailybeast.com Two Movies That Beat ‘Melania’ at Box Office Revealed | Melania’s eponymous documentary ranked far behind its other competitors during the opening weekend. It made a paltry $7 million dollars on its opening weekend, compared to its $40 million production budget and $35 million marketing budget. Horror movie Send Help and the sci-fi Iron Lung took the box office crown away from first lady Melania Trump. Box office frontrunner Send Help made almost triple that of Trump’s pet project at a stunning $20 million debut, according to industry estimates. Video game YouTuber Markiplier’s Iron Lung came in a close second at an impressive $18 million at the North American box office. Melania did better than Hollywood insiders expected, who projected a $5 million opening, but it was not enough to turn a profit. In fourth place was Disney’s Zootopia 2, which took in $5.8 million. Action thriller Shelter had a disappointing opening week, ranking fifth at $5.5 million. Mercy, Marty Supreme, and The Housemaid also appeared in the top 10. Iconic 70s actor Demond Wilson has died at age 79. Wilson is best known for starring as Lamont Sanford, Fred Sanford’s son, in Sanford and Son, one of the first television programs with a mostly Black cast. Wilson served in the Vietnam War and received the Purple Heart before he began acting. The show ran for six seasons and was a big hit for audiences nationwide. Afterward, Wilson aimed to go back to serving his community. While he made a handful of film appearances, he decided that it was\n- 2026-01-31 www.thedailybeast.com Epstein Was Banned from Video Game Platform for ‘Abuse’ | curity has “fallen short of its goals when it comes to detaining immigrants despite high-profile enforcement actions.” It noted that while there were 40,000 people in ICE detention at the start of Trump’s presidency, that number has only risen to 73,000. Joe Gomes, an analyst at Noble Capital Markets, told the outlet, “Despite record funding that came through the One Big Beautiful Bill last year, the increase in detainees has risen slower than a lot of people had originally anticipated.”\n- 2026-02-01 www.thedailybeast.com Snoop Dogg’s Daughter Announces Tragic Loss |  Homeland Security has “fallen short of its goals when it comes to detaining immigrants despite high-profile enforcement actions.” It noted that while there were 40,000 people in ICE detention at the start of Trump’s presidency, that number has only risen to 73,000. Joe Gomes, an analyst at Noble Capital Markets, told the outlet, “Despite record funding that came through the One Big Beautiful Bill last year, the increase in detainees has risen slower than a lot of people had originally anticipated.”\n\n## 426743 Saif burial hits 0\n\n## 57193 SCOTUS map hits 1\n- 2026-01-31 www.foxnews.com Democrat Christian Menefee wins Texas special election, shrinks GOP majority | NEWYou can now listen to Fox News articles! Democrat Christian Menefee, a former attorney for Houston's Harris County, has won a special congressional election in a left-leaning congressional district in Texas, which has been vacant for nearly a year. The Associated Press reports that Menefee defeated former Houston City Council member Amanda Edwards, a fellow Democrat, in Saturday's runoff election to fill the seat left vacant when Democratic Rep. Sylvester Turner died last March. Menefee's victory means the Republicans' razor-thin House majority — they currently control the chamber 218-213 — will shrink by one seat when Menefee is sworn in to Congress. DEMOCRATIC TAKEOVER FEARS SOAR AS HOUSE REPUBLICANS CLING TO FRAGILE MAJORITY Sylvester, a former longtime state lawmaker, served two terms as Houston mayor before winning election to Congress in 2024, to fill the seat of the late longtime Democratic Rep. Sheila Jackson Lee. While Texas has redrawn its congressional maps for the 2026 midterms, as part of the high-stakes redistricting battle between President Donald Trump and Republicans versus Democrats, the special election used the state's current district lines. The addition of \n\n## 456284 WaPo publisher hits 0\n\n## 318661 Colombia peace hits 0\n\n## 398988 Lebanon abduction hits 0\n\n## 57\n[...truncated]",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3584,
+      "turn": 2705,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "The Feb 1 article set gives a concrete League Cup semifinal state: Arsenal lead Chelsea 3-2 and Manchester City lead Newcastle 2-0 before the second legs. I’m updating City’s likely final opponent toward Arsenal, while k",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The Feb 1 article set gives a concrete League Cup semifinal state: Arsenal lead Chelsea 3-2 and Manchester City lead Newcastle 2-0 before the second legs. I’m updating City’s likely final opponent toward Arsenal, while keeping Chelsea live."
+        }
+      ]
+    },
+    {
+      "idx": 3585,
+      "turn": 2706,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Arsenal\": 0.68, \"Chelsea\": 0.3, \"Newcastle United\": 0.02}, \"question_id\": \"220862\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_5",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "220862",
+            "outcomes": {
+              "Arsenal": 0.68,
+              "Chelsea": 0.3,
+              "Newcastle United": 0.02
+            },
+            "previous_outcomes": {
+              "Arsenal": 0.28,
+              "Chelsea": 0.22,
+              "Newcastle United": 0.08
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3586,
+      "turn": 2706,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_5",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 220862: {'Arsenal': 0.68, 'Chelsea': 0.3, 'Newcastle United': 0.02}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 220862: {'Arsenal': 0.68, 'Chelsea': 0.3, 'Newcastle United': 0.02}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3587,
+      "turn": 2707,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "The League Cup update is recorded. I’ll save the Feb 1 notes, including the two new resolution misses and today’s no-update checks, then advance.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The League Cup update is recorded. I’ll save the Feb 1 notes, including the two new resolution misses and today’s no-update checks, then advance."
+        }
+      ]
+    },
+    {
+      "idx": 3590,
+      "turn": 2708,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Feb 1 notes are saved. I’m ending the simulated day now.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Feb 1 notes are saved. I’m ending the simulated day now."
+        }
+      ]
+    },
+    {
+      "idx": 3591,
+      "turn": 2709,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_9",
+          "name": "next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 3594,
+      "turn": 2710,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "The harness advanced to Feb 2. I’m reading the new market snapshot and then I’ll scan today’s articles for the Feb 3-Feb 10 questions.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The harness advanced to Feb 2. I’m reading the new market snapshot and then I’ll scan today’s articles for the Feb 3-Feb 10 questions."
+        }
+      ]
+    },
+    {
+      "idx": 3595,
+      "turn": 2711,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(30))\nprint('\\\\nResolved on/after 2026-02-01:')\nfor r in resolved:\n    if r['resolution_date']>='2026-02-01':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-12:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-12':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3596,
+      "turn": 2712,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-01",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(30))\nprint('\\\\nResolved on/after 2026-02-01:')\nfor r in resolved:\n    if r['resolution_date']>='2026-02-01':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-12:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-12':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_1",
+          "content": "state_exists False\nrows 330 active 199 resolved 131\nactive_without_prediction 0\nactive_pred_dates [('2025-12-24', 188), ('2026-01-01', 2), ('2026-01-25', 1), ('2025-12-26', 1), ('2026-01-31', 1), ('2025-12-25', 1), ('2026-01-12', 1), ('2025-12-29', 1), ('2026-01-16', 1), ('2026-01-11', 1), ('2026-01-26', 1)]\n\nResolved on/after 2026-02-01:\n\nQ 102687 resdate 2026-02-01 GT Thorbjorn Jagland\ntitle: Which former Norwegian prime minister will Norwegian police publicly identify as being investigated for suspected gross corruption by February 2026?\nmy: {\"Erna Solberg\": 0.35, \"Jens Stoltenberg\": 0.12, \"Kjell Magne Bondevik\": 0.05, \"Thorbjorn Jagland\": 0.04} date 2025-12-24\n\nQ 449104 resdate 2026-02-01 GT Project Vault\ntitle: What will the new US strategic minerals stockpile be called by February 2026?\nmy: {\"Strategic Critical Minerals Reserve\": 0.18, \"National Defense Minerals Reserve\": 0.14, \"Strategic Minerals Reserve\": 0.12, \"Critical Minerals Stockpile\": 0.08, \"American Minerals Reserve\": 0.04} date 2025-12-24\n\nQ 220862 resdate 2026-02-02 GT Arsenal\ntitle: Which club will Manchester City face in the English League Cup final on Sunday, March 22, 2026?\nmy: {\"Arsenal\": 0.68, \"Chelsea\": 0.3, \"Newcastle United\": 0.02} date 2026-02-01\n\nQ 243685 resdate 2026-02-02 GT Union Consultative Council\ntitle: What will Myanmar's new five-member panel be called when it is established by March 2026?\nmy: {\"National Security and Peace Commission\": 0.15, \"State Administrative Council\": 0.1, \"National Defence and Security Council\": 0.08, \"Union Election Commission\": 0.05} date 2025-12-24\n\nQ 453736 resdate 2026-02-02 GT Saif al-Islam Gaddafi\ntitle: Who will Al Jazeera Arabic report has been killed in Libya by February 3, 2026?\nmy: {\"Mohammed al-Haddad\": 0.25, \"Saif al-Islam Gaddafi\": 0.15, \"Muhammad Ali Ahmad al-Haddad\": 0.12, \"Mohammed Ali Ahmed al-Haddad\": 0.08, \"Khalifa Haftar\": 0.04} date 2025-12-28\n\nQ 492629 resdate 2026-02-02 GT Darius Garland\ntitle: Which player will the Los Angeles Clippers receive in the James Harden trade by February 5, 2026?\nmy: {\"Zach LaVine\": 0.08, \"Bradley Beal\": 0.07, \"D'Angelo Russell\": 0.06, \"Jrue Holiday\": 0.05, \"Anfernee Simons\": 0.04} date 2025-12-24\n\nQ 955662 resdate 2026-02-02 GT Alagoas\ntitle: Which Brazilian state will authorities identify as the site of a bus crash that kills at least 16 people by February 4, 2026?\nmy: {\"Minas Gerais\": 0.18, \"Bahia\": 0.12, \"Parana\": 0.08, \"Sao Paulo\": 0.06, \"Rio Grande do Sul\": 0.04} date 2025-12-24\n\nQ 976004 resdate 2026-02-02 GT Zintan\ntitle: Where will forensic experts be sent in the Libyan killing probe announced by 10 February 2026?\nmy: {\"Tripoli\": 0.12, \"Bani Walid\": 0.1, \"Benghazi\": 0.08, \"Sirte\": 0.06, \"Zintan\": 0.05} date 2025-12-24\n\nQ 995305 resdate 2026-02-02 GT Tehran\ntitle: Which city will be reported by 3 February 2026 as the location of a huge fire at a market?\nmy: {\"Saint Petersburg\": 0.2, \"Jakarta\": 0.12, \"Karachi\": 0.08, \"Dhaka\": 0.06, \"Lahore\": 0.04} date 2025-12-24\n\nActive upcoming <=2026-02-12:\n\nQ 336425 resdate 2026-02-03\ntitle: Which eastern Ukrainian city will be identified as the site of a deadly market shelling by February 4, 2026?\nmy: {\"Kostiantynivka\": 0.18, \"Kupiansk\": 0.1, \"Donetsk\": 0.08, \"Pokrovsk\": 0.06, \"Kharkiv\": 0.04} date 2025-12-24\n\nQ 426743 resdate 2026-02-03\ntitle: In which town will Saif al-Islam Gaddafi be buried by February 10, 2026?\nmy: {\"Bani Walid\": 0.25, \"Sirte\": 0.18, \"Sabha\": 0.08, \"Zintan\": 0.06, \"Tripoli\": 0.04} date 2025-12-24\n\nQ 57193 resdate 2026-02-03\ntitle: Which state will the U.S. Supreme Court let keep its new congressional map by February 2026 after rejecting a Republican lawsuit?\nmy: {\"California\": 0.86, \"Louisiana\": 0.04, \"Alabama\": 0.025, \"North Carolina\": 0.02, \"New York\": 0.015} date 2026-01-25\n\nQ 579252 resdate 2026-02-03\ntitle: In which city will Amnesty International say wrestler Saleh Mohammadi has been sentenced to public execution, by February 14, 2026?\nmy: {\"Kermanshah\": 0.18, \"Sanandaj\": 0.12, \"Tehran\": 0.08, \"Karaj\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nQ 630740 resdate 2026-02-08\ntitle: Which Lebanese city will be reported as the site of a residential building collapse that kills at least 15 people in early February 2026, as confirmed by February 28, 2026?\nmy: {\"Tripoli\": 0.18, \"Beirut\": 0.16, \"Sidon\": 0.1, \"Tyre\": 0.06, \"Baalbek\": 0.04} date 2025-12-24\n\nQ 883856 resdate 2026-02-05\ntitle: Who will Russian authorities identify as the senior military officer shot in Moscow by February 28, 2026?\nmy: {\"Yaroslav Moskalik\": 0.08, \"Igor Kirillov\": 0.06, \"Sergei Surovikin\": 0.04, \"Andrei Mordvichev\": 0.03, \"Vladimir Shamanov\": 0.03} date 2025-12-24\n\nQ 14689 resdate 2026-02-09\ntitle: What country will be identified as the location of a fatal mass shooting at a secondary school by February 11, 2026?\nmy: {\"Germany\": 0.12, \"Sweden\": 0.1, \"Canada\": 0.08, \"France\": 0.06, \"Austria\": 0.04} date 2025-12-24\n\nQ 739916 resdate 2026-02-12\ntitle: Which aircraft carrier will join the USS Abraham Lincoln carrier strike group in the Middle East by the end of March 2026?\nmy: {\"USS Gerald R. Ford\": 0.22, \"USS Harry S. Truman\": 0.12, \"USS Carl Vinson\": 0.08, \"USS Nimitz\": 0.06, \"USS Theodore Roosevelt\": 0.05} date 2025-12-24\n\nQ 198725 resdate 2026-02-06\ntitle: To which Iranian city will Narges Mohammadi be exiled for two years under a new sentence by February 2026?\nmy: {\"Zanjan\": 0.18, \"Qazvin\": 0.12, \"Semnan\": 0.08, \"Tabriz\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nQ 534224 resdate 2026-02-07\ntitle: Which country will the silver medalist in the women’s downhill alpine skiing event at the Milan-Cortina Winter Olympics represent by 8 February 2026?\nmy: {\"Italy\": 0.23, \"Switzerland\": 0.21, \"Austria\": 0.14, \"United States\": 0.14, \"Germany\": 0.05} date 2026-01-31\n\nQ 312764 resdate 2026-02-09\ntitle: Who will be named Egypt’s minister of planning in the cabinet reshuffle by 15 February 2026?\nmy: {\"Rania Al-Mashat\": 0.3, \"Hala El-Said\": 0.1, \"Maya Morsy\": 0.06, \"Ahmed Kouchouk\": 0.05} date 2025-12-24\n\nQ 527803 resdate 2026-02-09\ntitle: What town will authorities identify as the site of a deadly school shooting in Canada by February 11, 2026?\nmy: {\"La Loche\": 0.08, \"Red Deer\": 0.06, \"Brandon\": 0.05, \"Saskatoon\": 0.05, \"Prince Albert\": 0.04} date 2025-12-24\n\nQ 795774 resdate 2026-02-12\ntitle: By the end of February 2026, which French city will be identified as the place where a French far-right activist was killed, leading to a public dispute between Emmanuel Macron and Giorgia Meloni?\nmy: {\"Lyon\": 0.14, \"Grenoble\": 0.1, \"Marseille\": 0.08, \"Nice\": 0.06, \"Paris\": 0.04} date 2025-12-24\n\nQ 456284 resdate 2026-02-06\ntitle: Who will take over as publisher of The Washington Post immediately after Will Lewis steps aside, by February 2026?\nmy: {\"Matt Murray\": 0.18, \"Patty Stonesifer\": 0.12, \"David Shipley\": 0.08, \"Sally Buzbee\": 0.05, \"Kathy Baird\": 0.04} date 2025-12-24\n\nQ 318661 resdate 2026-02-08\ntitle: Which armed group will Colombia announce it is resuming peace talks with by February 2026?\nmy: {\"National Liberation Army\": 0.35, \"ELN\": 0.12, \"Segunda Marquetalia\": 0.1, \"Estado Mayor Central\": 0.08} date 2025-12-24\n\nQ 398988 resdate 2026-02-08\ntitle: Which Lebanese group will say, by February 2026, that Israel abducted one of its officials in a raid in southern Lebanon?\nmy: {\"Hezbollah\": 0.45, \"Amal Movement\": 0.08, \"Lebanese Forces\": 0.03} date 2025-12-24\n\nQ 487245 resdate 2026-02-09\ntitle: What country will be named as a source of tensions surrounding the U.S. president's late-February 2026 address?\nmy: {\"Iran\": 0.25, \"Venezuela\": 0.14, \"China\": 0.08, \"Russia\": 0.06, \"Israel\": 0.05} date 2025-12-24\n\nQ 745180 resdate 2026-02-09\ntitle: Which earlier cyclone will humanitarian officials say Gezani's Madagascar landfall likely rivals by February 13, 2026?\nmy: {\"Cyclone Freddy\": 0.25, \"Cyclone Batsirai\": 0.16, \"Cyclone Gamane\": 0.1, \"Cyclone Idai\": 0.06, \"Cyclone Gafilo\": 0.05} date 2025-12-24\n\nQ 613203 resdate 2026-02-11\ntitle: Which club will Tractor FC play in the AFC Asian Champions League Elite playoff on April 13-14, 2026?\nmy: {\"Al Nassr\": 0.12, \"Al Wasl\": 0.1, \"Al Hilal\": 0.08, \"Sharjah\": 0.06, \"Al Ahli\": 0.05} date 2025-12-24\n\nQ 180958 resdate 2026-02-07\ntitle: Which NFL team will win Super Bowl LX in February 2026?\nmy: {\"Seattle Seahawks\": 0.63, \"New England Patriots\": 0.37} date 2026-01-26\n\nQ 538697 resdate 2026-02-08\ntitle: Which country's military will say by February 18, 2026 that up to 8,000 troops could be ready by the end of June for a possible Gaza mission?\nmy: {\"Indonesia\": 0.25, \"Turkey\": 0.16, \"Egypt\": 0.1, \"Italy\": 0.08, \"Pakistan\": 0.06} date 2025-12-24\n\nQ 304287 resdate 2026-02-12\ntitle: Which party will emerge as the main opposition in Bangladesh's new parliament after the 2026 election, based on seat results reported by February 13, 2026?\nmy: {\"Jamaat-e-Islami\": 0.82, \"National Citizens Party\": 0.05, \"Bangladesh Nationalist Party\": 0.03, \"Awami League\": 0.01, \"Jatiya Party\": 0.01} date 2026-01-01\n",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}
