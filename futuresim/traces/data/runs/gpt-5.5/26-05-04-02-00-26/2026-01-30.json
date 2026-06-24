@@ -1,0 +1,712 @@
+{
+  "agent_slug": "gpt-5.5",
+  "agent_name": "GPT 5.5",
+  "model": "gpt-55",
+  "harness": "Codex",
+  "seed_label": "r02",
+  "run_id": "26-05-04-02-00-26",
+  "sim_date": "2026-01-30",
+  "events": [
+    {
+      "idx": 3525,
+      "turn": 2659,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Jan 30 added one new resolution: Pat Cummins’s replacement was Ben Dwarshuis, which we had included but underweighted. I’m scanning Jan 30 articles now for the Jan 31 and early-February questions, especially Australian O",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Jan 30 added one new resolution: Pat Cummins’s replacement was Ben Dwarshuis, which we had included but underweighted. I’m scanning Jan 30 articles now for the Jan 31 and early-February questions, especially Australian Open, Grammys, Ukraine/Balochistan, and market/crash incidents."
+        }
+      ]
+    },
+    {
+      "idx": 3526,
+      "turn": 2660,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os, re\\npath='articles/2026/01/30/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.p\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os, re\npath='articles/2026/01/30/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-01-30': usable += 1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Jan30',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'391811 miners bus': lambda t: ('miner' in t and 'bus' in t and ('dnipropetrovsk' in t or 'drone' in t or 'ukrain' in t)),\n'562701 Balochistan': lambda t: 'balochistan' in t and ('secured' in t or 'three-day' in t or 'police' in t or 'battle' in t or 'militant' in t),\n'946810 Grammys AOTY': lambda t: ('album of the year' in t and ('grammy' in t or 'grammys' in t)) or ('grammys' in t and ('lady gaga' in t or 'kendrick lamar' in t or 'bad bunny' in t)),\n'951896 Australian men': lambda t: ('australian open' in t and ('sinner' in t or 'alcaraz' in t or 'djokovic' in t or 'zverev' in t)),\n'492629 Harden Clippers': lambda t: 'james harden' in t or ('harden' in t and 'clippers' in t and 'trade' in t),\n'955662 Brazil bus crash': lambda t: ('bus crash' in t and ('brazil' in t or 'minas gerais' in t or 'bahia' in t or 'parana' in t) and ('16' in t or 'people' in t)),\n'976004 Libya forensic': lambda t: ('forensic' in t and 'libya' in t) or 'libyan killing probe' in t,\n'995305 market fire': lambda t: ('market' in t and 'fire' in t and ('huge' in t or 'massive' in t or 'large' in t or 'major' in t or 'engulf' in t)),\n'102687 Norway PM corruption': lambda t: ('norwegian' in t and 'prime minister' in t and ('corruption' in t or 'gross' in t or 'police' in t)) or 'erna solberg' in t,\n'449104 minerals': lambda t: ('minerals stockpile' in t) or ('critical minerals' in t and ('reserve' in t or 'stockpile' in t)),\n'336425 Ukraine market shelling': lambda t: ('market shelling' in t) or ('market' in t and 'shelling' in t and ('ukraine' in t or 'ukrainian' in t or 'kostiantynivka' in t or 'kupiansk' in t)),\n'220862 League Cup': lambda t: ('league cup final' in t or 'carabao cup final' in t) and ('manchester city' in t or 'man city' in t or 'city' in t),\n'243685 Myanmar panel': lambda t: ('five-member panel' in t and 'myanmar' in t) or ('national security and peace commission' in t) or ('myanmar' in t and 'panel' in t),\n'426743 Saif burial': lambda t: 'saif al-islam' in t and ('buried' in t or 'burial' in t or 'funeral' in t or 'killed' in t),\n'453736 Libya killed': lambda t: ('mohammed al-haddad' in t or 'saif al-islam gaddafi' in t or 'khalifa haftar' in t) and ('killed' in t or 'death' in t or 'libya' in t),\n'579252 Saleh city': lambda t: 'saleh mohammadi' in t or ('wrestler' in t and 'public execution' in t),\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t)),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-01-30': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            # choose a useful distinctive token\n            for kw in ['miner','balochistan','album of the year','australian open','james harden','bus crash','forensic','market','norwegian','critical minerals','shelling','league cup','myanmar','saif','mohammadi','narges','washington post','downhill','super bowl']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1050]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1500]))\n            if len(hits)>=5: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3527,
+      "turn": 2661,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, os, re\\npath='articles/2026/01/30/articles.jsonl'\\nprint('exists', os.path.exists(path))\\nif not os.p\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_3",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, os, re\npath='articles/2026/01/30/articles.jsonl'\nprint('exists', os.path.exists(path))\nif not os.path.exists(path): raise SystemExit\nlines=0; usable=0; bydate={}\nfor line in open(path):\n    lines+=1\n    a=json.loads(line); dp=a.get('date_publish') or ''\n    if dp <= '2026-01-30': usable += 1\n    bydate[dp]=bydate.get(dp,0)+1\nprint('lines',lines,'usable<=Jan30',usable,'latest_dates', sorted(bydate)[-10:])\nchecks={\n'391811 miners bus': lambda t: ('miner' in t and 'bus' in t and ('dnipropetrovsk' in t or 'drone' in t or 'ukrain' in t)),\n'562701 Balochistan': lambda t: 'balochistan' in t and ('secured' in t or 'three-day' in t or 'police' in t or 'battle' in t or 'militant' in t),\n'946810 Grammys AOTY': lambda t: ('album of the year' in t and ('grammy' in t or 'grammys' in t)) or ('grammys' in t and ('lady gaga' in t or 'kendrick lamar' in t or 'bad bunny' in t)),\n'951896 Australian men': lambda t: ('australian open' in t and ('sinner' in t or 'alcaraz' in t or 'djokovic' in t or 'zverev' in t)),\n'492629 Harden Clippers': lambda t: 'james harden' in t or ('harden' in t and 'clippers' in t and 'trade' in t),\n'955662 Brazil bus crash': lambda t: ('bus crash' in t and ('brazil' in t or 'minas gerais' in t or 'bahia' in t or 'parana' in t) and ('16' in t or 'people' in t)),\n'976004 Libya forensic': lambda t: ('forensic' in t and 'libya' in t) or 'libyan killing probe' in t,\n'995305 market fire': lambda t: ('market' in t and 'fire' in t and ('huge' in t or 'massive' in t or 'large' in t or 'major' in t or 'engulf' in t)),\n'102687 Norway PM corruption': lambda t: ('norwegian' in t and 'prime minister' in t and ('corruption' in t or 'gross' in t or 'police' in t)) or 'erna solberg' in t,\n'449104 minerals': lambda t: ('minerals stockpile' in t) or ('critical minerals' in t and ('reserve' in t or 'stockpile' in t)),\n'336425 Ukraine market shelling': lambda t: ('market shelling' in t) or ('market' in t and 'shelling' in t and ('ukraine' in t or 'ukrainian' in t or 'kostiantynivka' in t or 'kupiansk' in t)),\n'220862 League Cup': lambda t: ('league cup final' in t or 'carabao cup final' in t) and ('manchester city' in t or 'man city' in t or 'city' in t),\n'243685 Myanmar panel': lambda t: ('five-member panel' in t and 'myanmar' in t) or ('national security and peace commission' in t) or ('myanmar' in t and 'panel' in t),\n'426743 Saif burial': lambda t: 'saif al-islam' in t and ('buried' in t or 'burial' in t or 'funeral' in t or 'killed' in t),\n'453736 Libya killed': lambda t: ('mohammed al-haddad' in t or 'saif al-islam gaddafi' in t or 'khalifa haftar' in t) and ('killed' in t or 'death' in t or 'libya' in t),\n'579252 Saleh city': lambda t: 'saleh mohammadi' in t or ('wrestler' in t and 'public execution' in t),\n'198725 Narges exile': lambda t: 'narges mohammadi' in t and ('exile' in t or 'sentenced' in t or 'zanjan' in t or 'qazvin' in t),\n'456284 WaPo publisher': lambda t: ('washington post' in t and 'will lewis' in t) or ('publisher' in t and 'washington post' in t),\n'534224 downhill women': lambda t: ('women' in t and 'downhill' in t and ('olympic' in t or 'milan-cortina' in t)),\n'180958 Super Bowl': lambda t: ('super bowl' in t and ('seahawks' in t or 'patriots' in t or 'seattle' in t or 'new england' in t)),\n}\narts=[]\nfor line in open(path):\n    a=json.loads(line)\n    if (a.get('date_publish') or '')>'2026-01-30': continue\n    title=a.get('title') or ''; c=a.get('content') or ''\n    t=(title+'\\\\n'+c).lower()\n    arts.append((a,title,c,t))\nfor label,fn in checks.items():\n    hits=[]\n    for a,title,c,t in arts:\n        if fn(t):\n            idx=0\n            # choose a useful distinctive token\n            for kw in ['miner','balochistan','album of the year','australian open','james harden','bus crash','forensic','market','norwegian','critical minerals','shelling','league cup','myanmar','saif','mohammadi','narges','washington post','downhill','super bowl']:\n                j=t.find(kw)\n                if j\"'!=-1:\n                    idx=j; break\n            snippet=(title+'\"' | '+c[max(0,idx-350):idx+1050]).replace('\\\\n',' ')\n            hits.append((a.get('date_publish'),a.get('source'),snippet[:1500]))\n            if len(hits)>=5: break\n    print('\\\\n##',label,'hits',len(hits))\n    for dp,src,sn in hits:\n        print('-',dp,src,sn)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_3",
+          "content": "exists True\nlines 3731 usable<=Jan30 3726 latest_dates ['2026-01-22', '2026-01-23', '2026-01-24', '2026-01-25', '2026-01-26', '2026-01-27', '2026-01-28', '2026-01-29', '2026-01-30', '2026-01-31']\n\n## 391811 miners bus hits 2\n- 2026-01-28 www.straitstimes.com Six EU countries hold call in push for ‘two‑speed’ Europe | vereignty in the payment sphere to highlight the currency’s role as a safe haven based on predictability and the rule of law. He urged better cooperation on defence, which he said should be firmly embedded as a priority in the next EU multiannual budget. Supply chain resilience for critical minerals must also be strengthened, with greater strategic engagement with international partners, Mr Klingbeil added. REUTERS\n- 2026-01-30 www.hindustantimes.com India Energy Week 2026 Opens with a Hard Look at Growth, Energy and Constraints |  concrete bilateral outcomes. On the sidelines of the event, India and Canada signed a joint statement renewing the India-Canada Ministerial Energy Dialogue, signalling intent to deepen cooperation across LNG, LPG and crude oil, alongside cleaner technologies, critical minerals, storage, electricity systems and the application of artificial intelligence in the energy sector. The agreement positioned India as a long-term demand anchor and Canada as a reliable supplier, with reciprocal investment and business-to-business partnerships playing key enablers. Natural gas stood out as the most immediate test case for this collaborative logic. In the leadership panel Repositioning natural gas and energy transformation: pragmatic bridging resource to pivotal destination fuel, industry leaders examined the role of gas and LNG in strengthening energy resilience while supporting near-term emissions reduction through coal-to-gas switching. The discussion reflected broad consensus that natural gas is increasingly being seen not only as a transition fuel, but as a long-term component of modern energy systems. For India, panelists pointed to the rapid expansion of pipelines, LNG terminals, regasification capacity and city gas distribution networks, while also flagging affordability as the principal constraint on wider adoption. Policy stability, access to long-term finance and renewed upstream\n\n## 562701 Balochistan hits 2\n- 2026-01-30 www.aljazeera.com Pakistan military raids kill 41 armed fighters in Balochistan | Pakistan’s security forces have carried out raids in the country’s southwest, killing at least 41 armed fighters, whom the country’s military linked to regional rival and neighbour India. The military said in a statement on Friday that the deadly encounters took place in the province of Balochistan, which shares a long border with Afghanistan and has long been a base for separatist groups seeking independence from Pakistan’s central government in Islamabad. Recommended Stories list of 4 items list 1 of 4Gunmen in Pakistan kidnap, kill nine bus passengers, officials say list 2 of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, \n- 2026-01-30 www.aljazeera.com Pakistan military raids kill 41 armed fighters in Balochistan | Pakistan’s security forces have carried out raids in the country’s southwest, killing at least 41 armed fighters, whom the country’s military linked to regional rival and neighbour India. The military said in a statement on Friday that the deadly encounters took place in the province of Balochistan, which shares a long border with Afghanistan and has long been a base for separatist groups seeking independence from Pakistan’s central government in Islamabad. Recommended Stories list of 4 items list 1 of 4Gunmen in Pakistan kidnap, kill nine bus passengers, officials say list 2 of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, \n\n## 946810 Grammys AOTY hits 3\n- 2026-01-30 www.salon.com Turning Point's Super Bowl alternative to Bad Bunny looks like a flop | ecause Bad Bunny doesn’t like Immigration and Customs Enforcement, an opinion shared by 63% of American voters. Advertisement: TPUSA mistook the racist spleen-venting on X for a real trend and announced they would put on their own halftime show. “They forced the free hand of the market to create an alternative,” TPUSA spokesman Andrew Kolvet announced in October. There was about a week of hype around this totally awesome, blow-your-socks-off MAGA music extravaganza, but since then there’s been, well, nothing. For months, the website for the “All-American Halftime Show” did not change. There was only a survey asking people to vote for what genre of music they’d like to see, with options we’re apparently meant to believe will excite the youth, like “Anything in English” and “worship music.” But this week, TPUSA finally updated the site — not with a dramatic unveiling of a lineup, but with just a list of the media outlets streaming the program, such as One America News and the Daily Wire. Instead of a list of performers, there are a series of traps to lure you into donating or signing up for TPUSA’s email list. One doesn’t need to be a marketing genius to suspect that this does not bode well for the quality of the upcoming show. Typically, when promoters seek to draw viewers into a televised music program, they will heavily advertise the big name stars they are featuring, believin\n- 2026-01-30 www.independent.co.uk What time is the 2026 Grammys and how to watch | ual Grammy Awards are scheduled for Sunday, 1 February, at the Crypto.com Arena in Los Angeles, commencing at 8pm ET (1am GMT). Trevor Noah is set to host the prestigious ceremony for the sixth and final time. Kendrick Lamar leads this year's nominations with nine nods, including for Record, Song, and Album of the Year. Performers include Justin Bieber, Lady Gaga, Sabrina Carpenter, and Tyler, the Creator, with a special segment dedicated to Best New Artist nominees. Viewers in the US can watch the main show live on CBS, while the premiere ceremony and red carpet coverage will be available via online streams.\n- 2026-01-30 www.independent.co.uk What to expect at the 2026 Grammy Awards | redicted to take home Record of the Year, recognised for its superb production and poignant storytelling. Despite Chappell Roan's 'The Subway' being a strong contender, Rosé and Bruno Mars' commercially successful 'APT' is expected to win Song of the Year. Bad Bunny's Debí Tirar Más Fotos is forecast to win Album of the Year, celebrated as an intelligent, complex, and genre-blending masterpiece.\n\n## 951896 Australian men hits 5\n- 2026-01-30 www.thedailybeast.com Tennis’ Top Rivals to Face Off in Epic Australian Open Final | The Australian Open final is shaping up to be a grueling showdown, with top seed Carlos Alcaraz, 22, set to face rival Novak Djokovic, 38, after both won punishing five-set semifinals on Friday in Melbourne. Alcaraz advanced after outlasting Alexander Zverev in a marathon five-hour, 27-minute match in blistering heat—the longest men’s semifinal in Melbourne Park history. The Spaniard battled through apparent thigh cramps that required a medical timeout and later admitted in a on-court interview that the match was one of the most physically demanding of his career. No. 4 seed Djokovic booked his spot by defeating reigning champion Jannik Sinner in another five-set thriller, making him the oldest man in the Open era to reach the Australian Open final. Speaking on-court afterward, Djokovic said he knew beating Sinner would be “very difficult—but not impossible.” Alcaraz and Djokovic have faced off several times, most recently at the 2025 U.S. Open, where Alcaraz stunned Djokovic for the title.\n- 2026-01-30 www.thedailybeast.com Molecule Hinting at Signs of Life Discovered in Space | ules can be found in the future. “This is the largest sulfur-bearing molecule ever found in space, at 13 atoms,” Araki said. “Before this one, the largest only had nine atoms, but it was already a rare case, because most detected sulfur-bearing molecules only had three, four or five atoms.” The Australian Open final is shaping up to be a grueling showdown, with top seed Carlos Alcaraz, 22, set to face rival Novak Djokovic, 38, after both won punishing five-set semifinals on Friday in Melbourne. Alcaraz advanced after outlasting Alexander Zverev in a marathon five-hour, 27-minute match in blistering heat—the longest men’s semifinal in Melbourne Park history. The Spaniard battled through apparent thigh cramps that required a medical timeout and later admitted in a on-court interview that the match was one of the most physically demanding of his career. No. 4 seed Djokovic booked his spot by defeating reigning champion Jannik Sinner in another five-set thriller, making him the oldest man in the Open era to reach the Australian Open final. Speaking on-court afterward, Djokovic said he knew beating Sinner would be “very difficult—but not impossible.” Alcaraz and Djokovic have faced off several times, most recently at the 2025 U.S. Open, where Alcaraz stunned Djokovic for the title. Love may reign eternal, but cellulite doesn’t have to. Just because it can be frustrating to treat doe\n- 2026-01-30 www.khaleejtimes.com Keep writing me off, says Djokovic winning Australian Open thriller | Novak Djokovic called it one of his best performances in a decade after outlasting Jannik Sinner early Saturday in a five-set marathon to set up an Australian Open final against Carlos Alcaraz. The 38-year-old Serb rolled back the years to battle past two-time reigning champion Sinner 3-6, 6-3, 4-6, 6-4, 6-4 in a 1:32 am finish. Djokovic plays top seed Alcaraz in Sunday's Melbourne title decider and if he beats a player 16 years younger, he would win an all-time record 25th Grand Slam crown. After four hours and nine minutes of nail-biting action, Djokovic kneeled to the court floor. He appeared emotional, lost for words at first. \"It feels surreal, to be honest,\" said Djokovic, who had lost the five previous matches to the 24-year-old Italian Sinner. He added: \"I have tremendous respect for him, an incredible player. He pushes you to the very limit, which is what he did tonight to me.\" With age and injuries catching up with Djokovic, Sunday may represent the Serb's best chance of seizing that elusive 25th major, although his gritty display against Sinner shows he still has pl\n- 2026-01-30 www.irishtimes.com Carlos Alcaraz beats Alexander Zverev in Australian Open epic lasting over five hours | Carlos Alcaraz has beaten Alexander Zverev in a five-set thriller in the Australian Open semi-final, defeating the German 6-4, 7-6 (7-5), 6-7 (3-7), 6-7 (4-7), 7-5. The world number one Alcaraz had looked set for victory after winning the first two sets but struggled for mobility in the third set, leading to a medical timeout. Zverev was furious at Alcaraz taking the timeout for what he thought was cramp, saying him and Sinner got “protected”. “It’s unbelievable that he gets treated for cramps, it’s BS. You are protecting these two guys all the time,” he said to the umpire. The perceived injustice inspired Zverev to some of his best tennis, winning the third and fourth sets, and serving for the match in the fifth set. But the remarkable Alcaraz broke Zverev and won the final set tiebreaker in an epic lasting 5 hours and 27 minutes. Alcaraz will play the winner of 10-time Australian Open winner Novak Djokovic and rival Jannik Sinner in the final. Winning the Australian Open would complete the career grand slam. More to follow ...\n- 2026-01-30 www.irishtimes.com Novak Djokovic rolls back the years to beat Jannik Sinner in Australian Open epic | Novak Djokovic has beaten Jannik Sinner in the Australian Open semi-final after another five-set epic on a remarkable day of tennis in Melbourne. The 10-time champion beat Sinner, who had won the previous two Australian Opens, 3-6, 6-3, 4-6, 6-4, 6-4 to reach yet another Grand Slam final. The 38-year-old rolled back the years with a superb performance to set up a final with Carlos Alcaraz, who beat Alexander Zverev in five sets earlier. The Serb is looking for a record 25th Grand Slam. More to follow... Earlier... the Alcaraz-Zverev report Murmurs around Melbourne Park had been building. That the men’s Australian Open draw had not met expectations in 2026. That matches had been one-sided, and lacking memorable moments. That so-called SinCaraz was a foregone conclusion. That tennis had lost its touch. Murmur no more. In this year’s first match on Rod Laver Arena to go five sets, Carlos Alcaraz leapt off the canvas to outlast Alexander Zverev 6-4, 7-6 (5), 6-7 (3), 6-7 (4), 7-5 over five hours and 27 minutes – the third longest match in Australian Open history. It was so long it pushed the second\n\n## 492629 Harden Clippers hits 2\n- 2026-01-30 www.fastcompany.com Why Sabrina Carpenter is eating Pringles at the Super Bowl | he big game is an exciting partnership that hits all the right factors for us.” Pringles’ celebrity strategy Pringles is no stranger to the celebrity Super Bowl ad game. The brand tapped Meghan Trainor in 2023, Chris Pratt in 2024, and last year, a seemingly random collection of stars like James Harden, Adam Brody, and Nick Offerman. But Reinecke says the brand’s strategy isn’t some game of big name roulette. “Each partnership has sharpened our approach,” she says. “We’ve learned that the most effective talent isn’t just recognizable—it has to authentically align with both the audience and the brand’s voice.” Reinecke points to Carpenter as an example of this. “She connects deeply with Gen Z while naturally embodying the self-aware, unhinged internet humor that defines how the brand shows up today,” Reinecke says. “The partnership has really embodied a shared sense of play, which we hope ultimately makes it resonate with our fans.” Beyond the Game Given the level of investment required to just get a spot in the game, most brands now extend Super Bowl-related work to run long before and after the final whistle. For Pringles, that means tying its work with Carpenter into an existing campaign that launched last fall to resurrect its ‘90s ad slogan “Once You Pop.”\n- 2026-01-28 www.straitstimes.com Cleveland Cavaliers ready for LeBron James as Los Angeles Lakers look for more road success in NBA | xander scored 29 points to lead the Oklahoma City Thunder to a 104-95 home win over the New Orleans Pelicans to snap a two-game losing streak. The loss also halted the Pelicans’ two-game winning streak. Elsewhere, Kawhi Leonard scored 21 points while James Harden tallied 16 points and 10 assists to lead the Los Angeles Clippers to a 115-103 road victory over the Utah Jazz. Paul George scored 32 points and Joel Embiid added 29 to highlight the Philadelphia 76ers’ 139-122 victory over the visiting Milwaukee Bucks. REUTERS\n\n## 955662 Brazil bus crash hits 0\n\n## 976004 Libya forensic hits 0\n\n## 995305 market fire hits 5\n- 2026-01-30 www.thenation.com How Milk Became a Battleground in Trump’s War on “Woke” |  helped absorb the surplus, embedding milk into the daily lives of American children. In the 1970s, facing yet another glut, the federal government began purchasing excess milk and converting it into cheese; within a decade, it was sitting on hundreds of million pounds of it. Unable to find a market solution, the government distributed the surplus—sometimes moldy—to food pantries and low-income families. But as time went on, Americans still kept drinking less and less milk per day. The United States Department of Agriculture estimates that between 1970 and 2019, milk consumption per day dropped nearly 50 percent. Milk drinking overall decreased more than 10 percent in just the decade between 2014 and 2024, with the steepest drop in consumption coming from children, according to the agency. Ad Policy Popular “swipe left below to view more authors”Swipe → The Smug and Vacuous David Brooks Is Perfect for “The Atlantic” The Smug and Vacuous David Brooks Is Perfect for “The Atlantic” Chris Lehmann ICE Brutally Dragged This Disabled Woman Out of Her Car. What Happened Next Was Just As Chilling. ICE Brutally Dragged This Disabled Woman Out of Her Car. What Happened Next Was Just As Chilling. Fatima Khan “The Nation” Nominates Minneapolis for the Nobel Peace Prize “The Nation” Nominates Minneapolis for the Nobel Peace Prize The Editors Want to Stop ICE? Go After Its Corporate Collabora\n- 2026-01-30 www.nbcnews.com The 5 Best Streaming Devices of 2026 | experts. To learn more about the best streaming devices, I spoke with electronics experts about the strengths and weaknesses of each of the big streaming brands: think Roku, Amazon, Apple and Google. Then I leveraged my experience alongside that of the NBC Select team to select the best streaming devices on the market. How I picked the best streaming devices I spoke with electronics and retail experts to better understand how streaming devices are different from what’s built into your TV. Combining their advice with my personal experience, I selected the best streaming devices, keeping the following in mind: Resolution: I recommend streaming devices that can support 4K resolution. While you can buy budget streaming sticks made for 1080p resolution, the 4K versions aren’t much pricier. Ease of use: It shouldn’t be a headache to dive into your favorite show. I prioritized streaming devices that have an easy setup and a simple user interface. Extra features: Some streaming devices have additional features like ethernet ports, headphone jacks or Wi-Fi 6E support. I considered and listed additional features in the “What to know” section of each recommendation. Price: Most streaming devices cost between $40 and $150. I included products across a range of prices. Want more from NBC Select? Sign up for our newsletter, The Selection, and shop smarter. The best streaming devices in 2026 \n- 2026-01-30 www.koreaherald.com Seoul unveils blueprint to become global leader in 'physical AI' |  is slated to begin in 2028, while the Suseo cluster is to be completed by 2030. To strengthen the industrial ecosystem, Seoul will launch a test bed demonstration center in the second half of this year and invest 100 billion won ($70 million) by 2030 to support real-world trials and market entry. The plan includes embedding physical AI into logistics, mobility and urban operations, while constructing infrastructure capable of collecting real-time city data. The city will also invest 70 billion won in R&D and operate a 150 billion won Seoul Vision 2030 Fund to nurture promising companies. Seoul plans to deploy physical AI technologies across transportation, care services and safety. Level 4 unstaffed robotaxis are set to begin operating in October, while the city's early-morning autonomous shuttle bus service will expand from one route to four. Rehabilitation robots, wearable assistive exoskeletons, AI fire-patrol robots and safety-inspection drones will be introduced across welfare and disaster-response fields. Seoul said it will invest 120 billion won in smart infrastructure management by 2030. Reaffirming the city's commitment to responsible AI\n[...truncated]",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3528,
+      "turn": 2662,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfor line in open('articles/2026/01/30/articles.jsonl'):\\n    a=json.loads(line); title=a.get('title')\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_4",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json\nfor line in open('articles/2026/01/30/articles.jsonl'):\n    a=json.loads(line); title=a.get('title') or ''\n    if 'Pakistan military raids kill 41' in title:\n        print('TITLE',title,'DATE',a.get('date_publish'),'SRC',a.get('source'))\n        c=a.get('content') or ''\n        for kw in ['first raid', 'second', 'Harnai', 'Sibi', 'police', 'secured', 'battle', 'town', 'Balochistan']:\n            i=c.lower().find(kw.lower())\n            if i\"'!=-1:\n                print('\"'\\\\nKW',kw,':', c[max(0,i-500):i+1200].replace('\\\\n',' ')[:2000])\n        break\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3529,
+      "turn": 2663,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfor line in open('articles/2026/01/30/articles.jsonl'):\\n    a=json.loads(line); title=a.get('title')\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_4",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json\nfor line in open('articles/2026/01/30/articles.jsonl'):\n    a=json.loads(line); title=a.get('title') or ''\n    if 'Pakistan military raids kill 41' in title:\n        print('TITLE',title,'DATE',a.get('date_publish'),'SRC',a.get('source'))\n        c=a.get('content') or ''\n        for kw in ['first raid', 'second', 'Harnai', 'Sibi', 'police', 'secured', 'battle', 'town', 'Balochistan']:\n            i=c.lower().find(kw.lower())\n            if i\"'!=-1:\n                print('\"'\\\\nKW',kw,':', c[max(0,i-500):i+1200].replace('\\\\n',' ')[:2000])\n        break\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_4",
+          "content": "TITLE Pakistan military raids kill 41 armed fighters in Balochistan DATE 2026-01-30 SRC www.aljazeera.com\n\nKW first raid :  of 4Gunmen in Pakistan kidnap, kill nine bus passengers, officials say list 2 of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, Pakistan’s Dawn newspaper quoted the military as saying. The fighters belonged to Fitna-al-Khawarij (a term the government uses to refer to the banned Pakistan Taliban (TTP), which is allied with Afghanistan’s Taliban), the army officials said. In a separate operation in Balochistan’s Panjgur district, “11 India-sponsored terrorists” belonging to the Fitna-al-Hindustan were killed, the military’s media wing Inter-Services Public Relations said. The military added that ammunition as well as money allegedly looted during a bank robbery in Panjgur in December were recovered from the fighters killed in the second raid. Both raids took place on Thursday. None of the soldiers involved was killed. India has yet to comment on the allegations. The Pakistani military added that “sanitisation operations” were ongoing in both districts to eliminate any remaining fighters. Pakistani President Asif Ali Zardari said the operation “reflects the state’s unwavering resolve,” according to Pakistan’s Express Tribune. The newspaper also quoted Prime Minister Shehbaz Sharif as saying that “the entire nation s\n\nKW second : e government uses to refer to the banned Pakistan Taliban (TTP), which is allied with Afghanistan’s Taliban), the army officials said. In a separate operation in Balochistan’s Panjgur district, “11 India-sponsored terrorists” belonging to the Fitna-al-Hindustan were killed, the military’s media wing Inter-Services Public Relations said. The military added that ammunition as well as money allegedly looted during a bank robbery in Panjgur in December were recovered from the fighters killed in the second raid. Both raids took place on Thursday. None of the soldiers involved was killed. India has yet to comment on the allegations. The Pakistani military added that “sanitisation operations” were ongoing in both districts to eliminate any remaining fighters. Pakistani President Asif Ali Zardari said the operation “reflects the state’s unwavering resolve,” according to Pakistan’s Express Tribune. The newspaper also quoted Prime Minister Shehbaz Sharif as saying that “the entire nation stands with the armed forces in this ongoing fight against terrorism”. Pakistan has seen a surge in violence in recent months, largely blamed on Baloch separatist groups such as the banned Balochistan Liberation Army and the TTP. In January, Pakistan’s security forces killed 12 armed fighters accused of planning to carry out a hostage attack in Balochistan’s Kharan district. The military also claimed that the fighters were backed by India in that incident.\n\nKW Harnai : of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, Pakistan’s Dawn newspaper quoted the military as saying. The fighters belonged to Fitna-al-Khawarij (a term the government uses to refer to the banned Pakistan Taliban (TTP), which is allied with Afghanistan’s Taliban), the army officials said. In a separate operation in Balochistan’s Panjgur district, “11 India-sponsored terrorists” belonging to the Fitna-al-Hindustan were killed, the military’s media wing Inter-Services Public Relations said. The military added that ammunition as well as money allegedly looted during a bank robbery in Panjgur in December were recovered from the fighters killed in the second raid. Both raids took place on Thursday. None of the soldiers involved was killed. India has yet to comment on the allegations. The Pakistani military added that “sanitisation operations” were ongoing in both districts to eliminate any remaining fighters. Pakistani President Asif Ali Zardari said the operation “reflects the state’s unwavering resolve,” according to Pakistan’s Express Tribune. The newspaper also quoted Prime Minister Shehbaz Sharif as saying that “the entire nation stands with the armed forces in this ongoing fight against terrorism”. Pakistan \n\nKW battle : The military said in a statement on Friday that the deadly encounters took place in the province of Balochistan, which shares a long border with Afghanistan and has long been a base for separatist groups seeking independence from Pakistan’s central government in Islamabad. Recommended Stories list of 4 items list 1 of 4Gunmen in Pakistan kidnap, kill nine bus passengers, officials say list 2 of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, Pakistan’s Dawn newspaper quoted the military as saying. The fighters belonged to Fitna-al-Khawarij (a term the government uses to refer to the banned Pakistan Taliban (TTP), which is allied with Afghanistan’s Taliban), the army officials said. In a separate operation in Balochistan’s Panjgur district, “11 India-sponsored terrorists” belonging to the Fitna-al-Hindustan were killed, the military’s media wing Inter-Services Public Relations said. The military added that ammunition as well as money allegedly looted during a bank robbery in Panjgur in December were recovered from the fighters killed in the second raid. Both raids took place on Thursday. None of the soldiers involved was killed. India has yet to comment on the allegations. The Pakistani military added that “sanitisa\n\nKW Balochistan : Pakistan’s security forces have carried out raids in the country’s southwest, killing at least 41 armed fighters, whom the country’s military linked to regional rival and neighbour India. The military said in a statement on Friday that the deadly encounters took place in the province of Balochistan, which shares a long border with Afghanistan and has long been a base for separatist groups seeking independence from Pakistan’s central government in Islamabad. Recommended Stories list of 4 items list 1 of 4Gunmen in Pakistan kidnap, kill nine bus passengers, officials say list 2 of 4Israel is trying to hijack the Baloch struggle list 3 of 4One year floods, the next drought: Farmers battle Pakistan’s climate plight list 4 of 4How Pakistan misread the Taliban and lost peace on the frontier end of list Despite the incident’s proximity to the border with Afghanistan, the military statement claimed – without providing evidence – that the deadly encounters involved fighters backed by India. In the first raid, at least 30 fighters were killed on the outskirts of Balochistan’s Harnai district, Pakistan’s Dawn newspaper quoted the military as saying. The fighters belonged to Fitna-al-Khawarij (a term the government uses to refer to the banned Pakistan Taliban (TTP), which is allied with Afghanistan’s Taliban), the army officials said. In a separate operation in Balochistan’s Panjgur district, “11 India-sponsored terrorists” belonging to the Fitna-al-Hindustan were killed, the\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3530,
+      "turn": 2664,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfor line in open('articles/2026/01/30/articles.jsonl'):\\n    a=json.loads(line); title=a.get('title')\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_5",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json\nfor line in open('articles/2026/01/30/articles.jsonl'):\n    a=json.loads(line); title=a.get('title') or ''\n    if title=='What to expect at the 2026 Grammy Awards':\n        print('TITLE',title,'DATE',a.get('date_publish'),'SRC',a.get('source'))\n        c=a.get('content') or ''\n        print(c[:4500].replace('\\\\n',' '))\n        break\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3531,
+      "turn": 2665,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json\\nfor line in open('articles/2026/01/30/articles.jsonl'):\\n    a=json.loads(line); title=a.get('title')\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_5",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json\nfor line in open('articles/2026/01/30/articles.jsonl'):\n    a=json.loads(line); title=a.get('title') or ''\n    if title=='What to expect at the 2026 Grammy Awards':\n        print('TITLE',title,'DATE',a.get('date_publish'),'SRC',a.get('source'))\n        c=a.get('content') or ''\n        print(c[:4500].replace('\\\\n',' '))\n        break\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_5",
+          "content": "TITLE What to expect at the 2026 Grammy Awards DATE 2026-01-30 SRC www.independent.co.uk\nStay up to date with notifications from The Independent Notifications can be managed in browser preferences. Jump to content Thank you for registering Please refresh the page or navigate to another page on the site to be automatically logged inPlease refresh your browser to be logged in Swipe for next article Independent Bulletin homepage Download our Social Partner We are 8 logo (opens in a new tab) What to expect at the 2026 Grammy Awards Roisin O'Connor Friday 30 January 2026 16:19 GMT The Independent offers predictions for the 'Big Four' categories at the upcoming 2026 Grammy Awards, with Olivia Dean, Chappell Roan and Bad Bunny all in strong contention. British artist Olivia Dean is tipped to win Best New Artist, praised for her successful second album and timeless yet relevant music. Chappell Roan's 'The Subway' is predicted to take home Record of the Year, recognised for its superb production and poignant storytelling. Despite Chappell Roan's 'The Subway' being a strong contender, Rosé and Bruno Mars' commercially successful 'APT' is expected to win Song of the Year. Bad Bunny's Debí Tirar Más Fotos is forecast to win Album of the Year, celebrated as an intelligent, complex, and genre-blending masterpiece.\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3532,
+      "turn": 2666,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nphrases=['secured town','town secured','three-day battle','three day battle','Balochistan town'\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_6",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nphrases=['secured town','town secured','three-day battle','three day battle','Balochistan town','Pakistani police say', 'police said they had secured']\nfor p in phrases:\n    hits=[]\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if p.lower() in text and ('baloch' in text or 'pakistan' in text):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=5: break\n        if len(hits)>=5: break\n    print('\\\\n',p, '=>')\n    for h in hits: print(h)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3533,
+      "turn": 2667,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nphrases=['secured town','town secured','three-day battle','three day battle','Balochistan town'\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_6",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nphrases=['secured town','town secured','three-day battle','three day battle','Balochistan town','Pakistani police say', 'police said they had secured']\nfor p in phrases:\n    hits=[]\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if p.lower() in text and ('baloch' in text or 'pakistan' in text):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=5: break\n        if len(hits)>=5: break\n    print('\\\\n',p, '=>')\n    for h in hits: print(h)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_6",
+          "content": "\n secured town =>\n\n town secured =>\n\n three-day battle =>\n\n three day battle =>\n\n Balochistan town =>\n\n Pakistani police say =>\n\n police said they had secured =>\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3534,
+      "turn": 2668,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['market shelling Kostiantynivka','market shelling Kupiansk','deadly market shelling U\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_7",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['market shelling Kostiantynivka','market shelling Kupiansk','deadly market shelling Ukraine','Kostiantynivka market','Kupiansk market']:\n    hits=[]\n    words=q.split()\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in words):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3535,
+      "turn": 2669,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['Dnipropetrovsk miners bus','miners bus drone','bus carrying miners','Pavlohrad miner\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_8",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['Dnipropetrovsk miners bus','miners bus drone','bus carrying miners','Pavlohrad miners','Nikopol miners','Kryvyi Rih miners']:\n    hits=[]\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in q.split()):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3536,
+      "turn": 2670,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['market shelling Kostiantynivka','market shelling Kupiansk','deadly market shelling U\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_7",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['market shelling Kostiantynivka','market shelling Kupiansk','deadly market shelling Ukraine','Kostiantynivka market','Kupiansk market']:\n    hits=[]\n    words=q.split()\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in words):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_7",
+          "content": "market shelling Kostiantynivka => []\nmarket shelling Kupiansk => []\ndeadly market shelling Ukraine => []\nKostiantynivka market => []\nKupiansk market => []\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3537,
+      "turn": 2671,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['Dnipropetrovsk miners bus','miners bus drone','bus carrying miners','Pavlohrad miner\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_8",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['Dnipropetrovsk miners bus','miners bus drone','bus carrying miners','Pavlohrad miners','Nikopol miners','Kryvyi Rih miners']:\n    hits=[]\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in q.split()):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_8",
+          "content": "Dnipropetrovsk miners bus => []\nminers bus drone => [('articles/2026/01/06/articles.jsonl', '2026-01-06', 'www.benzinga.com', 'Silver Extends Gains-Up Another 13% In 2026')]\nbus carrying miners => [('articles/2026/01/22/articles.jsonl', '2026-01-22', 'www.independent.co.uk', 'Interpol-backed police make nearly 200 arrests in Amazon region gold mining sweep'), ('articles/2026/01/29/articles.jsonl', '2026-01-29', 'www.thedailybeast.com', 'Former ‘Today’ Host Gets Served Divorce Papers From Wife'), ('articles/2026/01/29/articles.jsonl', '2026-01-29', 'www.thedailybeast.com', 'Kim Kardashian’s Ex, 45, Reveals Why He Only Has Months to Live')]\nPavlohrad miners => []\nNikopol miners => []\nKryvyi Rih miners => []\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3538,
+      "turn": 2672,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['Brazil bus crash 16','Minas Gerais bus crash','Bahia bus crash','Parana bus crash','\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_9",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['Brazil bus crash 16','Minas Gerais bus crash','Bahia bus crash','Parana bus crash','bus crash kills at least 16']:\n    hits=[]; words=q.split()\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in words):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3539,
+      "turn": 2673,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport json, glob\\nfor q in ['Brazil bus crash 16','Minas Gerais bus crash','Bahia bus crash','Parana bus crash','\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_9",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport json, glob\nfor q in ['Brazil bus crash 16','Minas Gerais bus crash','Bahia bus crash','Parana bus crash','bus crash kills at least 16']:\n    hits=[]; words=q.split()\n    for path in sorted(glob.glob('articles/2026/01/*/articles.jsonl')):\n        for line in open(path):\n            a=json.loads(line)\n            if (a.get('date_publish') or '')>'2026-01-30': continue\n            text=((a.get('title') or '')+'\\\\n'+(a.get('content') or '')).lower()\n            if all(w.lower() in text for w in words):\n                hits.append((path,a.get('date_publish'),a.get('source'),a.get('title') or ''))\n                if len(hits)>=3: break\n        if len(hits)>=3: break\n    print(q, '=>', hits)\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_9",
+          "content": "Brazil bus crash 16 => [('articles/2026/01/05/articles.jsonl', '2026-01-05', 'www.thedailybeast.com', 'Alarming Number of Americans Turn to ChatGPT for Medical Help'), ('articles/2026/01/05/articles.jsonl', '2026-01-05', 'www.thedailybeast.com', '‘Catch-22’ and ‘Oz’ Star Dies at 80'), ('articles/2026/01/05/articles.jsonl', '2026-01-05', 'www.thedailybeast.com', '‘Scary Movie’ Actress Dies at 62')]\nMinas Gerais bus crash => []\nBahia bus crash => []\nParana bus crash => []\nbus crash kills at least 16 => []\n",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3540,
+      "turn": 2674,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Jan 30 has three material signals: the Australian Open men’s final is now Alcaraz-Djokovic, The Independent explicitly forecasts Bad Bunny for Grammy Album of the Year, and the Balochistan reporting adds Harnai/Panjgur a",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Jan 30 has three material signals: the Australian Open men’s final is now Alcaraz-Djokovic, The Independent explicitly forecasts Bad Bunny for Grammy Album of the Year, and the Balochistan reporting adds Harnai/Panjgur as live locations. I’m also trimming the U.S. downhill medal probability after Vonn’s crash."
+        }
+      ]
+    },
+    {
+      "idx": 3541,
+      "turn": 2675,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Carlos Alcaraz\": 0.56, \"Novak Djokovic\": 0.44}, \"question_id\": \"951896\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_11",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "951896",
+            "outcomes": {
+              "Carlos Alcaraz": 0.56,
+              "Novak Djokovic": 0.44
+            },
+            "previous_outcomes": {
+              "Jannik Sinner": 0.44,
+              "Carlos Alcaraz": 0.39,
+              "Novak Djokovic": 0.1,
+              "Alexander Zverev": 0.07
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3542,
+      "turn": 2675,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_11",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 951896: {'Carlos Alcaraz': 0.56, 'Novak Djokovic': 0.44}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 951896: {'Carlos Alcaraz': 0.56, 'Novak Djokovic': 0.44}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3543,
+      "turn": 2676,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Bad Bunny\": 0.42, \"Kendrick Lamar\": 0.22, \"Lady Gaga\": 0.25, \"Sabrina Carpenter\": 0.05, \"Tyler, the Creator\": 0.02}, \"question_id\": \"946810\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_12",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "946810",
+            "outcomes": {
+              "Bad Bunny": 0.42,
+              "Lady Gaga": 0.25,
+              "Kendrick Lamar": 0.22,
+              "Sabrina Carpenter": 0.05,
+              "Tyler, the Creator": 0.02
+            },
+            "previous_outcomes": {
+              "Lady Gaga": 0.34,
+              "Kendrick Lamar": 0.3,
+              "Bad Bunny": 0.16,
+              "Sabrina Carpenter": 0.06,
+              "Tyler, the Creator": 0.03
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3544,
+      "turn": 2676,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_12",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 946810: {'Bad Bunny': 0.42, 'Lady Gaga': 0.25, 'Kendrick Lamar': 0.22, 'Sabrina Carpenter': 0.05, 'Tyler, the Creator': 0.02}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 946810: {'Bad Bunny': 0.42, 'Lady Gaga': 0.25, 'Kendrick Lamar': 0.22, 'Sabrina Carpenter': 0.05, 'Tyler, the Creator': 0.02}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3545,
+      "turn": 2677,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Harnai\": 0.2, \"Kalat\": 0.12, \"Khuzdar\": 0.08, \"Panjgur\": 0.13, \"Zehri\": 0.14}, \"question_id\": \"562701\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_13",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "562701",
+            "outcomes": {
+              "Harnai": 0.2,
+              "Zehri": 0.14,
+              "Panjgur": 0.13,
+              "Kalat": 0.12,
+              "Khuzdar": 0.08
+            },
+            "previous_outcomes": {
+              "Kalat": 0.18,
+              "Khuzdar": 0.12,
+              "Zehri": 0.08,
+              "Mach": 0.06,
+              "Turbat": 0.04
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3546,
+      "turn": 2677,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_13",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 562701: {'Harnai': 0.2, 'Zehri': 0.14, 'Panjgur': 0.13, 'Kalat': 0.12, 'Khuzdar': 0.08}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 562701: {'Harnai': 0.2, 'Zehri': 0.14, 'Panjgur': 0.13, 'Kalat': 0.12, 'Khuzdar': 0.08}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3547,
+      "turn": 2678,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "submit_forecasts {\"outcomes\": {\"Austria\": 0.17, \"Germany\": 0.06, \"Italy\": 0.22, \"Switzerland\": 0.2, \"United States\": 0.07}, \"question_id\": \"534224\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_14",
+          "name": "submit_forecasts",
+          "input": {
+            "question_id": "534224",
+            "outcomes": {
+              "Italy": 0.22,
+              "Switzerland": 0.2,
+              "Austria": 0.17,
+              "United States": 0.07,
+              "Germany": 0.06
+            },
+            "previous_outcomes": {
+              "Italy": 0.18,
+              "Switzerland": 0.16,
+              "Austria": 0.14,
+              "United States": 0.1,
+              "Germany": 0.05
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3548,
+      "turn": 2678,
+      "kind": "tool_result",
+      "subtype": "",
+      "role": "",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_14",
+          "content": "{\"content\": [{\"text\": \"Prediction recorded for question 534224: {'Italy': 0.22, 'Switzerland': 0.2, 'Austria': 0.17, 'United States': 0.07, 'Germany': 0.06}\", \"type\": \"text\"}], \"structured_content\": {\"result\": \"Prediction recorded for question 534224: {'Italy': 0.22, 'Switzerland': 0.2, 'Austria': 0.17, 'United States': 0.07, 'Germany': 0.06}\"}}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 3549,
+      "turn": 2679,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Those four Jan 30 updates are recorded. I’ll save the day’s notes with the new resolution and the evidence behind each move before advancing.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Those four Jan 30 updates are recorded. I’ll save the day’s notes with the new resolution and the evidence behind each move before advancing."
+        }
+      ]
+    },
+    {
+      "idx": 3552,
+      "turn": 2680,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Jan 30 notes are saved. I’m ending the simulated day now.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Jan 30 notes are saved. I’m ending the simulated day now."
+        }
+      ]
+    },
+    {
+      "idx": 3553,
+      "turn": 2681,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_18",
+          "name": "next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 3556,
+      "turn": 2682,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "The Jan 30 day-end call returned aborted after the harness advanced. I’m reading the Jan 31 market and then I’ll scan today’s articles for the early-February active questions.",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "The Jan 30 day-end call returned aborted after the harness advanced. I’m reading the Jan 31 market and then I’ll scan today’s articles for the early-February active questions."
+        }
+      ]
+    },
+    {
+      "idx": 3557,
+      "turn": 2683,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(20))\nprint('\\\\nResolved on/after 2026-01-30:')\nfor r in resolved:\n    if r['resolution_date']>='2026-01-30':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-08:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-08':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        }
+      ]
+    },
+    {
+      "idx": 3558,
+      "turn": 2684,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-01-30",
+      "time": "",
+      "session": "",
+      "preview": "Bash {\"command\": \"/usr/bin/bash -lc \\\"python3 - <<'PY'\\nimport csv,json,os\\nfrom collections import Counter\\nprint('state_exists', os.path.exists('state.json'))\\nif os.pa\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "item_1",
+          "name": "Bash",
+          "input": {
+            "command": "/usr/bin/bash -lc \"python3 - <<'PY'\nimport csv,json,os\nfrom collections import Counter\nprint('state_exists', os.path.exists('state.json'))\nif os.path.exists('state.json'):\n    print(json.dumps(json.load(open('state.json')), indent=2)[:5000])\nrows=list(csv.DictReader(open('market.csv', newline='')))\nactive=[r for r in rows if r['is_resolved'].lower()=='false']\nresolved=[r for r in rows if r['is_resolved'].lower()=='true']\nprint('rows',len(rows),'active',len(active),'resolved',len(resolved))\nprint('active_without_prediction',sum(1 for r in active if not r['my_prediction'] or r['my_prediction']=='None'))\nprint('active_pred_dates',Counter(r['my_prediction_date'] for r in active).most_common(20))\nprint('\\\\nResolved on/after 2026-01-30:')\nfor r in resolved:\n    if r['resolution_date']>='2026-01-30':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'],'GT',r['ground_truth'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nprint('\\\\nActive upcoming <=2026-02-08:')\nfor r in active:\n    if r['resolution_date'] <= '2026-02-08':\n        print('\\\\nQ',r['qid'],'resdate',r['resolution_date'])\n        print('title:',r['title'])\n        print('my:',r['my_prediction'],'date',r['my_prediction_date'])\nPY\""
+          }
+        },
+        {
+          "type": "tool_result",
+          "tool_use_id": "item_1",
+          "content": "state_exists False\nrows 330 active 208 resolved 122\nactive_without_prediction 0\nactive_pred_dates [('2025-12-24', 196), ('2026-01-01', 2), ('2025-12-26', 1), ('2025-12-28', 1), ('2026-01-30', 1), ('2025-12-25', 1), ('2026-01-25', 1), ('2026-01-12', 1), ('2025-12-29', 1), ('2026-01-16', 1), ('2026-01-11', 1), ('2026-01-26', 1)]\n\nResolved on/after 2026-01-30:\n\nQ 316535 resdate 2026-01-30 GT Ben Dwarshuis\ntitle: Who will be named as Pat Cummins's replacement in Australia's ICC Men's T20 World Cup squad by January 31, 2026?\nmy: {\"Sean Abbott\": 0.24, \"Spencer Johnson\": 0.15, \"Lance Morris\": 0.13, \"Jhye Richardson\": 0.07, \"Ben Dwarshuis\": 0.06} date 2026-01-01\n\nQ 391811 resdate 2026-01-31 GT Ternivka\ntitle: By 1 February 2026, which city will Ukrainian police identify as the site of a drone attack on a bus carrying miners in Ukraine’s Dnipropetrovsk region?\nmy: {\"Nikopol\": 0.18, \"Kryvyi Rih\": 0.12, \"Pavlohrad\": 0.08, \"Marhanets\": 0.06, \"Dnipro\": 0.04} date 2025-12-24\n\nQ 562701 resdate 2026-01-31 GT Nushki\ntitle: Which town will Pakistani police say they have secured after the three-day battle in Balochistan, by February 4, 2026?\nmy: {\"Harnai\": 0.2, \"Zehri\": 0.14, \"Panjgur\": 0.13, \"Kalat\": 0.12, \"Khuzdar\": 0.08} date 2026-01-30\n\nQ 946810 resdate 2026-01-31 GT Bad Bunny\ntitle: Who will win Album of the Year at the 2026 Grammy Awards by 3 February 2026?\nmy: {\"Bad Bunny\": 0.42, \"Lady Gaga\": 0.25, \"Kendrick Lamar\": 0.22, \"Sabrina Carpenter\": 0.05, \"Tyler, the Creator\": 0.02} date 2026-01-30\n\nQ 951896 resdate 2026-01-31 GT Carlos Alcaraz\ntitle: Who will win the 2026 Australian Open men's singles title by 1 February 2026?\nmy: {\"Carlos Alcaraz\": 0.56, \"Novak Djokovic\": 0.44} date 2026-01-30\n\nActive upcoming <=2026-02-08:\n\nQ 102687 resdate 2026-02-01\ntitle: Which former Norwegian prime minister will Norwegian police publicly identify as being investigated for suspected gross corruption by February 2026?\nmy: {\"Erna Solberg\": 0.35, \"Jens Stoltenberg\": 0.12, \"Kjell Magne Bondevik\": 0.05, \"Thorbjorn Jagland\": 0.04} date 2025-12-24\n\nQ 492629 resdate 2026-02-02\ntitle: Which player will the Los Angeles Clippers receive in the James Harden trade by February 5, 2026?\nmy: {\"Zach LaVine\": 0.08, \"Bradley Beal\": 0.07, \"D'Angelo Russell\": 0.06, \"Jrue Holiday\": 0.05, \"Anfernee Simons\": 0.04} date 2025-12-24\n\nQ 449104 resdate 2026-02-01\ntitle: What will the new US strategic minerals stockpile be called by February 2026?\nmy: {\"Strategic Critical Minerals Reserve\": 0.18, \"National Defense Minerals Reserve\": 0.14, \"Strategic Minerals Reserve\": 0.12, \"Critical Minerals Stockpile\": 0.08, \"American Minerals Reserve\": 0.04} date 2025-12-24\n\nQ 955662 resdate 2026-02-02\ntitle: Which Brazilian state will authorities identify as the site of a bus crash that kills at least 16 people by February 4, 2026?\nmy: {\"Minas Gerais\": 0.18, \"Bahia\": 0.12, \"Parana\": 0.08, \"Sao Paulo\": 0.06, \"Rio Grande do Sul\": 0.04} date 2025-12-24\n\nQ 220862 resdate 2026-02-02\ntitle: Which club will Manchester City face in the English League Cup final on Sunday, March 22, 2026?\nmy: {\"Arsenal\": 0.28, \"Chelsea\": 0.22, \"Newcastle United\": 0.08} date 2025-12-24\n\nQ 976004 resdate 2026-02-02\ntitle: Where will forensic experts be sent in the Libyan killing probe announced by 10 February 2026?\nmy: {\"Tripoli\": 0.12, \"Bani Walid\": 0.1, \"Benghazi\": 0.08, \"Sirte\": 0.06, \"Zintan\": 0.05} date 2025-12-24\n\nQ 630740 resdate 2026-02-08\ntitle: Which Lebanese city will be reported as the site of a residential building collapse that kills at least 15 people in early February 2026, as confirmed by February 28, 2026?\nmy: {\"Tripoli\": 0.18, \"Beirut\": 0.16, \"Sidon\": 0.1, \"Tyre\": 0.06, \"Baalbek\": 0.04} date 2025-12-24\n\nQ 243685 resdate 2026-02-02\ntitle: What will Myanmar's new five-member panel be called when it is established by March 2026?\nmy: {\"National Security and Peace Commission\": 0.15, \"State Administrative Council\": 0.1, \"National Defence and Security Council\": 0.08, \"Union Election Commission\": 0.05} date 2025-12-24\n\nQ 995305 resdate 2026-02-02\ntitle: Which city will be reported by 3 February 2026 as the location of a huge fire at a market?\nmy: {\"Saint Petersburg\": 0.2, \"Jakarta\": 0.12, \"Karachi\": 0.08, \"Dhaka\": 0.06, \"Lahore\": 0.04} date 2025-12-24\n\nQ 883856 resdate 2026-02-05\ntitle: Who will Russian authorities identify as the senior military officer shot in Moscow by February 28, 2026?\nmy: {\"Yaroslav Moskalik\": 0.08, \"Igor Kirillov\": 0.06, \"Sergei Surovikin\": 0.04, \"Andrei Mordvichev\": 0.03, \"Vladimir Shamanov\": 0.03} date 2025-12-24\n\nQ 453736 resdate 2026-02-02\ntitle: Who will Al Jazeera Arabic report has been killed in Libya by February 3, 2026?\nmy: {\"Mohammed al-Haddad\": 0.25, \"Saif al-Islam Gaddafi\": 0.15, \"Muhammad Ali Ahmad al-Haddad\": 0.12, \"Mohammed Ali Ahmed al-Haddad\": 0.08, \"Khalifa Haftar\": 0.04} date 2025-12-28\n\nQ 336425 resdate 2026-02-03\ntitle: Which eastern Ukrainian city will be identified as the site of a deadly market shelling by February 4, 2026?\nmy: {\"Kostiantynivka\": 0.18, \"Kupiansk\": 0.1, \"Donetsk\": 0.08, \"Pokrovsk\": 0.06, \"Kharkiv\": 0.04} date 2025-12-24\n\nQ 198725 resdate 2026-02-06\ntitle: To which Iranian city will Narges Mohammadi be exiled for two years under a new sentence by February 2026?\nmy: {\"Zanjan\": 0.18, \"Qazvin\": 0.12, \"Semnan\": 0.08, \"Tabriz\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nQ 534224 resdate 2026-02-07\ntitle: Which country will the silver medalist in the women’s downhill alpine skiing event at the Milan-Cortina Winter Olympics represent by 8 February 2026?\nmy: {\"Italy\": 0.22, \"Switzerland\": 0.2, \"Austria\": 0.17, \"United States\": 0.07, \"Germany\": 0.06} date 2026-01-30\n\nQ 426743 resdate 2026-02-03\ntitle: In which town will Saif al-Islam Gaddafi be buried by February 10, 2026?\nmy: {\"Bani Walid\": 0.25, \"Sirte\": 0.18, \"Sabha\": 0.08, \"Zintan\": 0.06, \"Tripoli\": 0.04} date 2025-12-24\n\nQ 57193 resdate 2026-02-03\ntitle: Which state will the U.S. Supreme Court let keep its new congressional map by February 2026 after rejecting a Republican lawsuit?\nmy: {\"California\": 0.86, \"Louisiana\": 0.04, \"Alabama\": 0.025, \"North Carolina\": 0.02, \"New York\": 0.015} date 2026-01-25\n\nQ 456284 resdate 2026-02-06\ntitle: Who will take over as publisher of The Washington Post immediately after Will Lewis steps aside, by February 2026?\nmy: {\"Matt Murray\": 0.18, \"Patty Stonesifer\": 0.12, \"David Shipley\": 0.08, \"Sally Buzbee\": 0.05, \"Kathy Baird\": 0.04} date 2025-12-24\n\nQ 318661 resdate 2026-02-08\ntitle: Which armed group will Colombia announce it is resuming peace talks with by February 2026?\nmy: {\"National Liberation Army\": 0.35, \"ELN\": 0.12, \"Segunda Marquetalia\": 0.1, \"Estado Mayor Central\": 0.08} date 2025-12-24\n\nQ 398988 resdate 2026-02-08\ntitle: Which Lebanese group will say, by February 2026, that Israel abducted one of its officials in a raid in southern Lebanon?\nmy: {\"Hezbollah\": 0.45, \"Amal Movement\": 0.08, \"Lebanese Forces\": 0.03} date 2025-12-24\n\nQ 579252 resdate 2026-02-03\ntitle: In which city will Amnesty International say wrestler Saleh Mohammadi has been sentenced to public execution, by February 14, 2026?\nmy: {\"Kermanshah\": 0.18, \"Sanandaj\": 0.12, \"Tehran\": 0.08, \"Karaj\": 0.06, \"Mashhad\": 0.04} date 2025-12-24\n\nQ 180958 resdate 2026-02-07\ntitle: Which NFL team will win Super Bowl LX in February 2026?\nmy: {\"Seattle Seahawks\": 0.63, \"New England Patriots\": 0.37} date 2026-01-26\n\nQ 538697 resdate 2026-02-08\ntitle: Which country's military will say by February 18, 2026 that up to 8,000 troops could be ready by the end of June for a possible Gaza mission?\nmy: {\"Indonesia\": 0.25, \"Turkey\": 0.16, \"Egypt\": 0.1, \"Italy\": 0.08, \"Pakistan\": 0.06} date 2025-12-24\n",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}

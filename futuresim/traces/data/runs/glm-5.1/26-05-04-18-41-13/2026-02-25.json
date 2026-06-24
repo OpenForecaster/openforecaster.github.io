@@ -1,0 +1,315 @@
+{
+  "agent_slug": "glm-5.1",
+  "agent_name": "GLM 5.1",
+  "model": "glm-51",
+  "harness": "Claude Code",
+  "seed_label": "r02",
+  "run_id": "26-05-04-18-41-13",
+  "sim_date": "2026-02-25",
+  "events": [
+    {
+      "idx": 2282,
+      "turn": 1076,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "Columbia, Vienna, and Frenkie de Jong all correct! TW-Score improving to -776.41. Let me continue:",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Columbia, Vienna, and Frenkie de Jong all correct! TW-Score improving to -776.41. Let me continue:"
+        }
+      ]
+    },
+    {
+      "idx": 2283,
+      "turn": 1077,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__search_news {\"from_date\": \"2026-02-23\", \"max_results\": 5, \"query\": \"T20 World Cup Super Eights results semifinal February 2026\", \"to_date\": \"2026-02-25\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_949eff3b616c461a9d0f78d1",
+          "name": "mcp__forecast__search_news",
+          "input": {
+            "from_date": "2026-02-23",
+            "max_results": 5,
+            "query": "T20 World Cup Super Eights results semifinal February 2026",
+            "to_date": "2026-02-25"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2284,
+      "turn": 1078,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "Bash {\"command\": \"python3 -c \\\"\\nimport csv\\nfrom datetime import datetime\\n\\nwith open('market.csv', 'r') as f:\\n    reader = csv.DictReader(f)\\n    rows = list(reader)\\\n[...truncated]",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_60874fb6fe6d46a88597dd94",
+          "name": "Bash",
+          "input": {
+            "command": "python3 -c \"\nimport csv\nfrom datetime import datetime\n\nwith open('market.csv', 'r') as f:\n    reader = csv.DictReader(f)\n    rows = list(reader)\n\n# Find questions resolving Feb 25-Mar 5\nupcoming = []\nfor r in rows:\n    if r['is_resolved'] == 'False':\n        try:\n            res_date = datetime.strptime(r['resolution_date'], '%Y-%m-%d')\n            if datetime(2026, 2, 25) <= res_date <= datetime(2026, 3, 5):\n                upcoming.append(r)\n        except:\n            pass\n\nfor r in sorted(upcoming, key=lambda x: x['resolution_date']):\n    pred = r.get('my_prediction', '')\n    print(f\\\"qid {r['qid']}: {r['title'][:75]}... | Res: {r['resolution_date']} | Pred: {pred[:50] if pred else 'NONE'}...\\\")\n\" | head -25\n",
+            "description": "Find questions resolving Feb 25-Mar 5"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2285,
+      "turn": 1078,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:02",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_949eff3b616c461a9d0f78d1",
+          "content": "{\"result\":\"Found 5 relevant article chunk(s):\\n\\n═══ [1] ═══════════════════════════════════════\\nHEADLINE: India vs Zimbabwe: T20 World Cup Super Eights - teams, start, lineups\\nSOURCE: www.aljazeera.com\\nPUBLISHED: 2026-02-25 00:00:00 | DOWNLOADED: 2026-02-25 00:00:00\\nURL: https://www.aljazeera.com/sports/2026/2/25/india-vs-zimbabwe-t20-world-cup-super-eights-teams-start-lineups\\n\\nIndia vs Zimbabwe: T20 World Cup Super Eights - teams, start, lineups\\n\\nWho: India vs Zimbabwe\\nWhat: ICC Men’s T20 World Cup 2026\\nWhere: MA Chidambaram Stadium, Chepauk, Chennai, India\\nWhen: Wednesday, February 26, at 7pm (13:30 GMT)\\nHow to follow:\\nDefending champions India face a crunch tie in the T20 World Cup Super Eights, following their defeat at the hands of the side they beat in the previous final, South Africa. Recommended Stories\\nlist of 4 items\\nlist 1 of 4FIFA’s Infantino plays down World Cup concerns despite violence in Mexico\\nlist 2 of 4Senegal prime minister decries Morocco’s jailing of fans after AFCON final\\nlist 3 of 4Bodo/Glimt: Team from the Arctic Circle on a fairytale Champions League run\\nlist 4 of 4Residents raise alarm as violence-hit Guadalajara to host World Cup games\\nend of list\\nThe tournament co-hosts now face a challenge from another African side in Zimbabwe – and one that already have a record of upsetting the odds at this edition. Al Jazeera Sport takes a closer look at the dare-not-lose match for India. How have India fared at the 2026 T20 World Cup? India suffered a 76-run defeat to South Africa in their Super Eights opener, meaning another defeat against Zimbabwe could be terminal for their hopes of a record third T20 World Cup title. Suryakumar Yadav’s side stormed to the top of their group in the first round of the tournament with four wins from four matches. A nervous start against the United States was followed by a thumping 93-run win against Namibia. A 61-run win against rivals Pakistan sealed their passage to the next stage, while the final group game saw the Netherlands fall only 17 runs short of their 194 target. How have Zimbabwe fared at the T20 World Cup? Zimbabwe, led by Sikandar Raza, have emerged as one of the surprise packages of the tournament after stunning Australia and co-hosts Sri Lanka to reach the Super Eights. Their tournament opened with an eight-wicket win against Oman, but the 23-run and six-wicket wins against the Australians and the Sri Lankans, respectively, captured the headlines.\\n\\n═══ [2] ═══════════════════════════════════════\\nHEADLINE: India vs Zimbabwe: T20 World Cup Super Eights - teams, start, lineups\\nSOURCE: www.aljazeera.com\\nPUBLISHED: 2026-02-25 00:00:00 | DOWNLOADED: 2026-02-25 00:00:00\\nURL: https://www.aljazeera.com/sports/2026/2/25/india-vs-zimbabwe-t20-world-cup-super-eights-teams-start-lineups?traffic_source=rss\\n\\nIndia vs Zimbabwe: T20 World Cup Super Eights - teams, start, lineups\\n\\nWho: India vs Zimbabwe\\nWhat: ICC Men’s T20 World Cup 2026\\nWhere: MA Chidambaram Stadium, Chepauk, Chennai, India\\nWhen: Wednesday, February 26, at 7pm (13:30 GMT)\\nHow to follow:\\nDefending champions India face a crunch tie in the T20 World Cup Super Eights, following their defeat at the hands of the side they beat in the previous final, South Africa. Recommended Stories\\nlist of 4 items\\nlist 1 of 4FIFA’s Infantino plays down World Cup concerns despite violence in Mexico\\nlist 2 of 4Senegal prime minister decries Morocco’s jailing of fans after AFCON final\\nlist 3 of 4Bodo/Glimt: Team from the Arctic Circle on a fairytale Champions League run\\nlist 4 of 4Residents raise alarm as violence-hit Guadalajara to host World Cup games\\nend of list\\nThe tournament co-hosts now face a challenge from another African side in Zimbabwe – and one that already have a record of upsetting the odds at this edition. Al Jazeera Sport takes a closer look at the dare-not-lose match for India. How have India fared at the 2026 T20 World Cup? India suffered a 76-run defeat to South Africa in their Super Eights opener, meaning another defeat against Zimbabwe could be terminal for their hopes of a record third T20 World Cup title. Suryakumar Yadav’s side stormed to the top of their group in the first round of the tournament with four wins from four matches. A nervous start against the United States was followed by a thumping 93-run win against Namibia. A 61-run win against rivals Pakistan sealed their passage to the next stage, while the final group game saw the Netherlands fall only 17 runs short of their 194 target. How have Zimbabwe fared at the T20 World Cup? Zimbabwe, led by Sikandar Raza, have emerged as one of the surprise packages of the tournament after stunning Australia and co-hosts Sri Lanka to reach the Super Eights. Their tournament opened with an eight-wicket win against Oman, but the 23-run and six-wicket wins against the Australians and the Sri Lankans, respectively, captured the headlines.\\n\\n═══ [3] ═══════════════════════════════════════\\nHEADLINE: Pakistan vs England: Super Eight T20 World Cup - team news, start time, XI\\nSOURCE: www.aljazeera.com\\nPUBLISHED: 2026-02-23 00:00:00 | DOWNLOADED: 2026-02-23 00:00:00\\nURL: https://www.aljazeera.com/sports/2026/2/23/pakistan-vs-england-t20-world-cup-super-eight-team-news-start-time-xi?traffic_source=rss\\n\\nPakistan vs England: Super Eight T20 World Cup - team news, start time, XI\\n\\nWho: Pakistan vs England\\nWhat: 2026 ICC Men’s T20 World Cup Super Eight\\nWhen: Tuesday, February 24, at 7pm (13:30 GMT)\\nWhere: Pallekele International Cricket Stadium, Kandy, Sri Lanka\\nHow to follow: We’ll have all the build-up on Al Jazeera Sport from 10:30 GMT in advance of our text commentary stream. Click here to follow our live coverage. Recommended Stories\\nlist of 4 items\\nlist 1 of 4UEFA provisionally suspends Prestianni after Vinicius Jr racism accusation\\nlist 2 of 4Photos: Winter Olympics 2026 closes after setting ‘a new standard’\\nlist 3 of 4Football matches postponed in Mexico after drug kingpin El Mencho killed\\nlist 4 of 4White House post after US hockey win over Canada stirs controversy\\nend of list\\nThe second Super Eight ties of the 2026 ICC Men’s T20 World Cup starts on Tuesday with an intriguing contest between former champions who both consider themselves legit title contenders: Pakistan and England. Pakistan, despite being humiliated by India in the group phase, possess a stacked roster who, on their day, can compete with any cricket team in the world. England, listed as the pre-tournament joint-second favorite to raise the T20 world crown, are slowly building momentum in the competition, as exhibited by their dismantling of host nation Sri Lanka in their Super Eight opener on Sunday. Al Jazeera Sport takes a look at the matchup, which may turn out to be a pivotal outcome affecting both nations’ semifinal qualification hopes. What’s at stake in the Pakistan-England Super Eight tie? Pakistan desperately need a win after their first match against New Zealand was washed out on Saturday. A defeat would put England, who skittled Sri Lanka out for just 95 runs, through to the semifinals with a game to spare. Pakistan would then need to beat Sri Lanka in their final Super Eight match and hope other results go their way to reach the last four. History will be against Pakistan as they have never beaten England in three previous Twenty20 (T20) World Cup clashes.\\n\\n═══ [4] ═══════════════════════════════════════\\nHEADLINE: Pakistan vs England: T20 World Cup Super Eight - team news, start time, XI\\nSOURCE: www.aljazeera.com\\nPUBLISHED: 2026-02-23 00:00:00 | DOWNLOADED: 2026-02-23 00:00:00\\nURL: https://www.aljazeera.com/sports/2026/2/23/pakistan-vs-england-t20-world-cup-super-eight-team-news-start-time-xi\\n\\nPakistan vs England: T20 World Cup Super Eight - team news, start time, XI\\n\\nWho: Pakistan vs England\\nWhat: 2026 ICC Men’s T20 World Cup Super Eight\\nWhen: Tuesday, February 24, at 7pm (13:30 GMT)\\nWhere: Pallekele International Cricket Stadium, Kandy, Sri Lanka\\nHow to follow: We’ll have all the build-up on Al Jazeera Sport from 10:30 GMT in advance of our text commentary stream. Click here to follow our live coverage. Recommended Stories\\nlist of 4 items\\nlist 1 of 4UEFA provisionally suspends Prestianni after Vinicius Jr racism accusation\\nlist 2 of 4Photos: Winter Olympics 2026 closes after setting ‘a new standard’\\nlist 3 of 4Football matches postponed in Mexico after drug kingpin El Mencho killed\\nlist 4 of 4White House post after US hockey win over Canada stirs controversy\\nend of list\\nThe second Super Eight ties of the 2026 ICC Men’s T20 World Cup starts on Tuesday with an intriguing contest between former champions who both consider themselves legit title contenders: Pakistan and England. Pakistan, despite being humiliated by India in the group phase, possess a stacked roster who, on their day, can compete with any cricket team in the world. England, listed as the pre-tournament joint-second favorite to raise the T20 world crown, are slowly building momentum in the competition, as exhibited by their dismantling of host nation Sri Lanka in their Super Eight opener on Sunday. Al Jazeera Sport takes a look at the matchup, which may turn out to be a pivotal outcome affecting both nations’ semifinal qualification hopes. What’s at stake in the Pakistan-England Super Eight tie? Pakistan desperately need a win after their first match against New Zealand was washed out on Saturday. A defeat would put England, who skittled Sri Lanka out for just 95 runs, through to the semifinals with a game to spare. Pakistan would then need to beat Sri Lanka in their final Super Eight match and hope other results go their way to reach the last four. History will be against Pakistan as they have never beaten England in three previous Twenty20 (T20) World Cup clashes.\\n\\n═══ [5] ═══════════════════════════════════════\\nHEADLINE: How Pakistan can still qualify for semi-finals of T20 World Cup 2026 after England setback: All scenarios explained\\nSOURCE: www.hindustantimes.com\\nPUBLISHED: 2026-02-24 00:00:00 | DOWNLOADED: 2026-02-25 00:00:00\\nURL: https://www.hindustantimes.com/cricket/how-can-pakistan-still-qualify-for-the-semi-finals-of-t20-world-cup-2026-after-england-setback-all-scenarios-explained-101771956135918.html\\n\\nHow Pakistan can still qualify for semi-finals of T20 World Cup 2026 after England setback: All scenarios explained\\n\\nPakistan’s Super 8 campaign at the T20 World Cup 2026 is suddenly on a knife-edge after their defeat to England, leaving them with virtually no room for error and very little control over their own destiny. With England now on four points and a semi-final spot from Group 2, Pakistan’s equation is straightforward in headline terms - but messy in the fine print. They have one game left, against Sri Lanka on 28 February in Pallekele, and must treat it as a must-win. Anything less, and the tournament is over for them. Pakistan currently sit on 1 point from 2 matches after their earlier fixture against New Zealand was washed out. Even a win over Sri Lanka will only take them to three points, which means they can’t qualify on points alone unless results elsewhere fall their way. The next two matches in the group - Sri Lanka vs New Zealand and England vs New Zealand, both in Colombo - will largely decide whether Pakistan’s final game is a genuine shootout or a formality. What Pakistan need to reach the semi-finals\\nThe cleanest route is simple: New Zealand must lose both their remaining games. If Sri Lanka defeat New Zealand on 25 February and England then beat New Zealand on 27 February, New Zealand will stay on one point. Pakistan beating Sri Lanka would then lift them to three points and give them the second semi-final berth from the group behind England. Also Read: Harry Brook’s thunderous century breaks T20 World Cup barrier for captains; Shaheen Afridi applauds with classy gesture\\nThe more realistic, more dangerous scenario is a points tie. If New Zealand beat Sri Lanka but then lose to England (or the other way round), they finish on three points - the same maximum Pakistan can reach by beating Sri Lanka. In that case, qualification is likely to be decided on net run rate, and Pakistan’s current net run rate makes the margin of victory against Sri Lanka critical.\\n\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2286,
+      "turn": 1078,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:02",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_60874fb6fe6d46a88597dd94",
+          "content": "qid 131819: Which city will be reported as the site of a deadly cross-border air strike... | Res: 2026-02-26 | Pred: {\"Tehran\": 0.2, \"Baghdad\": 0.15, \"Damascus\": 0.15,...\nqid 412823: Which senator will publicly say he plans to introduce legislation \"ASAP\" to... | Res: 2026-02-26 | Pred: {\"Elizabeth Warren\": 0.15, \"Jon Tester\": 0.15, \"Ri...\nqid 55315: Who will be elected MP for Gorton and Denton in the UK parliamentary by-ele... | Res: 2026-02-26 | Pred: {\"Afzal Khan\": 0.15, \"Zarah Sultana\": 0.15, \"Khali...\nqid 661416: What Russian ship will Sweden identify as having launched a drone flight wi... | Res: 2026-02-26 | Pred: {\"RFS Viktor Leonov\": 0.2, \"RFS Admiral Gorshkov\":...\nqid 915784: What club will Newcastle United host in the UEFA Champions League round of ... | Res: 2026-02-26 | Pred: {\"Inter Milan\": 0.2, \"Bayern Munich\": 0.15, \"Real ...\nqid 434027: Which city in Iran will public reporting by March 2026 identify as the site... | Res: 2026-02-27 | Pred: {\"Isfahan\": 0.2, \"Tehran\": 0.2, \"Kermanshah\": 0.15...\nqid 815035: Which Iranian city will be reported as the site of an Israeli strike on an ... | Res: 2026-02-27 | Pred: {\"Isfahan\": 0.2, \"Tehran\": 0.2, \"Shiraz\": 0.15, \"M...\nqid 443306: Where will Donald Trump say the final talks before the joint US-Israeli str... | Res: 2026-02-27 | Pred: {\"Doha\": 0.25, \"Muscat\": 0.2, \"Istanbul\": 0.15, \"C...\nqid 209948: What airspace will the airline say must safely reopen before normal flights... | Res: 2026-02-27 | Pred: {\"Israeli airspace\": 0.25, \"Iranian airspace\": 0.2...\nqid 58660: Which city will be reported as hearing multiple explosions during the strik... | Res: 2026-02-27 | Pred: {\"Tehran\": 0.3, \"Isfahan\": 0.2, \"Shiraz\": 0.15, \"T...\nqid 333107: Who will South Africa play in the first ICC Men's T20 World Cup semifinal o... | Res: 2026-02-27 | Pred: {\"India\": 0.25, \"Australia\": 0.2, \"England\": 0.2, ...\nqid 739634: Which country will say by March 11, 2026 that it cannot participate in the ... | Res: 2026-02-27 | Pred: {\"Iran\": 0.25, \"Russia\": 0.15, \"Mexico\": 0.1, \"Nor...\nqid 468437: Who will be identified by March 15, 2026, as the captain of Iran’s women’s ... | Res: 2026-02-28 | Pred: {\"Niloofar Ardalan\": 0.15, \"Katayoun Khosrowyar\": ...\nqid 59501: Which Gulf country will be described by March 18, 2026, as receiving more t... | Res: 2026-02-28 | Pred: {\"Qatar\": 0.3, \"United Arab Emirates\": 0.2, \"Bahra...\nqid 599755: Which hospital will be reported as hit by airstrikes in Tehran by March 2, ... | Res: 2026-02-28 | Pred: {\"Milad Hospital\": 0.2, \"Imam Khomeini Hospital\": ...\nqid 13213: Which Israeli town will report nine deaths from an Iranian missile strike b... | Res: 2026-02-28 | Pred: {\"Haifa\": 0.2, \"Tel Aviv\": 0.2, \"Jerusalem\": 0.15,...\nqid 635419: Which Guardian Council member will serve on Iran’s interim leadership counc... | Res: 2026-02-28 | Pred: {\"Ahmad Jannati\": 0.2, \"Mohammad Yazdi\": 0.15, \"Ab...\nqid 768218: Whose killing will Hezbollah say its attack is avenging, by March 2, 2026?... | Res: 2026-02-28 | Pred: {\"Hassan Nasrallah\": 0.2, \"Qasem Soleimani\": 0.2, ...\nqid 172888: Who will be named the third member of Iran’s temporary three-member governi... | Res: 2026-02-28 | Pred: {\"Ali Larijani\": 0.15, \"Mohammad Bagher Ghalibaf\":...\nqid 354370: What missile will the United States first launch from HIMARS against Irania... | Res: 2026-02-28 | Pred: {\"PAC-3 MSE\": 0.2, \"PrSM\": 0.2, \"ATACMS\": 0.15, \"G...\nqid 70713: What country will be reported as the base location of the US troops killed ... | Res: 2026-02-28 | Pred: {\"Qatar\": 0.25, \"Bahrain\": 0.2, \"United Arab Emira...\nqid 80868: What village will be named by March 8, 2026, in Palestinian reports as the ... | Res: 2026-02-28 | Pred: {\"Turmusayya\": 0.2, \"Duma\": 0.15, \"Huwwara\": 0.15,...\nqid 917339: What conflict will Iranian officials cite as the reason for seeking a 2026 ... | Res: 2026-02-28 | Pred: {\"Israel-Hamas war\": 0.3, \"US-Iran conflict\": 0.2,...\nqid 232393: Which country's fruit exporters will be reported as facing mounting losses ... | Res: 2026-03-01 | Pred: {\"Ecuador\": 0.2, \"Colombia\": 0.15, \"South Africa\":...\nqid 246419: Which country will host the AWS region that Amazon says was disrupted follo... | Res: 2026-03-01 | Pred: {\"Bahrain\": 0.2, \"United Arab Emirates\": 0.2, \"Qat...\nTraceback (most recent call last):\n  File \"<string>\", line 22, in <module>\nBrokenPipeError: [Errno 32] Broken pipe",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2288,
+      "turn": 1079,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__search_news {\"from_date\": \"2026-02-23\", \"max_results\": 5, \"query\": \"Israel Iran strike attack explosions Tehran Isfahan\", \"to_date\": \"2026-02-25\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_02cba3f5e2c34107b5c39462",
+          "name": "mcp__forecast__search_news",
+          "input": {
+            "from_date": "2026-02-23",
+            "max_results": 5,
+            "query": "Israel Iran strike attack explosions Tehran Isfahan",
+            "to_date": "2026-02-25"
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2289,
+      "turn": 1079,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:17",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_02cba3f5e2c34107b5c39462",
+          "content": "{\"result\":\"Found 5 relevant article chunk(s):\\n\\n═══ [1] ═══════════════════════════════════════\\nHEADLINE: Israel raises embassy alert level amid Iranian attack risk\\nSOURCE: www.jpost.com\\nPUBLISHED: 2026-02-23 00:00:00 | DOWNLOADED: 2026-02-25 00:00:00\\nURL: https://www.jpost.com/israel-news/article-887665\\n\\nIsrael raises embassy alert level amid Iranian attack risk\\n\\nIsrael may have to evacuate \\\"some embassies and consulates,\\\" an Israeli source told Saudi outlet Al Hadath on Monday. The \\\"threat level is very high,\\\" and there have been \\\"several threat warnings,\\\" resulting in Israel raising the alert level at embassies in Europe, the Far East, and Latin America, the source added. This preparation is in reaction to warnings about the \\\"intention of Iranian-linked entities to carry out operations against our interests,\\\" the source continued, clarifying that Israel has asked former security officials and former senior employees to return to Israel as soon as possible, per the source. Israel closed its embassies worldwide on June 13, 2025, following the launch of Operation Rising Lion and the Israeli airstrikes on Iranian military, terror, and nuclear facilities. At the time, the Foreign Ministry advised Israelis and Jews living in the Diaspora to avoid displaying Jewish or Israeli symbols due to the heightened risk of retaliatory antisemitic attacks. US Embassy Beirut evacuates dozens of non-essential personnel\\nThe US Embassy in Beirut, Lebanon, evacuated dozens of non-essential personnel via Beirut–Rafic Hariri International Airport, the US State Department confirmed on Monday. This was \\\"a precautionary measure due to anticipated regional developments,\\\" as first reported by Lebanese broadcaster LBCI. \\\"The Department of State has ordered the departure of non-emergency US government personnel and eligible family members from the US Embassy in Beirut,\\\" a State Department spokesperson told The Jerusalem Post. \\\"We continuously assess the security environment, and based on our latest review, we determined it prudent to reduce our footprint to essential personnel. The Embassy remains operational with core staff in place. This is a temporary measure intended to ensure the safety of our personnel while maintaining our ability to operate and assist US citizens.\\\"\\n\\n═══ [2] ═══════════════════════════════════════\\nHEADLINE: Advisory for Indians in Iran: আমেরিকার সাথে যুদ্ধ আসন্ন? ভারতীয়দের ইরান ছাড়ার পরামর্শ দূতাবাসের\\nSOURCE: www.hindustantimes.com\\nPUBLISHED: 2026-02-23 00:00:00 | DOWNLOADED: 2026-02-23 00:00:00\\nURL: https://www.hindustantimes.com/bangla/news/advisory-for-indians-in-iran-amid-chances-of-war-with-usa-indian-embassy-issues-helpline-number-asks-to-register-in-webs-271771832371587.html\\n\\nAdvisory for Indians in Iran: আমেরিকার সাথে যুদ্ধ আসন্ন? ভারতীয়দের ইরান ছাড়ার পরামর্শ দূতাবাসের\\n\\nভারতীয় দূতাবাসের তরফ থেকে হেল্পলাইন নম্বর দেওয়া হয়েছে (+989128109115; +989128109109; +989128109102; +989932179359)। এরই সঙ্গে একটি ওয়েবসাইটের (https://www.meaers.com/request/home) উল্লেখ করে ইরানে বসবাসরত সকল ভারতীয়কে রেজিস্টার করতে বলা হয়েছে। এদিকে ইরানে বাস করা ভারতীয়দের উদ্দেশে দূতাবাসের বার্তা, ইমিগ্রেশন সংক্রান্ত নথি, পাসপোর্ট, পরিচয়পত্র এবং ভ্রমণের জন্য প্রয়োজনীয় বাকি কাগজপত্র সর্বক্ষণ নিজের কাছে রাখবেন এবং প্রস্তুত থাকবেন। এর পাশাপাশি কোনও জরুরি পরিস্থিতিতে পড়লে যেন সঙ্গে সঙ্গে দূতাবাসের সঙ্গে যোগাযোগ করা হয়, তার জন্যেও বলা হয়েছে বিজ্ঞপ্তিতে।\\nরিপোর্ট অনুযায়ী, মধ্যপ্রাচ্যে বিপুল সংখ্যক মার্কিন সেনা রয়েছে বর্তমানে। আমেরিকার দু'টি বিমানবাহী রণতরী, শতাধিক যুদ্ধবিমান, এক ডজন যুদ্ধজাহাজ আছে ইরানের কাছাকাছি। ওপেন সোর্স ট্র্যাকিং দেখা গিয়েছে যে, ১৫০টিরও বেশি কার্গো ফ্লাইট অস্ত্র এবং গোলাবারুদ বহন করে নিয়ে গিয়েছে মধ্যপ্রাচ্যে। বেশ কয়েকটি এফ-২২, এফ-৩৫ এবং এফ-১৬ যুদ্ধবিমানকে ওই এলাকার দিকে যেতে দেখা গেছে। এরই সঙ্গে বেশ কয়েকটি জ্বালানী ভরানোর ট্যাঙ্কার বিমানও দেখা গেছে। এদিকে মধ্যপ্রাচ্যের বিভিন্ন ঘাঁটিতে থাকা সৈনিকদেরও সরিয়ে নেওয়া হচ্ছে সেখান থেকে। মার্কিন হামলা হলে ইরানের পালটা জবাবের আশঙ্কাতেই এই পদক্ষেপ আমেরিকা করছে বলে মনে করা হচ্ছে।\\n\\n═══ [3] ═══════════════════════════════════════\\nHEADLINE: \\\"Leave By Available Means Of Transport\\\": India's Advisory To Citizens In Iran\\nSOURCE: www.ndtv.com\\nPUBLISHED: 2026-02-10 00:00:00 | DOWNLOADED: 2026-02-23 00:00:00\\nURL: https://www.ndtv.com/world-news/india-asks-citizens-to-leave-iran-amid-tehran-us-tensions-11124043\\n\\n\\\"Leave By Available Means Of Transport\\\": India's Advisory To Citizens In Iran\\n\\nThe Trump administration on the other hand has ramped up the movement of military aircraft towards the Middle East, as negotiations over a potential nuclear deal with Iran remain fragile. Flight tracking data reveal a continuous stream of aircraft transporting personnel, munitions, and equipment towards the region.\\n\\n═══ [4] ═══════════════════════════════════════\\nHEADLINE: 'Leave Iran by all available means': India's fresh advisory amid 'fears of war' in Middle East\\nSOURCE: www.hindustantimes.com\\nPUBLISHED: 2026-02-23 00:00:00 | DOWNLOADED: 2026-02-23 00:00:00\\nURL: https://www.hindustantimes.com/india-news/india-asks-citizens-to-eave-iran-by-all-available-means-in-fresh-advisory-amid-fears-of-war-as-iran-us-tensions-grow-101771829197039.html\\n\\n'Leave Iran by all available means': India's fresh advisory amid 'fears of war' in Middle East\\n\\nIndia asked all its citizens currently in Iran to leave to country by any available means of transport in a fresh advisory issued on Monday, February 23. The advisory comes amid looming fear of war in the Middle East as tensions between Tehran and Washington grow. According to the Indian Embassy in Tehran, the fresh advisory was issued “in view of the evolving situation in Iran” and is in continuation to the similar advisory issued earlier this year on January 5, 2026. India has asked all Indian nations currently in Iran, including students, pilgrims, business persons and tourists, to leave the country by available means of transport, including commercial flights. “The 14 January 2026 Advisory is hereby reiterated that all Indian citizens and PIOS should exercise due caution, avoid areas of protests or demonstrations, stay in contact with the Indian Embassy in Iran and monitor local media for any developments,” the advisory said. Indian Embassy issues emergency contact helplines\\nThe Indian Embassy in Tehran requested all Indian nationals in Iran to keep their immigration and travel documents such as IDs and passports readily available and contact the embassy in case of any assistance. It also issued emergency helpline numbers for those who might need it -\\n+989128109115; +989128109109; +989128109102; +989932179359.\\n\\n═══ [5] ═══════════════════════════════════════\\nHEADLINE: Iran chemical weapons program scrutinized amid growing regional tensions\\nSOURCE: www.foxnews.com\\nPUBLISHED: 2026-02-24 00:00:00 | DOWNLOADED: 2026-02-24 00:00:00\\nURL: https://www.foxnews.com/world/irans-shadowy-chemical-weapons-program-draws-scrutiny-reports-allege-use-against-protesters\\n\\nIran chemical weapons program scrutinized amid growing regional tensions\\n\\nUntil then, the two nations will periodically be forced to play whack-a-mole with Tehran’s capabilities whenever they endanger regional peace,\\\" Stricker said.\\n\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2291,
+      "turn": 1080,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "Major US-Iran tensions! Let me update key predictions:",
+      "blocks": [
+        {
+          "type": "text",
+          "text": "Major US-Iran tensions! Let me update key predictions:"
+        }
+      ]
+    },
+    {
+      "idx": 2292,
+      "turn": 1081,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__submit_forecasts {\"outcomes\": {\"England\": 0.35, \"New Zealand\": 0.2, \"Pakistan\": 0.1, \"Sri Lanka\": 0.05}, \"question_id\": \"333107\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_917e9dc869e545e68ab87d1d",
+          "name": "mcp__forecast__submit_forecasts",
+          "input": {
+            "question_id": "333107",
+            "outcomes": {
+              "England": 0.35,
+              "New Zealand": 0.2,
+              "Pakistan": 0.1,
+              "Sri Lanka": 0.05
+            },
+            "previous_outcomes": {
+              "India": 0.25,
+              "England": 0.2,
+              "Australia": 0.2,
+              "West Indies": 0.1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2293,
+      "turn": 1082,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__submit_forecasts {\"outcomes\": {\"Isfahan\": 0.2, \"Shiraz\": 0.1, \"Tabriz\": 0.05, \"Tehran\": 0.3}, \"question_id\": \"58660\"}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_fe16fcb3a9ec439e833ba20c",
+          "name": "mcp__forecast__submit_forecasts",
+          "input": {
+            "question_id": "58660",
+            "outcomes": {
+              "Tehran": 0.3,
+              "Isfahan": 0.2,
+              "Shiraz": 0.1,
+              "Tabriz": 0.05
+            },
+            "previous_outcomes": {
+              "Tehran": 0.3,
+              "Isfahan": 0.2,
+              "Shiraz": 0.15,
+              "Tabriz": 0.1
+            }
+          }
+        }
+      ]
+    },
+    {
+      "idx": 2294,
+      "turn": 1082,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:30",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_917e9dc869e545e68ab87d1d",
+          "content": "{\"result\":\"Prediction recorded for question 333107: {'England': 0.35, 'New Zealand': 0.2, 'Pakistan': 0.1, 'Sri Lanka': 0.05}\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2295,
+      "turn": 1082,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:30",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_fe16fcb3a9ec439e833ba20c",
+          "content": "{\"result\":\"Prediction recorded for question 58660: {'Tehran': 0.3, 'Isfahan': 0.2, 'Shiraz': 0.1, 'Tabriz': 0.05}\"}",
+          "is_error": false
+        }
+      ]
+    },
+    {
+      "idx": 2296,
+      "turn": 1083,
+      "kind": "assistant",
+      "subtype": "",
+      "role": "assistant",
+      "sim_date": "2026-02-25",
+      "time": "",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "mcp__forecast__next_day {}",
+      "blocks": [
+        {
+          "type": "tool_use",
+          "id": "call_def53f213cfb4741b62db7ed",
+          "name": "mcp__forecast__next_day",
+          "input": {}
+        }
+      ]
+    },
+    {
+      "idx": 2297,
+      "turn": 1083,
+      "kind": "user",
+      "subtype": "",
+      "role": "user",
+      "sim_date": "2026-02-25",
+      "time": "18:45:40",
+      "session": "9185741d-dd9e-47db-9a8f-f22b43c8687a",
+      "preview": "",
+      "blocks": [
+        {
+          "type": "tool_result",
+          "tool_use_id": "call_def53f213cfb4741b62db7ed",
+          "content": "{\"result\":\"Day advanced to 2026-02-26.\\n10,360 new articles have been published since your last update and are available via the search_news tool. New date directories are also now present in articles/.\\n\\n## RESULTS SINCE YOUR LAST SESSION (2026-02-25 -> 2026-02-26)\\n\\n- \\\"Which city will be reported as the site of a deadly cross-border air strike on a civilian treatment facility by 19 March 2026?\\\"\\n  Your prediction distribution: {Tehran: 0.20, Baghdad: 0.15, Damascus: 0.15, Sanaa: 0.10} | Truth: Kabul\\n  Brier: -0.09 | TW-Score: -9.50\\n- \\\"Which senator will publicly say he plans to introduce legislation \\\"ASAP\\\" to ban prediction markets by March 2026?\\\"\\n  Your prediction distribution: {Elizabeth Warren: 0.15, Jon Tester: 0.15, Richard Blumenthal: 0.10, Sherrod Brown: 0.10} | Truth: Chris Murphy\\n  Brier: -0.06 | TW-Score: -6.50\\n- \\\"Who will be elected MP for Gorton and Denton in the UK parliamentary by-election by 27 February 2026?\\\"\\n  Your prediction distribution: {Afzal Khan: 0.15, Zarah Sultana: 0.15, Khalid Mahmood: 0.10, Naz Shah: 0.10} | Truth: Hannah Spencer\\n  Brier: -0.06 | TW-Score: -6.50\\n- \\\"What Russian ship will Sweden identify as having launched a drone flight without permission near a visiting French aircraft carrier, by 28 February 2026?\\\"\\n  Your prediction distribution: {RFS Viktor Leonov: 0.20, RFS Admiral Gorshkov: 0.15, RFS Marshal Ustinov: 0.15, RFS Varyag: 0.10} | Truth: Zhigulevsk\\n  Brier: -0.09 | TW-Score: -9.50\\n- \\\"What club will Newcastle United host in the UEFA Champions League round of 16 first leg on March 10, 2026?\\\"\\n  Your prediction distribution: {Inter Milan: 0.20, Bayern Munich: 0.15, Real Madrid: 0.15, Barcelona: 0.10} | Truth: Barcelona\\n  Brier: +0.10 | TW-Score: +10.50\\n\\n## YOUR CUMULATIVE PERFORMANCE TILL TODAY\\n- Total Predictions: 330 (196 resolved, 134 active)\\n- accuracy: 8.2% | brier skill score: 0.006 | time weighted score: -797.91\\n  accuracy = fraction of ALL questions (resolved + active) where your top outcome matched the truth (0 credit for questions you did not predict or that have not resolved); brier skill score = mean brier skill score across ALL questions (0 for questions you did not predict or that have not resolved); time weighted score = sum of brier skill scores across all resolved questions, across all days you held your respective predictions\"}",
+          "is_error": false
+        }
+      ]
+    }
+  ],
+  "truncated": false
+}
