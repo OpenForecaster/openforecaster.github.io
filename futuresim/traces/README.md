@@ -21,10 +21,11 @@ model/run in the trace visualizer, rerun:
 scripts/build_futuresim_official_trace_data.sh
 ```
 
-This refreshes both the trace shards/manifest and the bootstrapped
-`leaderboard.json`. GitHub Pages is static, so the deployed visualizer reads the
-JSON committed to this repo unless `window.FSIM_TRACE_DATA_BASE` is explicitly
-changed to point at another static host.
+This refreshes the trace shards/manifest, the `workspaces/` memory and
+prediction exports, and the bootstrapped `leaderboard.json`. GitHub Pages is
+static, so the deployed visualizer reads the JSON committed to this repo unless
+`window.FSIM_TRACE_DATA_BASE` is explicitly changed to point at another static
+host.
 
 Example local sample generation:
 

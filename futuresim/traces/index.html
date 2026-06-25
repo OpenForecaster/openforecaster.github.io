@@ -25,13 +25,10 @@ nav: futuresim-traces
       <select id="trace-agent"></select>
     </label>
     <label>
-      <span>Run / seed</span>
+      <span>Run</span>
       <select id="trace-run"></select>
     </label>
-    <label>
-      <span>Simulation day</span>
-      <select id="trace-day"></select>
-    </label>
+    <select id="trace-day" hidden aria-hidden="true"></select>
     <label class="trace-toggle">
       <input id="trace-expand-env" type="checkbox">
       <span>Expand environment outputs</span>
@@ -52,18 +49,28 @@ nav: futuresim-traces
     <div id="trace-trajectory-chart" class="trace-chart"></div>
   </section>
 
-  <section class="trace-summary" id="trace-summary" aria-live="polite"></section>
+  <section class="trace-run-summary" aria-label="Run statistics">
+    <div class="trace-card">
+      <h2>Run Activity</h2>
+      <dl id="trace-day-stats"></dl>
+    </div>
+    <div class="trace-card">
+      <h2>Run Tool Mix</h2>
+      <div id="trace-tool-list" class="trace-tool-list"></div>
+    </div>
+    <div class="trace-card trace-workspace-card">
+      <div class="trace-workspace-head">
+        <h2>Memory / Workspace</h2>
+        <span id="trace-workspace-status"></span>
+      </div>
+      <div id="trace-workspace-files" class="trace-workspace-files"></div>
+      <pre id="trace-workspace-content" class="trace-workspace-content"></pre>
+    </div>
+  </section>
 
   <main class="trace-layout">
-    <aside class="trace-rail">
-      <div class="trace-card">
-        <h2>Day Activity</h2>
-        <dl id="trace-day-stats"></dl>
-      </div>
-      <div class="trace-card">
-        <h2>Tool Mix</h2>
-        <div id="trace-tool-list" class="trace-tool-list"></div>
-      </div>
+    <aside class="trace-day-rail" aria-label="Simulation days">
+      <div id="trace-day-list" class="trace-day-list"></div>
     </aside>
     <section class="trace-panel" aria-label="Agent trace">
       <div id="trace-status" class="trace-status">Choose a trace to load.</div>

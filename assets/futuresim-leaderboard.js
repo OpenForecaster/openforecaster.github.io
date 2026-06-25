@@ -47,7 +47,7 @@
 
     const width = 720;
     const height = 330;
-    const margin = { top: 22, right: 12, bottom: 32, left: 58 };
+    const margin = { top: 22, right: 12, bottom: 36, left: 76 };
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
     const x = (day) => margin.left + (maxDay === minDay ? plotW / 2 : (day - minDay) / (maxDay - minDay) * plotW);
@@ -66,11 +66,20 @@
     }
     for (const tick of dayTicks(minDay, maxDay, 5)) {
       const node = svgEl('text', { x: x(tick), y: height - 12, 'text-anchor': 'middle', class: 'futuresim-leaderboard-axis-label' });
-      node.textContent = tick === 0 ? 'Day 0' : `Day ${tick}`;
+      node.textContent = formatShortDate(dateFromDay(tick));
       svg.appendChild(node);
     }
     svg.appendChild(svgEl('line', { x1: margin.left, x2: width - margin.right, y1: height - margin.bottom, y2: height - margin.bottom, class: 'futuresim-leaderboard-axis' }));
     svg.appendChild(svgEl('line', { x1: margin.left, x2: margin.left, y1: margin.top, y2: height - margin.bottom, class: 'futuresim-leaderboard-axis' }));
+    const yLabel = svgEl('text', {
+      x: 18,
+      y: margin.top + plotH / 2,
+      transform: `rotate(-90 18 ${margin.top + plotH / 2})`,
+      'text-anchor': 'middle',
+      class: 'futuresim-leaderboard-axis-title',
+    });
+    yLabel.textContent = axisLabel(metric);
+    svg.appendChild(yLabel);
 
     for (const item of series) {
       const bandTop = item.values.map((point, index) => `${index ? 'L' : 'M'}${x(point.day).toFixed(1)},${y(point.mean + point.std).toFixed(1)}`);
@@ -142,8 +151,21 @@
     return metricName === 'top1_accuracy' ? 'Top 1 accuracy' : 'Brier skill score';
   }
 
+  function axisLabel(metricName) {
+    return metricName === 'top1_accuracy' ? 'Accuracy' : 'Skill score';
+  }
+
   function format(value, metricName) {
     return metricName === 'top1_accuracy' ? `${value.toFixed(1)}%` : value.toFixed(3);
+  }
+
+  function dateFromDay(day) {
+    const date = new Date(Date.UTC(2025, 11, 24 + day));
+    return date.toISOString().slice(0, 10);
+  }
+
+  function formatShortDate(date) {
+    return new Date(`${date}T00:00:00Z`).toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   }
 
   function svgEl(tag, attrs) {

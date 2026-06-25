@@ -116,6 +116,7 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
                     days.setdefault(row["date"], [])
 
     day_items = []
+    run_tool_counts: dict[str, int] = defaultdict(int)
     for day_key in sorted(days):
         if max_days and len(day_items) >= max_days:
             break
@@ -137,6 +138,8 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         }
         shard_path = run_dir / f"{day_key}.json"
         write_json(shard_path, shard)
+        for name, count in tool_counts(events).items():
+            run_tool_counts[name] += count
         day_items.append({
             "date": day_key,
             "path": str(shard_path.relative_to(output)),
@@ -167,6 +170,7 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         "run_id": run_id,
         "run_label": run_label,
         "source_filename": source_path.name,
+        "tool_counts": dict(sorted(run_tool_counts.items(), key=lambda item: (-item[1], item[0]))),
         "metrics": metrics,
         "days": day_items,
     }
@@ -559,6 +563,15 @@ def count_forecasts(events: list[dict[str, Any]]) -> int:
         for block in event["blocks"]
         if block.get("type") == "tool_use" and "submit_forecasts" in block.get("name", "")
     )
+
+
+def tool_counts(events: list[dict[str, Any]]) -> dict[str, int]:
+    counts: dict[str, int] = defaultdict(int)
+    for event in events:
+        for block in event["blocks"]:
+            if block.get("type") == "tool_use":
+                counts[str(block.get("name") or "tool")] += 1
+    return counts
 
 
 def write_json(path: Path, payload: Any) -> None:
