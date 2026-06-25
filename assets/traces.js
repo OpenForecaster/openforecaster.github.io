@@ -1,10 +1,9 @@
 (function () {
   const dataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
-  const state = { manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDay: null, currentSummary: null, workspaceFile: '' };
+  const state = { manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), workspaceFile: '', loadedRunKey: '' };
   const chartColors = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#047857', '#4f46e5', '#a16207'];
-  const summaryCache = new Map();
   const workspaceCache = new Map();
-  const rawBatchSize = 24;
+  let dayObserver = null;
 
   const els = {
     agent: document.getElementById('trace-agent'),
@@ -46,12 +45,16 @@
     els.agent.addEventListener('change', () => {
       state.agent = els.agent.value;
       state.workspaceFile = '';
+      state.currentDays = new Map();
+      state.loadedRunKey = '';
       populateRuns();
       loadSelection();
     });
     els.run.addEventListener('change', () => {
       state.runId = els.run.value;
       state.workspaceFile = '';
+      state.currentDays = new Map();
+      state.loadedRunKey = '';
       populateDays();
       renderTrajectory();
       loadSelection();
@@ -59,9 +62,9 @@
     els.day.addEventListener('change', () => {
       state.day = els.day.value;
       state.workspaceFile = '';
-      loadSelection();
+      scrollToDay(state.day);
     });
-    els.expandEnv.addEventListener('change', renderCurrentDay);
+    els.expandEnv.addEventListener('change', renderCurrentRun);
     for (const button of els.metricButtons) {
       button.addEventListener('click', () => {
         state.metric = button.dataset.traceMetric;
@@ -128,46 +131,121 @@
     return [...((run && run.days) || [])].sort((a, b) => a.date.localeCompare(b.date));
   }
 
-  async function loadSelection() {
+  async function loadSelection(options = {}) {
     const run = selectedRun();
-    const day = run && run.days.find((item) => item.date === state.day);
-    if (!run || !day) {
-      state.currentDay = null;
-      state.currentSummary = null;
+    const days = sortedDays(run);
+    if (!run || !days.length) {
+      state.currentDays = new Map();
+      state.loadedRunKey = '';
       state.workspaceFile = '';
-      renderCurrentDay();
+      renderCurrentRun();
       return;
     }
-    els.status.textContent = 'Loading day shard...';
+    const runKey = `${run.agent_slug}/${run.run_id}`;
+    state.loadedRunKey = runKey;
+    state.currentDays = new Map();
+    renderRunStats(run);
+    renderToolList(run);
+    renderDayRail();
+    renderWorkspace(run);
+    els.status.textContent = `Loading ${days.length} day shards...`;
     els.events.replaceChildren();
-    const response = await fetch(dataBase + day.path, { cache: 'no-store' });
-    if (!response.ok) {
-      els.status.textContent = `Could not load ${day.path} (HTTP ${response.status}).`;
-      return;
+    const loaded = await Promise.all(days.map(async (day) => {
+      const response = await fetch(dataBase + day.path, { cache: 'no-store' });
+      if (!response.ok) return { meta: day, error: `HTTP ${response.status}` };
+      return { meta: day, payload: await response.json() };
+    }));
+    if (state.loadedRunKey !== runKey) return;
+    for (const item of loaded) {
+      if (item.payload) state.currentDays.set(item.meta.date, item.payload);
     }
-    state.currentDay = await response.json();
-    state.currentSummary = await loadRunSummary(run);
-    renderCurrentDay();
+    renderCurrentRun();
+    const targetDay = options.scrollTo || state.day || (days[0] && days[0].date);
+    if (targetDay) requestAnimationFrame(() => scrollToDay(targetDay, { instant: !options.scrollTo }));
+    const failures = loaded.filter((item) => item.error);
+    if (failures.length) {
+      els.status.textContent = `Loaded ${state.currentDays.size}/${days.length} days. ${failures.length} day shard${failures.length === 1 ? '' : 's'} failed.`;
+    }
   }
 
-  async function loadRunSummary(run) {
-    if (!run) return null;
-    const cacheKey = `${run.agent_slug}/${run.run_id}`;
-    if (summaryCache.has(cacheKey)) return summaryCache.get(cacheKey);
-    const path = `summaries/${encodeURIComponent(run.agent_slug)}__${encodeURIComponent(run.run_id)}.json`;
-    try {
-      const response = await fetch(dataBase + path, { cache: 'no-store' });
-      if (!response.ok) {
-        summaryCache.set(cacheKey, null);
-        return null;
-      }
-      const payload = await response.json();
-      summaryCache.set(cacheKey, payload);
-      return payload;
-    } catch (_) {
-      summaryCache.set(cacheKey, null);
-      return null;
+  function renderCurrentRun() {
+    const run = selectedRun();
+    renderRunStats(run);
+    renderDayRail();
+    renderWorkspace(run);
+    els.events.replaceChildren();
+    if (!run) {
+      els.status.textContent = 'No trace run selected.';
+      els.tools.replaceChildren();
+      return;
     }
+
+    const days = sortedDays(run);
+    if (!days.length) {
+      els.status.textContent = 'No trace days for this run.';
+      els.tools.replaceChildren();
+      return;
+    }
+    if (!state.currentDays.size) {
+      els.status.textContent = 'Loading run trace...';
+      return;
+    }
+
+    let actionCount = 0;
+    for (const meta of days) {
+      const day = state.currentDays.get(meta.date);
+      const section = document.createElement('section');
+      section.className = 'trace-day-section';
+      section.id = `trace-day-${meta.date}`;
+      section.dataset.day = meta.date;
+      if (meta.date === state.day) section.classList.add('is-active');
+      section.appendChild(renderDayHeader(meta, day));
+
+      if (!day) {
+        section.appendChild(el('div', `Could not load ${meta.path}.`, 'trace-empty'));
+        els.events.appendChild(section);
+        continue;
+      }
+
+      const resultById = resultMap(day.events);
+      const visible = visibleActionEvents(day.events);
+      actionCount += visible.length;
+      if (visible.length) section.appendChild(renderRawEventList(visible, resultById));
+      else section.appendChild(el('div', 'No visible actions for this day.', 'trace-empty'));
+      els.events.appendChild(section);
+    }
+
+    els.status.textContent = `${days.length} days loaded · ${actionCount} visible actions`;
+    renderToolList(run);
+    setActiveDay(state.day || days[0].date);
+    setupDayObserver();
+  }
+
+  function resultMap(events) {
+    const resultById = new Map();
+    for (const event of events || []) {
+      for (const block of event.blocks || []) {
+        if (block.type === 'tool_result' && block.tool_use_id) resultById.set(block.tool_use_id, block);
+      }
+    }
+    return resultById;
+  }
+
+  function renderDayHeader(meta, day) {
+    const header = document.createElement('header');
+    header.className = 'trace-day-header';
+    const date = document.createElement('div');
+    date.appendChild(el('span', 'Simulation day', 'trace-day-eyebrow'));
+    date.appendChild(el('h2', formatShortDate(meta.date)));
+    header.appendChild(date);
+    const stats = document.createElement('div');
+    stats.className = 'trace-day-header-stats';
+    stats.appendChild(el('span', `${meta.event_count || 0} actions`));
+    stats.appendChild(el('span', `${meta.tool_call_count || 0} tool calls`));
+    stats.appendChild(el('span', `${meta.forecast_count || 0} forecasts`));
+    if (day && day.events) stats.appendChild(el('span', `${day.events.length} raw events`));
+    header.appendChild(stats);
+    return header;
   }
 
   async function loadWorkspace(run) {
@@ -187,34 +265,6 @@
       workspaceCache.set(cacheKey, null);
       return null;
     }
-  }
-
-  function renderCurrentDay() {
-    const run = selectedRun();
-    const day = state.currentDay;
-    renderRunStats(run);
-    renderDayRail();
-    renderWorkspace(run);
-    els.events.replaceChildren();
-    if (!run || !day) {
-      els.status.textContent = 'No trace day selected.';
-      els.tools.replaceChildren();
-      return;
-    }
-
-    const resultById = new Map();
-    for (const event of day.events) {
-      for (const block of event.blocks || []) {
-        if (block.type === 'tool_result' && block.tool_use_id) resultById.set(block.tool_use_id, block);
-      }
-    }
-
-    const visible = visibleActionEvents(day.events);
-    const summary = summaryForCurrentDay(run, day, visible);
-    els.status.textContent = visible.length ? 'Summarized trace.' : 'No visible actions for this day.';
-    els.events.appendChild(renderDaySummary(summary, day, visible, resultById));
-
-    renderToolList(run);
   }
 
   function renderTrajectory() {
@@ -358,244 +408,6 @@
     return (events || []).filter((event) => shouldShowEvent(event) && !isOnlyToolResults(event));
   }
 
-  function summaryForCurrentDay(run, day, visible) {
-    const date = day && day.sim_date;
-    const curated = state.currentSummary && Array.isArray(state.currentSummary.days)
-      ? state.currentSummary.days.find((item) => item.date === date)
-      : null;
-    if (curated) return { ...curated, source: 'curated' };
-    return buildAutoSummary(run, day, visible);
-  }
-
-  function buildAutoSummary(run, day, visible) {
-    const date = day && day.sim_date ? day.sim_date : state.day;
-    const toolCounts = countToolsForEvents(visible);
-    const forecastCount = toolCounts.get('submit_forecasts') || 0;
-    const searchCount = toolCounts.get('search_news') || 0;
-    const titleBits = [];
-    if (forecastCount) titleBits.push(`${forecastCount} forecast update${forecastCount === 1 ? '' : 's'}`);
-    if (searchCount) titleBits.push(`${searchCount} search${searchCount === 1 ? '' : 'es'}`);
-    const title = titleBits.length
-      ? `Auto summary: ${titleBits.join(', ')}.`
-      : 'Auto summary: reviewed the day and advanced through available actions.';
-    return {
-      date,
-      source: 'auto',
-      title,
-      display_summary: `${run ? run.agent_name || run.agent_slug : 'This run'} had no curated summary sidecar for this day, so consecutive actions are grouped by tool type.`,
-      stats: {
-        action_count: visible.length,
-        tool_call_count: [...toolCounts.values()].reduce((acc, count) => acc + count, 0),
-        forecast_count: forecastCount,
-      },
-      segments: buildAutoSegments(date, visible),
-    };
-  }
-
-  function buildAutoSegments(date, visible) {
-    const segments = [];
-    let active = null;
-    const flush = () => {
-      if (!active || !active.events.length) return;
-      const tools = [...new Set(active.events.flatMap(eventTools))];
-      segments.push({
-        id: `auto-${date}-${String(segments.length + 1).padStart(2, '0')}`,
-        auto: true,
-        event_idx_start: active.events[0].idx,
-        event_idx_end: active.events[active.events.length - 1].idx,
-        label: autoSegmentLabel(active.kind, active.events),
-        summary: autoSegmentSummary(active.kind, active.events, tools),
-        tools,
-        representative_event_idxs: active.events.slice(0, 4).map((event) => event.idx),
-      });
-      active = null;
-    };
-
-    for (const event of visible) {
-      const kind = eventCategory(event);
-      if (!active || active.kind !== kind || active.events.length >= rawBatchSize) {
-        flush();
-        active = { kind, events: [] };
-      }
-      active.events.push(event);
-    }
-    flush();
-    return segments;
-  }
-
-  function eventCategory(event) {
-    const tools = eventTools(event);
-    if (tools.some(isSubmitForecastTool)) return 'forecast';
-    if (tools.some(isSearchNewsTool)) return 'search';
-    if (tools.some((tool) => String(tool || '').includes('next_day'))) return 'advance';
-    if (tools.some(isBashTool)) return 'workspace';
-    if ((event.blocks || []).some((block) => block.type === 'compaction')) return 'compaction';
-    if (tools.length) return 'tool';
-    return 'reasoning';
-  }
-
-  function autoSegmentLabel(kind, events) {
-    const count = events.length;
-    const labels = {
-      forecast: 'Forecast updates',
-      search: 'News search sweep',
-      advance: 'Advance day',
-      workspace: 'Workspace and market checks',
-      compaction: 'Context compaction',
-      reasoning: 'Reasoning note',
-      tool: 'Tool actions',
-    };
-    return count > 1 ? `${labels[kind] || 'Actions'} (${count})` : labels[kind] || 'Action';
-  }
-
-  function autoSegmentSummary(kind, events, tools) {
-    const count = events.length;
-    if (kind === 'forecast') return `Submitted ${count} forecast action${count === 1 ? '' : 's'} for this consecutive update block.`;
-    if (kind === 'search') return `Ran ${count} news search${count === 1 ? '' : 'es'} to collect evidence for active markets.`;
-    if (kind === 'workspace') return `Used local commands to inspect market files, article bundles, memory, or run state.`;
-    if (kind === 'advance') return `Called next_day and moved the simulation forward.`;
-    if (kind === 'reasoning') return `Recorded a short reasoning or handoff note before the next tool actions.`;
-    return `Ran ${count} action${count === 1 ? '' : 's'} with ${tools.map(prettyToolName).join(', ') || 'tools'}.`;
-  }
-
-  function renderDaySummary(summary, day, visible, resultById) {
-    const wrap = document.createElement('div');
-    wrap.className = 'trace-day-story';
-
-    const header = document.createElement('header');
-    header.className = 'trace-story-header';
-    const title = document.createElement('div');
-    title.appendChild(el('span', formatShortDate(summary.date || day.sim_date), 'trace-story-date'));
-    title.appendChild(el('h2', summary.title || 'Day summary'));
-    header.appendChild(title);
-    const pills = document.createElement('div');
-    pills.className = 'trace-story-pills';
-    pills.appendChild(el('span', summary.source === 'curated' ? 'curated' : 'auto grouped'));
-    pills.appendChild(el('span', `${visible.length} actions`));
-    const forecastCount = summary.stats && Number.isFinite(Number(summary.stats.forecast_count)) ? Number(summary.stats.forecast_count) : countToolsForEvents(visible).get('submit_forecasts') || 0;
-    pills.appendChild(el('span', `${forecastCount} forecasts`));
-    header.appendChild(pills);
-    wrap.appendChild(header);
-
-    if (summary.display_summary) wrap.appendChild(el('p', summary.display_summary, 'trace-story-copy'));
-
-    const segmentList = document.createElement('div');
-    segmentList.className = 'trace-summary-segments';
-    const segments = Array.isArray(summary.segments) ? summary.segments : [];
-    if (!segments.length) {
-      segmentList.appendChild(el('div', 'No summary segments available for this day.', 'trace-empty'));
-    } else {
-      segments.forEach((segment, index) => {
-        segmentList.appendChild(renderSummarySegment(segment, day, resultById, index));
-      });
-    }
-    wrap.appendChild(segmentList);
-    return wrap;
-  }
-
-  function renderSummarySegment(segment, day, resultById, index) {
-    const details = document.createElement('details');
-    details.className = 'trace-summary-segment';
-    details.id = segment.id || `segment-${index + 1}`;
-
-    const summary = document.createElement('summary');
-    summary.className = 'trace-summary-row';
-    summary.appendChild(el('span', String(index + 1).padStart(2, '0'), 'trace-summary-index'));
-    const text = document.createElement('div');
-    text.className = 'trace-summary-text';
-    text.appendChild(el('h3', segment.label || `Segment ${index + 1}`));
-    text.appendChild(el('p', segment.summary || 'Expand to inspect this action sequence.'));
-    summary.appendChild(text);
-    summary.appendChild(renderSegmentPills(segment, day));
-    details.appendChild(summary);
-
-    const body = document.createElement('div');
-    body.className = 'trace-summary-body';
-    details.appendChild(body);
-    details.addEventListener('toggle', () => {
-      if (!details.open || body.dataset.loaded) return;
-      renderSegmentBody(body, segment, day, resultById);
-      body.dataset.loaded = 'true';
-    });
-    return details;
-  }
-
-  function renderSegmentPills(segment, day) {
-    const pills = document.createElement('div');
-    pills.className = 'trace-segment-pills';
-    pills.appendChild(el('span', segmentRangeLabel(segment)));
-    const events = segmentEvents(day, segment);
-    pills.appendChild(el('span', `${visibleActionEvents(events).length} raw actions`));
-    const tools = segment.tools && segment.tools.length ? segment.tools : [...new Set(events.flatMap(eventTools))];
-    for (const tool of tools.slice(0, 3)) pills.appendChild(el('span', prettyToolName(tool)));
-    if (tools.length > 3) pills.appendChild(el('span', `+${tools.length - 3}`));
-    return pills;
-  }
-
-  function renderSegmentBody(body, segment, day, resultById) {
-    body.replaceChildren();
-    appendSegmentInsights(body, segment);
-    const events = visibleActionEvents(segmentEvents(day, segment));
-    if (!events.length) {
-      body.appendChild(el('div', 'No raw actions found for this segment range.', 'trace-empty'));
-      return;
-    }
-    const intro = document.createElement('div');
-    intro.className = 'trace-raw-intro';
-    intro.appendChild(el('strong', 'Raw trace'));
-    intro.appendChild(el('span', events.length > rawBatchSize
-      ? `${events.length} actions split into ${Math.ceil(events.length / rawBatchSize)} batches.`
-      : `${events.length} action${events.length === 1 ? '' : 's'}.`));
-    body.appendChild(intro);
-    if (events.length > rawBatchSize) body.appendChild(renderRawBatches(events, resultById));
-    else body.appendChild(renderRawEventList(events, resultById));
-  }
-
-  function appendSegmentInsights(body, segment) {
-    if (Array.isArray(segment.notable_facts) && segment.notable_facts.length) {
-      const facts = document.createElement('ul');
-      facts.className = 'trace-segment-facts';
-      for (const fact of segment.notable_facts) facts.appendChild(el('li', fact));
-      body.appendChild(facts);
-    }
-    const forecasts = segment.forecast_updates || segment.representative_forecasts || [];
-    if (forecasts.length) {
-      const list = document.createElement('div');
-      list.className = 'trace-forecast-summary-list';
-      for (const item of forecasts) {
-        const row = document.createElement('div');
-        row.className = 'trace-forecast-summary';
-        row.appendChild(el('strong', item.question_id ? `qid ${item.question_id}` : `event ${item.event_idx || ''}`));
-        row.appendChild(el('span', item.summary || 'Forecast update'));
-        if (item.event_idx) row.appendChild(el('code', `#${item.event_idx}`));
-        list.appendChild(row);
-      }
-      body.appendChild(list);
-    }
-  }
-
-  function renderRawBatches(events, resultById) {
-    const list = document.createElement('div');
-    list.className = 'trace-raw-batches';
-    for (let start = 0; start < events.length; start += rawBatchSize) {
-      const batch = events.slice(start, start + rawBatchSize);
-      const details = document.createElement('details');
-      details.className = 'trace-raw-batch';
-      const label = `${segmentRangeLabel({ event_idx_start: batch[0].idx, event_idx_end: batch[batch.length - 1].idx })} · ${batch.length} actions · ${batchToolLabel(batch)}`;
-      details.appendChild(el('summary', label));
-      const body = document.createElement('div');
-      body.className = 'trace-raw-batch-body';
-      details.appendChild(body);
-      details.addEventListener('toggle', () => {
-        if (!details.open || body.dataset.loaded) return;
-        body.appendChild(renderRawEventList(batch, resultById));
-        body.dataset.loaded = 'true';
-      });
-      list.appendChild(details);
-    }
-    return list;
-  }
-
   function renderRawEventList(events, resultById) {
     const list = document.createElement('div');
     list.className = 'trace-raw-event-list';
@@ -620,20 +432,6 @@
     }
   }
 
-  function segmentEvents(day, segment) {
-    const events = (day && day.events) || [];
-    const start = Number(segment.event_idx_start);
-    const end = Number(segment.event_idx_end);
-    if (!Number.isFinite(start) || !Number.isFinite(end)) return [];
-    return events.filter((event) => event.idx >= start && event.idx <= end);
-  }
-
-  function segmentRangeLabel(segment) {
-    const start = segment.event_idx_start;
-    const end = segment.event_idx_end;
-    return start === end ? `event ${start}` : `events ${start}-${end}`;
-  }
-
   function eventTools(event) {
     return [...new Set((event.blocks || [])
       .filter((block) => block.type === 'tool_use')
@@ -646,12 +444,6 @@
       for (const tool of eventTools(event)) counts.set(tool, (counts.get(tool) || 0) + 1);
     }
     return counts;
-  }
-
-  function batchToolLabel(events) {
-    const counts = [...countToolsForEvents(events).entries()].sort((a, b) => b[1] - a[1]);
-    if (!counts.length) return 'notes';
-    return counts.slice(0, 2).map(([tool, count]) => `${prettyToolName(tool)} x${count}`).join(', ');
   }
 
   function renderRunStats(run) {
@@ -687,13 +479,13 @@
       const button = document.createElement('button');
       button.type = 'button';
       button.className = `trace-day-button${day.date === state.day ? ' is-active' : ''}`;
+      button.dataset.day = day.date;
       button.title = `${formatShortDate(day.date)}\n${day.event_count} actions\n${day.tool_call_count} tool calls\n${day.forecast_count} forecasts`;
       button.setAttribute('aria-pressed', String(day.date === state.day));
       button.appendChild(el('span', formatShortDate(day.date), 'trace-day-date'));
       button.appendChild(el('span', `${day.event_count} actions`, 'trace-day-meta'));
       button.addEventListener('click', () => selectDay(day.date));
       els.dayList.appendChild(button);
-      if (day.date === state.day) requestAnimationFrame(() => button.scrollIntoView({ block: 'nearest' }));
     }
   }
 
@@ -724,12 +516,12 @@
       if (token !== `${state.agent}/${state.runId}/${state.day}`) return;
       const files = workspaceFilesForDay((workspace && workspace.files) || [], state.day);
       if (!files.length) {
-        els.workspaceStatus.textContent = 'No memory files';
+        els.workspaceStatus.textContent = `${state.day} · no relevant files`;
         return;
       }
       const selected = files.find((file) => file.path === state.workspaceFile) || defaultWorkspaceFile(files, state.day);
       state.workspaceFile = selected ? selected.path : '';
-      els.workspaceStatus.textContent = `${workspace.files.length} files`;
+      els.workspaceStatus.textContent = `${state.day} · ${files.length}/${workspace.files.length} files`;
       for (const file of files) {
         const button = document.createElement('button');
         button.type = 'button';
@@ -748,7 +540,25 @@
   }
 
   function workspaceFilesForDay(files, day) {
-    return [...files].sort((a, b) => workspaceFileRank(a, day) - workspaceFileRank(b, day) || a.label.localeCompare(b.label));
+    const exact = files.filter((file) => file.date === day);
+    const cumulative = files.filter((file) => !file.date && file.kind === 'memory');
+    const priorMemory = latestFileBefore(files, day, 'memory');
+    const priorPredictions = latestFileBefore(files, day, 'predictions');
+    const seen = new Set();
+    return [...exact, priorMemory, priorPredictions, ...cumulative]
+      .filter(Boolean)
+      .filter((file) => {
+        if (seen.has(file.path)) return false;
+        seen.add(file.path);
+        return true;
+      })
+      .sort((a, b) => workspaceFileRank(a, day) - workspaceFileRank(b, day) || a.label.localeCompare(b.label));
+  }
+
+  function latestFileBefore(files, day, kind) {
+    return files
+      .filter((file) => file.kind === kind && file.date && file.date <= day)
+      .sort((a, b) => b.date.localeCompare(a.date) || a.label.localeCompare(b.label))[0];
   }
 
   function workspaceFileRank(file, day) {
@@ -1111,13 +921,57 @@
   function selectRunDay(runId, date) {
     const targetRun = filteredRuns().find((item) => item.run_id === runId);
     if (!targetRun || !targetRun.days.some((day) => day.date === date)) return;
+    const sameRun = targetRun.run_id === state.runId;
     state.runId = targetRun.run_id;
     els.run.value = state.runId;
+    renderTrajectory();
+    if (sameRun && state.loadedRunKey === `${state.agent}/${state.runId}` && state.currentDays.size) {
+      scrollToDay(date);
+      return;
+    }
     state.day = date;
     state.workspaceFile = '';
     populateDays(date);
-    renderTrajectory();
-    loadSelection();
+    loadSelection({ scrollTo: date });
+  }
+
+  function scrollToDay(date, options = {}) {
+    setActiveDay(date, { scrollRail: true });
+    const section = document.getElementById(`trace-day-${date}`);
+    if (section) section.scrollIntoView({ behavior: options.instant ? 'auto' : 'smooth', block: 'start' });
+  }
+
+  function setupDayObserver() {
+    if (dayObserver) dayObserver.disconnect();
+    const sections = [...els.events.querySelectorAll('.trace-day-section')];
+    if (!sections.length || !('IntersectionObserver' in window)) return;
+    dayObserver = new IntersectionObserver((entries) => {
+      const visible = entries
+        .filter((entry) => entry.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+      if (visible[0]) setActiveDay(visible[0].target.dataset.day, { scrollRail: true });
+    }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
+    for (const section of sections) dayObserver.observe(section);
+  }
+
+  function setActiveDay(date, options = {}) {
+    if (!date) return;
+    const changed = date !== state.day;
+    if (changed) {
+      state.day = date;
+      state.workspaceFile = '';
+    }
+    if (els.day) els.day.value = date;
+    for (const button of els.dayList.querySelectorAll('.trace-day-button')) {
+      const active = button.dataset.day === date;
+      button.classList.toggle('is-active', active);
+      button.setAttribute('aria-pressed', String(active));
+      if (active && options.scrollRail) button.scrollIntoView({ block: 'nearest' });
+    }
+    for (const section of els.events.querySelectorAll('.trace-day-section')) {
+      section.classList.toggle('is-active', section.dataset.day === date);
+    }
+    if (changed) renderWorkspace(selectedRun());
   }
 
   function showTooltip(tooltip, point, dayMeta, x, y, width, metric, run) {
