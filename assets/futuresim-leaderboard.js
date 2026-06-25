@@ -45,9 +45,9 @@
     minValue -= pad;
     maxValue += pad;
 
-    const width = 900;
-    const height = 340;
-    const margin = { top: 18, right: 20, bottom: 38, left: 56 };
+    const width = 720;
+    const height = 330;
+    const margin = { top: 22, right: 12, bottom: 32, left: 58 };
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
     const x = (day) => margin.left + (maxDay === minDay ? plotW / 2 : (day - minDay) / (maxDay - minDay) * plotW);
@@ -84,7 +84,7 @@
       svg.appendChild(labelNode);
 
       for (const point of item.values) {
-        const hit = svgEl('circle', { cx: x(point.day), cy: y(point.mean), r: 6, class: 'futuresim-leaderboard-hit', tabindex: '0' });
+        const hit = svgEl('circle', { cx: x(point.day), cy: y(point.mean), r: 8, class: 'futuresim-leaderboard-hit', tabindex: '0' });
         hit.addEventListener('mouseenter', () => showTooltip(tooltip, item, point, x(point.day), y(point.mean), width));
         hit.addEventListener('mousemove', () => showTooltip(tooltip, item, point, x(point.day), y(point.mean), width));
         hit.addEventListener('mouseleave', () => tooltip.classList.remove('is-visible'));
@@ -94,17 +94,6 @@
       }
     }
     chart.appendChild(svg);
-
-    const legend = document.createElement('div');
-    legend.className = 'futuresim-leaderboard-legend';
-    for (const item of series) {
-      const row = document.createElement('span');
-      row.style.color = item.color;
-      row.appendChild(el('i', '', 'futuresim-leaderboard-swatch'));
-      row.appendChild(document.createTextNode(`${item.name} (${item.seedCount})`));
-      legend.appendChild(row);
-    }
-    chart.appendChild(legend);
   }
 
   function modelSeries(metricName) {
@@ -128,7 +117,7 @@
     tooltip.appendChild(el('span', `${label(metric)}: ${format(point.mean, metric)} +/- ${format(point.std, metric)}`));
     tooltip.appendChild(el('span', `${point.n} seed${point.n === 1 ? '' : 's'} x ${point.questionCount} questions`));
     tooltip.style.left = `${x / width * 100}%`;
-    tooltip.style.top = `${y / 340 * 100}%`;
+    tooltip.style.top = `${y / 330 * 100}%`;
     tooltip.classList.toggle('is-right', x > width - 190);
     tooltip.classList.add('is-visible');
   }

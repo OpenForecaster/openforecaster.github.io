@@ -51,15 +51,9 @@ nav: futuresim
       </figure>
 
       <section class="futuresim-leaderboard" data-futuresim-leaderboard aria-label="Current leaderboard">
-        <div class="futuresim-leaderboard-header">
-          <div>
-            <h2>Current leaderboard</h2>
-            <p>Mean +/- bootstrap std over seeds and questions</p>
-          </div>
-          <div class="futuresim-leaderboard-tabs" role="group" aria-label="Leaderboard metric">
-            <button type="button" data-futuresim-metric="brier_skill_score" aria-pressed="true">Brier</button>
-            <button type="button" data-futuresim-metric="top1_accuracy" aria-pressed="false">Top 1</button>
-          </div>
+        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Leaderboard metric">
+          <button type="button" data-futuresim-metric="brier_skill_score" aria-pressed="true">Brier</button>
+          <button type="button" data-futuresim-metric="top1_accuracy" aria-pressed="false">Top 1</button>
         </div>
         <div class="futuresim-leaderboard-chart" data-futuresim-leaderboard-chart>
           Loading official run metrics...
