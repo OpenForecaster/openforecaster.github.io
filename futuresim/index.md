@@ -39,17 +39,40 @@ nav: futuresim
       </a>
       <a class="chip" href="{{ '/futuresim/traces/' | relative_url }}">
         <span class="icon" aria-hidden="true" data-icon="pdf"></span>
-        <span>Trajectories</span>
+        <span>Traces</span>
       </a>
     </div>
 
-    <figure class="futuresim-hero-video">
-      <video autoplay loop muted playsinline webkit-playsinline preload="auto" poster="{{ '/futuresim/figures/results/futuresim_combined_poster_v2.jpg' | relative_url }}" data-desktop-controls aria-label="FutureSim combined agent trajectory and benchmark animation">
-        <source src="{{ '/futuresim/figures/results/futuresim_combined_v2.mp4' | relative_url }}" type="video/mp4">
-      </video>
-    </figure>
+    <div class="futuresim-hero-media">
+      <figure class="futuresim-hero-video">
+        <video autoplay loop muted playsinline webkit-playsinline preload="auto" poster="{{ '/futuresim/figures/results/futuresim_combined_poster_v2.jpg' | relative_url }}" data-desktop-controls aria-label="FutureSim combined agent trajectory and benchmark animation">
+          <source src="{{ '/futuresim/figures/results/futuresim_combined_v2.mp4' | relative_url }}" type="video/mp4">
+        </video>
+      </figure>
+
+      <section class="futuresim-leaderboard" data-futuresim-leaderboard aria-label="Current leaderboard">
+        <div class="futuresim-leaderboard-header">
+          <div>
+            <h2>Current leaderboard</h2>
+            <p>Mean +/- bootstrap std over seeds and questions</p>
+          </div>
+          <div class="futuresim-leaderboard-tabs" role="group" aria-label="Leaderboard metric">
+            <button type="button" data-futuresim-metric="brier_skill_score" aria-pressed="true">Brier</button>
+            <button type="button" data-futuresim-metric="top1_accuracy" aria-pressed="false">Top 1</button>
+          </div>
+        </div>
+        <div class="futuresim-leaderboard-chart" data-futuresim-leaderboard-chart>
+          Loading official run metrics...
+        </div>
+      </section>
+    </div>
   </div>
 </section>
+
+<script>
+  window.FSIM_TRACE_DATA_BASE = "{{ '/futuresim/traces/data/' | relative_url }}";
+</script>
+<script src="{{ '/assets/futuresim-leaderboard.js' | relative_url }}"></script>
 
 <article class="blog-content" markdown="1">
 <div class="container" markdown="1">

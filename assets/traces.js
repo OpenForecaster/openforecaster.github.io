@@ -13,6 +13,7 @@
     trajectoryMeta: document.getElementById('trace-trajectory-meta'),
     trajectoryChart: document.getElementById('trace-trajectory-chart'),
     buildMeta: document.getElementById('trace-build-meta'),
+    rawLink: document.getElementById('trace-raw-link'),
     summary: document.getElementById('trace-summary'),
     stats: document.getElementById('trace-day-stats'),
     tools: document.getElementById('trace-tool-list'),
@@ -25,6 +26,7 @@
       const response = await fetch(dataBase + 'manifest.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.manifest = await response.json();
+      if (els.rawLink && window.FSIM_RAW_TRACE_URL) els.rawLink.href = window.FSIM_RAW_TRACE_URL;
       populateAgents();
       wireControls();
       await loadSelection();

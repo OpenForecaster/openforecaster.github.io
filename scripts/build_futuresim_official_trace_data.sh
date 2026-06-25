@@ -78,3 +78,4 @@ add_run "Opus 4.8" opus-4.8 claude-opus-4-8 "Claude Code" r01 "$official_runs/op
 add_run "Opus 4.8" opus-4.8 claude-opus-4-8 "Claude Code" r02 "$official_runs/opus-4.8/26-06-05-11-17-13" claude_code_stdout.jsonl
 
 python "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" "${args[@]}"
+python "$repo/scripts/build_futuresim_leaderboard_data.py"

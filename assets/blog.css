@@ -239,14 +239,28 @@
   max-width: 600px;
 }
 
+.futuresim-hero-media {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(360px, 0.95fr);
+  gap: 18px;
+  align-items: stretch;
+  margin: 34px auto 0;
+  max-width: 1180px;
+}
+
 .futuresim-hero-video {
-  width: min(100%, 780px);
+  min-width: 0;
   margin: 34px auto 0;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
   background: #fff;
   box-shadow: var(--shadow);
+}
+
+.futuresim-hero-media .futuresim-hero-video {
+  width: 100%;
+  margin: 0;
 }
 
 .futuresim-hero-video video {
@@ -257,6 +271,177 @@
   border-radius: var(--radius-sm);
   background: #fff;
   object-fit: cover;
+}
+
+.futuresim-leaderboard {
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: #fff;
+  box-shadow: var(--shadow);
+  text-align: left;
+}
+
+.futuresim-leaderboard-header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.futuresim-leaderboard h2 {
+  margin: 0 0 3px;
+  font-size: 18px;
+  line-height: 1.2;
+}
+
+.futuresim-leaderboard p {
+  margin: 0;
+  color: var(--muted2);
+  font-size: 12px;
+}
+
+.futuresim-leaderboard-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-width: 150px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.futuresim-leaderboard-tabs button {
+  min-height: 32px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.futuresim-leaderboard-tabs button:last-child {
+  border-right: 0;
+}
+
+.futuresim-leaderboard-tabs button[aria-pressed="true"] {
+  background: #eef7f6;
+  color: var(--text);
+  font-weight: 650;
+}
+
+.futuresim-leaderboard-chart {
+  position: relative;
+  min-height: 340px;
+  color: var(--muted2);
+  font-size: 14px;
+}
+
+.futuresim-leaderboard-chart svg {
+  display: block;
+  width: 100%;
+  height: 340px;
+}
+
+.futuresim-leaderboard-axis,
+.futuresim-leaderboard-grid {
+  stroke: var(--border);
+  stroke-width: 1;
+}
+
+.futuresim-leaderboard-grid {
+  opacity: 0.7;
+}
+
+.futuresim-leaderboard-axis-label {
+  fill: var(--muted2);
+  font-size: 11px;
+}
+
+.futuresim-leaderboard-band {
+  opacity: 0.1;
+}
+
+.futuresim-leaderboard-line {
+  fill: none;
+  stroke-width: 2.2;
+}
+
+.futuresim-leaderboard-series-label {
+  font-size: 10px;
+  font-weight: 650;
+  paint-order: stroke;
+  stroke: #fff;
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
+.futuresim-leaderboard-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.futuresim-leaderboard-hit:focus {
+  stroke: var(--text);
+  stroke-width: 2;
+}
+
+.futuresim-leaderboard-tooltip {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  gap: 2px;
+  min-width: 150px;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14);
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.3;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, calc(-100% - 12px));
+  transition: opacity 120ms ease;
+}
+
+.futuresim-leaderboard-tooltip.is-visible {
+  opacity: 1;
+}
+
+.futuresim-leaderboard-tooltip.is-right {
+  transform: translate(calc(-100% + 14px), calc(-100% - 12px));
+}
+
+.futuresim-leaderboard-tooltip strong {
+  color: var(--text);
+}
+
+.futuresim-leaderboard-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 12px;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.futuresim-leaderboard-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.futuresim-leaderboard-swatch {
+  width: 16px;
+  height: 3px;
+  border-radius: 999px;
+  background: currentColor;
 }
 
 /* Blog content styles */
@@ -1126,6 +1311,18 @@
 
   .resource-links {
     gap: 8px;
+  }
+
+  .futuresim-hero-media {
+    grid-template-columns: 1fr;
+  }
+
+  .futuresim-leaderboard-header {
+    flex-direction: column;
+  }
+
+  .futuresim-leaderboard-tabs {
+    width: 100%;
   }
 
   .blog-content details summary {

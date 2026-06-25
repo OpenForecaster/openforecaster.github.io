@@ -2,9 +2,29 @@
 
 Static viewer for official FutureSim leaderboard traces.
 
-The page loads `manifest.json`, then a single `{agent}/{run}/{simulation_day}.json`
-shard. Full trace data should be generated outside the website repo and uploaded
-to Hugging Face or another static host, then wired through `config.js`.
+The deployed page currently loads `manifest.json`, then a single
+`{agent}/{run}/{simulation_day}.json` shard from the static files checked into
+`futuresim/traces/data/`. Those files are generated from
+`/fast/sgoel/forecasting/current_sim/official_runs_complete` by
+`scripts/build_futuresim_official_trace_data.sh`.
+
+The raw legacy trajectory browser is linked from the page header through
+`window.FSIM_RAW_TRACE_URL` in `config.js`.
+
+The FutureSim landing page leaderboard reads `data/leaderboard.json`. This file
+is precomputed by `scripts/build_futuresim_leaderboard_data.py` from the same
+official runs, using daily per-question prediction snapshots and matcher cache
+files to bootstrap over both seeds and question IDs. When adding or replacing a
+model/run in the trace visualizer, rerun:
+
+```bash
+scripts/build_futuresim_official_trace_data.sh
+```
+
+This refreshes both the trace shards/manifest and the bootstrapped
+`leaderboard.json`. GitHub Pages is static, so the deployed visualizer reads the
+JSON committed to this repo unless `window.FSIM_TRACE_DATA_BASE` is explicitly
+changed to point at another static host.
 
 Example local sample generation:
 
