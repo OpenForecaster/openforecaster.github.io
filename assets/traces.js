@@ -528,7 +528,7 @@
         button.className = `trace-workspace-file${file.path === state.workspaceFile ? ' is-active' : ''}`;
         button.title = `${file.label}${file.date ? `\n${file.date}` : ''}\n${formatBytes(file.size)}`;
         button.appendChild(el('strong', workspaceFileName(file.label)));
-        button.appendChild(el('span', [file.kind, file.date || 'cumulative', formatBytes(file.size)].join(' - ')));
+        button.appendChild(el('span', [file.kind, file.date ? `as of ${file.date}` : 'final file', fileSourceLabel(file), formatBytes(file.size)].filter(Boolean).join(' - ')));
         button.addEventListener('click', () => {
           state.workspaceFile = file.path;
           renderWorkspace(run);
@@ -542,23 +542,27 @@
   function workspaceFilesForDay(files, day) {
     const exact = files.filter((file) => file.date === day);
     const cumulative = files.filter((file) => !file.date && file.kind === 'memory');
-    const priorMemory = latestFileBefore(files, day, 'memory');
-    const priorPredictions = latestFileBefore(files, day, 'predictions');
+    const priorMemory = latestFilesBefore(files, day, 'memory');
+    const priorPredictions = latestFilesBefore(files, day, 'predictions');
     const seen = new Set();
-    return [...exact, priorMemory, priorPredictions, ...cumulative]
+    return [...exact, ...priorMemory, ...priorPredictions, ...cumulative]
       .filter(Boolean)
       .filter((file) => {
-        if (seen.has(file.path)) return false;
-        seen.add(file.path);
+        if (seen.has(file.label)) return false;
+        seen.add(file.label);
         return true;
       })
       .sort((a, b) => workspaceFileRank(a, day) - workspaceFileRank(b, day) || a.label.localeCompare(b.label));
   }
 
-  function latestFileBefore(files, day, kind) {
-    return files
+  function latestFilesBefore(files, day, kind) {
+    const latest = new Map();
+    for (const file of files
       .filter((file) => file.kind === kind && file.date && file.date <= day)
-      .sort((a, b) => b.date.localeCompare(a.date) || a.label.localeCompare(b.label))[0];
+      .sort((a, b) => b.date.localeCompare(a.date) || a.label.localeCompare(b.label))) {
+      if (!latest.has(file.label)) latest.set(file.label, file);
+    }
+    return [...latest.values()];
   }
 
   function workspaceFileRank(file, day) {
@@ -591,6 +595,12 @@
 
   function workspaceFileName(label) {
     return label.split('/').pop() || label;
+  }
+
+  function fileSourceLabel(file) {
+    if (file.source === 'trace_history') return 'trace';
+    if (file.source === 'final_workspace') return 'workspace';
+    return '';
   }
 
   function formatBytes(value) {

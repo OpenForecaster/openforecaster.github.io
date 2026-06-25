@@ -85,8 +85,10 @@ def export_workspace(data_dir: Path, out_root: Path, run: dict[str, Any], worksp
             "date": file_date(rel.name),
             "size": target.stat().st_size,
             "path": str(target.relative_to(data_dir)),
+            "source": "final_workspace",
         })
 
+    files.extend(export_trace_workspace_versions(data_dir, files_root, run, workspace))
     files.sort(key=lambda item: (item["kind"] != "memory", item["date"] or "9999-99-99", item["label"]))
     payload = {
         "agent_slug": run["agent_slug"],
@@ -116,6 +118,111 @@ def workspace_files(workspace: Path) -> list[Path]:
         if root.exists():
             files.extend(path for path in root.rglob("*") if path.is_file())
     return files
+
+
+def export_trace_workspace_versions(data_dir: Path, files_root: Path, run: dict[str, Any], workspace: Path) -> list[dict[str, Any]]:
+    versions: dict[Path, str] = {}
+    written_by_day: dict[tuple[str, Path], str] = {}
+    meta_by_day: dict[tuple[str, Path], dict[str, Any]] = {}
+
+    for day in sorted(run.get("days", []), key=lambda item: item["date"]):
+        shard = data_dir / day["path"]
+        if not shard.exists():
+            continue
+        payload = json.loads(shard.read_text(encoding="utf-8"))
+        for event in payload.get("events", []):
+            for block in event.get("blocks", []):
+                if block.get("type") != "tool_use":
+                    continue
+                rel = tool_file_path(block, workspace)
+                if rel is None:
+                    continue
+                content = apply_file_tool(block, versions.get(rel))
+                if content is None or len(content.encode("utf-8", errors="replace")) > MAX_FILE_BYTES:
+                    continue
+                versions[rel] = content
+                written_by_day[(day["date"], rel)] = content
+                meta_by_day[(day["date"], rel)] = {
+                    "event_idx": event.get("idx"),
+                    "tool": block.get("name") or "tool",
+                }
+
+    files = []
+    for (date, rel), content in sorted(written_by_day.items(), key=lambda item: (item[0][0], str(item[0][1]))):
+        target = files_root / "history" / date / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        target.write_text(SECRET_RE.sub("[redacted]", content), encoding="utf-8")
+        meta = meta_by_day[(date, rel)]
+        files.append({
+            "label": str(rel),
+            "kind": file_kind(rel),
+            "date": date,
+            "size": target.stat().st_size,
+            "path": str(target.relative_to(data_dir)),
+            "source": "trace_history",
+            "event_idx": meta["event_idx"],
+            "tool": meta["tool"],
+        })
+    return files
+
+
+def tool_file_path(block: dict[str, Any], workspace: Path) -> Path | None:
+    input_data = block.get("input") or {}
+    raw = input_data.get("file_path") or input_data.get("path")
+    if not raw:
+        return None
+    path = Path(str(raw))
+    if path.is_absolute():
+        try:
+            rel = path.relative_to(workspace)
+        except ValueError:
+            marker = "/workspace/"
+            value = str(path)
+            if marker not in value:
+                return None
+            rel = Path(value.split(marker, 1)[1])
+    else:
+        rel = path
+    if rel.is_absolute() or ".." in rel.parts:
+        return None
+    if not workspace_file_allowed(rel):
+        return None
+    return rel
+
+
+def workspace_file_allowed(path: Path) -> bool:
+    return path == Path("AGENTS.md") or (path.parts and path.parts[0] in {"memory", "predictions"})
+
+
+def apply_file_tool(block: dict[str, Any], current: str | None) -> str | None:
+    name = str(block.get("name") or "").lower()
+    input_data = block.get("input") or {}
+    if name == "write" and isinstance(input_data.get("content"), str):
+        return input_data["content"]
+    if name == "edit":
+        return apply_edit(current, input_data)
+    if name == "multiedit":
+        content = current
+        for edit in input_data.get("edits") or []:
+            content = apply_edit(content, edit)
+            if content is None:
+                return None
+        return content
+    return None
+
+
+def apply_edit(current: str | None, edit: dict[str, Any]) -> str | None:
+    if current is None:
+        return None
+    old = edit.get("old_string")
+    new = edit.get("new_string")
+    if not isinstance(old, str) or not isinstance(new, str):
+        return None
+    if edit.get("replace_all"):
+        return current.replace(old, new)
+    if old not in current:
+        return None
+    return current.replace(old, new, 1)
 
 
 def copy_redacted(source: Path, target: Path) -> None:
