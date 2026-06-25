@@ -169,44 +169,6 @@ In our plots, we show the brier skill score and accuracy at each time-step based
 
 Note that the absolute performances we report can be considered a lower-bound on agent performance. Access to a larger context corpus, better tools, and harness engineering to scale inference further would elicit higher performance. At the same time, care has to be taken to avoid leakage of future information. While we would much like to give agents access to the full internet, [search API's today do not support reliable date-cutoffs](https://arxiv.org/abs/2506.00723).
 
-## Frontier model evaluations {#benchmark}
-
-<section class="result-toggle mobile-only" data-tabs="futuresim-results">
-  <div class="result-toggle-tabs" role="tablist" aria-label="FutureSim result metric">
-    <button id="futuresim-accuracy-tab" type="button" role="tab" aria-selected="true" aria-controls="futuresim-accuracy-panel">
-      Accuracy
-    </button>
-    <button id="futuresim-brier-tab" type="button" role="tab" aria-selected="false" aria-controls="futuresim-brier-panel" tabindex="-1">
-      Brier
-    </button>
-  </div>
-  <div class="result-toggle-panes" data-panes>
-    <figure id="futuresim-accuracy-panel" role="tabpanel" aria-labelledby="futuresim-accuracy-tab">
-      <img src="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}" alt="FutureSim model accuracy results">
-    </figure>
-    <figure id="futuresim-brier-panel" role="tabpanel" aria-labelledby="futuresim-brier-tab" aria-hidden="true" inert>
-      <img src="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}" alt="FutureSim model Brier score results">
-    </figure>
-  </div>
-</section>
-
-<section class="figure-pair figure-pair--main-results desktop-only" aria-label="FutureSim benchmark result figures">
-  <figure>
-    <figcaption>Accuracy</figcaption>
-    <img src="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}" alt="FutureSim model accuracy results">
-  </figure>
-  <figure>
-    <figcaption>Brier skill score</figcaption>
-    <img src="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}" alt="FutureSim model Brier score results">
-  </figure>
-</section>
-
-We evaluate GPT 5.5 in Codex, Qwen3.6 Plus in OpenCode, and Opus 4.6, DeepSeek V4 Pro, and GLM 5.1 in Claude Code. In our paper, we also report improved results across agents from adding a common set of modifications (such as in memory management) to all harnesses, showing gains from further harness engineering as possible.
-
-We observe GPT 5.5 performs best on both accuracy and Brier skill score. Claude Opus 4.6 starts worse than GPT 5.5, but is also able to improve significantly from test-time adaptation. 
-
-Open-weight models lag behind, but show interesting trends. For example, while DeepSeek V4 Pro's much better adaptation at test-time helps it close the gap on GLM 5.1, Qwen 3.6 Plus worsens in Brier skill score during the simulation, overconfidently reinforcing its existing predictions.
-
 ## How researchers/developers can use FutureSim {#experiments}
 
 Finally, we show how FutureSim flexible design enables experiments on various interesting research directions. Pick your favorite ones below :)
