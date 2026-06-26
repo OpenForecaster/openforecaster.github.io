@@ -83,7 +83,7 @@ def summarize_run(run):
         "linking_contract": {
             "day_trace_path": "days[].trace_path is relative to trace_data_base",
             "segment_event_range": "segments[].event_idx_start and segments[].event_idx_end refer to day.events[].idx in the trace shard",
-            "segment_grouping": "Segments are consecutive visible action sequences, split around day transitions and roughly 60 visible actions.",
+            "segment_grouping": "Segments are consecutive trace sequences, split around day transitions and roughly 60 rendered entries.",
             "ui_behavior": "The visualizer renders each segment summary first, then expands all trace events whose idx is within the segment range.",
         },
         "days": days,
@@ -119,6 +119,7 @@ def summarize_segment(date, index, events, title_by_qid):
     tool_names = [block.get("name") or "tool" for event in events for block in tool_blocks(event)]
     counts = Counter(tool_kind(name) for name in tool_names)
     forecasts = forecast_examples(events, title_by_qid)
+    messages = model_messages(events)
     label = segment_label(counts, forecasts, events)
     facts = []
     for name, label_text in [("search_news", "news searches"), ("submit_forecasts", "forecast submissions"), ("next_day", "day advance calls"), ("compaction", "context compactions")]:
@@ -132,9 +133,11 @@ def summarize_segment(date, index, events, title_by_qid):
         "label": label,
         "summary": segment_summary(counts, forecasts, events),
         "action_count": len(events),
+        "tool_call_count": len(tool_names),
         "tools": unique_pretty_tools(tool_names, events),
         "notable_facts": facts,
         "representative_event_idxs": representative_idxs(events),
+        **({"model_messages": messages} if messages else {}),
         **({"question_scope": {"count": counts["submit_forecasts"], "mode": "forecast submissions"}} if counts.get("submit_forecasts") else {}),
         **({"representative_forecasts": forecasts[:5]} if forecasts else {}),
     }
@@ -164,31 +167,30 @@ def segment_summary(counts, forecasts, events):
         parts.append(f"ran {counts['search_news']} news search(es)")
     workspace = sum(counts[name] for name in counts if name not in {"submit_forecasts", "search_news", "next_day", "compaction"})
     if workspace:
-        parts.append(f"used {workspace} workspace/tool action(s)")
+        parts.append(f"used {workspace} workspace/tool call(s)")
     if counts.get("next_day"):
         parts.append("advanced the simulation day")
     if counts.get("compaction"):
         parts.append(f"recorded {counts['compaction']} context compaction event(s)")
     if not parts:
         text_events = sum(1 for event in events if any(block.get("type") == "text" for block in event.get("blocks", [])))
-        parts.append(f"Recorded {text_events or len(events)} agent reasoning/action event(s)")
-    summary = "; ".join(parts)
-    if forecasts:
-        summary += ". Representative forecasts are listed below."
-    return sentence(summary)
+        parts.append(f"Recorded {text_events or len(events)} model message(s)")
+    return sentence("; ".join(parts))
 
 
 def day_title(run, day_meta, stats, segments):
     if stats["forecast_count"]:
         return f"{day_meta['date']}: {stats['forecast_count']} forecast updates"
+    if stats["tool_call_count"]:
+        return f"{day_meta['date']}: {stats['tool_call_count']} tool calls"
     if stats["action_count"]:
-        return f"{day_meta['date']}: {stats['action_count']} visible actions"
-    return f"{day_meta['date']}: No recorded actions"
+        return f"{day_meta['date']}: model messages"
+    return f"{day_meta['date']}: No recorded trace"
 
 
 def day_summary(run, stats, segments):
     if not stats["action_count"]:
-        return "The trace shard contains no visible actions for this simulation day."
+        return "The trace shard contains no entries for this simulation day."
     bits = []
     if stats["forecast_count"]:
         bits.append(f"{run['agent_name']} submitted {stats['forecast_count']} forecast update(s)")
@@ -200,7 +202,7 @@ def day_summary(run, stats, segments):
     if tool_counts["search"]:
         bits.append(f"Ran {tool_counts['search']} news search(es)")
     if not bits:
-        bits.append(f"{run['agent_name']} recorded {stats['action_count']} visible action(s)")
+        bits.append(f"{run['agent_name']} made {stats['tool_call_count']} tool call(s)")
     return sentence(". ".join(bits))
 
 
@@ -407,15 +409,30 @@ def forecast_examples(events, title_by_qid):
                 continue
             input_data = block.get("input") if isinstance(block.get("input"), dict) else {}
             qid = str(input_data.get("question_id") or input_data.get("qid") or "")
-            outcomes = input_data.get("outcomes") if isinstance(input_data.get("outcomes"), dict) else {}
-            top = sorted(((str(k), float(v)) for k, v in outcomes.items() if is_number(v)), key=lambda item: item[1], reverse=True)[:2]
+            outcomes = clean_outcomes(input_data.get("outcomes"))
+            previous = clean_outcomes(input_data.get("previous_outcomes"))
+            top = sorted(outcomes.items(), key=lambda item: item[1], reverse=True)[:2]
             examples.append({
                 "question_id": qid,
-                "question_title": title_by_qid.get(qid, f"Question {qid}" if qid else "Forecast question"),
+                "question_title": title_by_qid.get(qid) or title_by_qid.get(canonical_qid(qid), f"Question {qid}" if qid else "Forecast question"),
                 "event_idx": event["idx"],
+                "outcomes": outcomes,
+                **({"previous_outcomes": previous} if previous else {}),
                 "summary": "Top outcomes: " + ", ".join(f"{name} {value:.2f}" for name, value in top) + "." if top else "Forecast submitted.",
             })
     return examples
+
+
+def model_messages(events):
+    messages = []
+    for event in events:
+        for block in event.get("blocks", []):
+            if block.get("type") != "text":
+                continue
+            text = str(block.get("text") or "").strip()
+            if text:
+                messages.append(text)
+    return messages
 
 
 def build_question_title_index(run):
@@ -478,6 +495,10 @@ def add_titles(index, text):
 
 def clean_title(title):
     title = re.sub(r"\\s+", " ", str(title)).strip().strip(",")
+    title = re.sub(r"^title:\s*", "", title, flags=re.I)
+    parts = [part.strip() for part in title.split("|")]
+    if len(parts) >= 2 and re.fullmatch(r"\d{4}-\d{2}-\d{2}", parts[0]):
+        title = parts[1]
     if len(title) > 220:
         title = title[:217] + "..."
     return title if len(title) >= 12 else ""

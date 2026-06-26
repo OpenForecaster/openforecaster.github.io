@@ -19,7 +19,7 @@
   "linking_contract": {
     "day_trace_path": "days[].trace_path is relative to trace_data_base",
     "segment_event_range": "segments[].event_idx_start and segments[].event_idx_end refer to day.events[].idx in the trace shard",
-    "segment_grouping": "Segments are consecutive visible action sequences, split around day transitions and roughly 60 visible actions.",
+    "segment_grouping": "Segments are consecutive trace sequences, split around day transitions and roughly 60 rendered entries.",
     "ui_behavior": "The visualizer renders each segment summary first, then expands all trace events whose idx is within the segment range."
   },
   "days": [
@@ -54,8 +54,9 @@
           "event_idx_start": 7,
           "event_idx_end": 846,
           "label": "Research and forecast updates",
-          "summary": "Submitted 11 forecast update(s); ran 21 news search(es); used 17 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 11 forecast update(s); ran 21 news search(es); used 17 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 49,
           "tools": [
             "Bash",
             "ToolSearch",
@@ -73,6 +74,14 @@
             272,
             846
           ],
+          "model_messages": [
+            "The question titles themselves leak future info that cross-references other questions. Let me see all of them.",
+            "AFCON has started and Venezuela is in a blockade crisis. Let me run targeted searches on near-term questions in parallel.",
+            "No direct hits on those two. Continuing with key geopolitical clusters:",
+            "SDF/Aleppo cluster confirmed. Minneapolis surge context noted (CBP-led). More searches:",
+            "I now have enough research for a first full pass. Let me write my complete answer set to memory, then submit everything.",
+            "310 validated answers plus one more to add. Now I'll submit them all in batches."
+          ],
           "question_scope": {
             "count": 11,
             "mode": "forecast submissions"
@@ -82,30 +91,63 @@
               "question_id": "165622",
               "question_title": "Question 165622",
               "event_idx": 826,
+              "outcomes": {
+                "Xavi Hernandez": 0.09,
+                "Edin Terzic": 0.07,
+                "Frank Lampard": 0.07,
+                "Oliver Glasner": 0.06,
+                "Andoni Iraola": 0.05
+              },
               "summary": "Top outcomes: Xavi Hernandez 0.09, Edin Terzic 0.07."
             },
             {
               "question_id": "227432",
               "question_title": "Question 227432",
               "event_idx": 828,
+              "outcomes": {
+                "Pavlo Palisa": 0.2,
+                "Mykhailo Fedorov": 0.12,
+                "Oleksandr Kamyshin": 0.08,
+                "Rustem Umerov": 0.07,
+                "Andrii Hnatov": 0.05
+              },
               "summary": "Top outcomes: Pavlo Palisa 0.20, Mykhailo Fedorov 0.12."
             },
             {
               "question_id": "628026",
               "question_title": "Question 628026",
               "event_idx": 830,
+              "outcomes": {
+                "Concord": 0.1,
+                "Gastonia": 0.1,
+                "Huntersville": 0.09,
+                "Matthews": 0.08,
+                "Mooresville": 0.07
+              },
               "summary": "Top outcomes: Concord 0.10, Gastonia 0.10."
             },
             {
               "question_id": "892867",
               "question_title": "Question 892867",
               "event_idx": 832,
+              "outcomes": {
+                "Vincent Kriechmayr": 0.1,
+                "Marco Schwarz": 0.07,
+                "Daniel Hemetsberger": 0.07,
+                "Cornelia Huetter": 0.06,
+                "Mirjam Puchner": 0.05
+              },
               "summary": "Top outcomes: Vincent Kriechmayr 0.10, Marco Schwarz 0.07."
             },
             {
               "question_id": "93950",
               "question_title": "Question 93950",
               "event_idx": 834,
+              "outcomes": {
+                "South Carolina": 0.62,
+                "Arizona": 0.15,
+                "Utah": 0.06
+              },
               "summary": "Top outcomes: South Carolina 0.62, Arizona 0.15."
             }
           ]
@@ -115,8 +157,9 @@
           "event_idx_start": 848,
           "event_idx_end": 956,
           "label": "Forecast submissions",
-          "summary": "Submitted 55 forecast update(s). Representative forecasts are listed below.",
+          "summary": "Submitted 55 forecast update(s).",
           "action_count": 55,
+          "tool_call_count": 55,
           "tools": [
             "Submit Forecasts"
           ],
@@ -137,30 +180,60 @@
               "question_id": "433526",
               "question_title": "Question 433526",
               "event_idx": 848,
+              "outcomes": {
+                "Natanz": 0.4,
+                "Fordow": 0.18,
+                "Parchin": 0.1,
+                "Isfahan": 0.07,
+                "Khojir": 0.05
+              },
               "summary": "Top outcomes: Natanz 0.40, Fordow 0.18."
             },
             {
               "question_id": "630728",
               "question_title": "Question 630728",
               "event_idx": 850,
+              "outcomes": {
+                "Donald Trump": 0.55,
+                "Marco Rubio": 0.12,
+                "Jeff Landry": 0.08,
+                "JD Vance": 0.04
+              },
               "summary": "Top outcomes: Donald Trump 0.55, Marco Rubio 0.12."
             },
             {
               "question_id": "703511",
               "question_title": "Question 703511",
               "event_idx": 852,
+              "outcomes": {
+                "Egypt": 0.16,
+                "South Africa": 0.16,
+                "Angola": 0.06,
+                "Mali": 0.06,
+                "Nigeria": 0.05
+              },
               "summary": "Top outcomes: Egypt 0.16, South Africa 0.16."
             },
             {
               "question_id": "814175",
               "question_title": "Question 814175",
               "event_idx": 854,
+              "outcomes": {
+                "United States": 0.5,
+                "Israel": 0.2
+              },
               "summary": "Top outcomes: United States 0.50, Israel 0.20."
             },
             {
               "question_id": "915183",
               "question_title": "Question 915183",
               "event_idx": 856,
+              "outcomes": {
+                "Minnesota": 0.55,
+                "Louisiana": 0.12,
+                "New York": 0.06,
+                "North Carolina": 0.05
+              },
               "summary": "Top outcomes: Minnesota 0.55, Louisiana 0.12."
             }
           ]
@@ -170,8 +243,9 @@
           "event_idx_start": 958,
           "event_idx_end": 1067,
           "label": "Forecast submissions",
-          "summary": "Submitted 55 forecast update(s). Representative forecasts are listed below.",
+          "summary": "Submitted 55 forecast update(s).",
           "action_count": 55,
+          "tool_call_count": 55,
           "tools": [
             "Submit Forecasts"
           ],
@@ -192,30 +266,60 @@
               "question_id": "37248",
               "question_title": "Question 37248",
               "event_idx": 958,
+              "outcomes": {
+                "Iliana Iotova": 0.6,
+                "Mariya Gabriel": 0.05,
+                "Rumyana Bachvarova": 0.03
+              },
               "summary": "Top outcomes: Iliana Iotova 0.60, Mariya Gabriel 0.05."
             },
             {
               "question_id": "551676",
               "question_title": "Question 551676",
               "event_idx": 960,
+              "outcomes": {
+                "Syrian army": 0.35,
+                "Syrian Democratic Forces": 0.25,
+                "US forces": 0.05
+              },
               "summary": "Top outcomes: Syrian army 0.35, Syrian Democratic Forces 0.25."
             },
             {
               "question_id": "904367",
               "question_title": "Question 904367",
               "event_idx": 962,
+              "outcomes": {
+                "Raqqa": 0.2,
+                "Tabqa": 0.18,
+                "Deir Hafer": 0.08,
+                "Maskana": 0.06,
+                "Hasakah": 0.06
+              },
               "summary": "Top outcomes: Raqqa 0.20, Tabqa 0.18."
             },
             {
               "question_id": "377358",
               "question_title": "Question 377358",
               "event_idx": 964,
+              "outcomes": {
+                "England": 0.35,
+                "Norway": 0.12,
+                "Netherlands": 0.1,
+                "Germany": 0.08,
+                "Iran": 0.06
+              },
               "summary": "Top outcomes: England 0.35, Norway 0.12."
             },
             {
               "question_id": "207522",
               "question_title": "Question 207522",
               "event_idx": 966,
+              "outcomes": {
+                "Sulawesi": 0.45,
+                "Borneo": 0.1,
+                "Flores": 0.06,
+                "Sumatra": 0.05
+              },
               "summary": "Top outcomes: Sulawesi 0.45, Borneo 0.10."
             }
           ]
@@ -225,8 +329,9 @@
           "event_idx_start": 1069,
           "event_idx_end": 1177,
           "label": "Forecast submissions",
-          "summary": "Submitted 55 forecast update(s). Representative forecasts are listed below.",
+          "summary": "Submitted 55 forecast update(s).",
           "action_count": 55,
+          "tool_call_count": 55,
           "tools": [
             "Submit Forecasts"
           ],
@@ -247,30 +352,62 @@
               "question_id": "426743",
               "question_title": "Question 426743",
               "event_idx": 1069,
+              "outcomes": {
+                "Zintan": 0.15,
+                "Sirte": 0.15,
+                "Bani Walid": 0.12,
+                "Tripoli": 0.08,
+                "Sabha": 0.08
+              },
               "summary": "Top outcomes: Zintan 0.15, Sirte 0.15."
             },
             {
               "question_id": "57193",
               "question_title": "Question 57193",
               "event_idx": 1071,
+              "outcomes": {
+                "California": 0.55,
+                "Virginia": 0.08,
+                "Maryland": 0.05,
+                "Illinois": 0.05
+              },
               "summary": "Top outcomes: California 0.55, Virginia 0.08."
             },
             {
               "question_id": "579252",
               "question_title": "Question 579252",
               "event_idx": 1073,
+              "outcomes": {
+                "Shiraz": 0.1,
+                "Mashhad": 0.1,
+                "Amol": 0.08,
+                "Sari": 0.08,
+                "Karaj": 0.06
+              },
               "summary": "Top outcomes: Shiraz 0.10, Mashhad 0.10."
             },
             {
               "question_id": "198725",
               "question_title": "Question 198725",
               "event_idx": 1075,
+              "outcomes": {
+                "Zabol": 0.12,
+                "Birjand": 0.06,
+                "Bandar Abbas": 0.05,
+                "Ilam": 0.04,
+                "Sarakhs": 0.04
+              },
               "summary": "Top outcomes: Zabol 0.12, Birjand 0.06."
             },
             {
               "question_id": "456284",
               "question_title": "Question 456284",
               "event_idx": 1077,
+              "outcomes": {
+                "Matt Murray": 0.18,
+                "Suzi Watford": 0.08,
+                "Patty Stonesifer": 0.07
+              },
               "summary": "Top outcomes: Matt Murray 0.18, Suzi Watford 0.08."
             }
           ]
@@ -280,8 +417,9 @@
           "event_idx_start": 1179,
           "event_idx_end": 1287,
           "label": "Forecast submissions",
-          "summary": "Submitted 55 forecast update(s). Representative forecasts are listed below.",
+          "summary": "Submitted 55 forecast update(s).",
           "action_count": 55,
+          "tool_call_count": 55,
           "tools": [
             "Submit Forecasts"
           ],
@@ -302,30 +440,65 @@
               "question_id": "812182",
               "question_title": "Question 812182",
               "event_idx": 1179,
+              "outcomes": {
+                "Pedri": 0.2,
+                "Frenkie de Jong": 0.1,
+                "Gavi": 0.1,
+                "Dani Olmo": 0.1,
+                "Fermin Lopez": 0.08
+              },
               "summary": "Top outcomes: Pedri 0.20, Frenkie de Jong 0.10."
             },
             {
               "question_id": "131819",
               "question_title": "Question 131819",
               "event_idx": 1181,
+              "outcomes": {
+                "Khost": 0.08,
+                "Asadabad": 0.06,
+                "Jalalabad": 0.06,
+                "Spin Boldak": 0.05,
+                "Kunar": 0.04
+              },
               "summary": "Top outcomes: Khost 0.08, Asadabad 0.06."
             },
             {
               "question_id": "412823",
               "question_title": "Question 412823",
               "event_idx": 1183,
+              "outcomes": {
+                "Josh Hawley": 0.3,
+                "Richard Blumenthal": 0.12,
+                "Chris Murphy": 0.06,
+                "Jeff Merkley": 0.05,
+                "John Fetterman": 0.03
+              },
               "summary": "Top outcomes: Josh Hawley 0.30, Richard Blumenthal 0.12."
             },
             {
               "question_id": "661416",
               "question_title": "Question 661416",
               "event_idx": 1185,
+              "outcomes": {
+                "Yantar": 0.32,
+                "Admiral Vladimirsky": 0.08,
+                "Viktor Leonov": 0.06,
+                "Kildin": 0.05,
+                "Vasily Tatishchev": 0.05
+              },
               "summary": "Top outcomes: Yantar 0.32, Admiral Vladimirsky 0.08."
             },
             {
               "question_id": "915784",
               "question_title": "Question 915784",
               "event_idx": 1187,
+              "outcomes": {
+                "Bayern Munich": 0.1,
+                "Inter Milan": 0.1,
+                "Paris Saint-Germain": 0.08,
+                "Barcelona": 0.08,
+                "Arsenal": 0.07
+              },
               "summary": "Top outcomes: Bayern Munich 0.10, Inter Milan 0.10."
             }
           ]
@@ -335,8 +508,9 @@
           "event_idx_start": 1289,
           "event_idx_end": 1397,
           "label": "Forecast submissions",
-          "summary": "Submitted 55 forecast update(s). Representative forecasts are listed below.",
+          "summary": "Submitted 55 forecast update(s).",
           "action_count": 55,
+          "tool_call_count": 55,
           "tools": [
             "Submit Forecasts"
           ],
@@ -357,30 +531,61 @@
               "question_id": "830793",
               "question_title": "Question 830793",
               "event_idx": 1289,
+              "outcomes": {
+                "Israel": 0.45,
+                "United States": 0.12,
+                "Iran": 0.06
+              },
               "summary": "Top outcomes: Israel 0.45, United States 0.12."
             },
             {
               "question_id": "179817",
               "question_title": "Question 179817",
               "event_idx": 1291,
+              "outcomes": {
+                "Mahela Jayawardene": 0.1,
+                "Jonathan Trott": 0.08,
+                "Thilan Samaraweera": 0.06,
+                "Chaminda Vaas": 0.05,
+                "Shane Watson": 0.04
+              },
               "summary": "Top outcomes: Mahela Jayawardene 0.10, Jonathan Trott 0.08."
             },
             {
               "question_id": "271330",
               "question_title": "Question 271330",
               "event_idx": 1293,
+              "outcomes": {
+                "Ukraine": 0.3,
+                "United States": 0.2,
+                "Poland": 0.04,
+                "Estonia": 0.03
+              },
               "summary": "Top outcomes: Ukraine 0.30, United States 0.20."
             },
             {
               "question_id": "304016",
               "question_title": "Question 304016",
               "event_idx": 1295,
+              "outcomes": {
+                "American Airlines": 0.12,
+                "Delta Air Lines": 0.1,
+                "United Airlines": 0.1,
+                "Southwest Airlines": 0.05,
+                "Lufthansa": 0.05
+              },
               "summary": "Top outcomes: American Airlines 0.12, Delta Air Lines 0.10."
             },
             {
               "question_id": "309487",
               "question_title": "Question 309487",
               "event_idx": 1297,
+              "outcomes": {
+                "Dnipropetrovsk": 0.2,
+                "Sumy": 0.2,
+                "Kharkiv": 0.12,
+                "Zaporizhzhia": 0.08
+              },
               "summary": "Top outcomes: Dnipropetrovsk 0.20, Sumy 0.20."
             }
           ]
@@ -390,8 +595,9 @@
           "event_idx_start": 1399,
           "event_idx_end": 1469,
           "label": "Forecast submissions",
-          "summary": "Submitted 25 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 25 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 29,
+          "tool_call_count": 28,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -406,6 +612,9 @@
             1427,
             1469
           ],
+          "model_messages": [
+            "Let me verify what's been submitted vs. my answer file, then finish the remainder."
+          ],
           "question_scope": {
             "count": 25,
             "mode": "forecast submissions"
@@ -415,30 +624,64 @@
               "question_id": "554489",
               "question_title": "Question 554489",
               "event_idx": 1399,
+              "outcomes": {
+                "Chicago": 0.1,
+                "Miami": 0.08,
+                "Atlanta": 0.08,
+                "Boston": 0.06,
+                "Charlotte": 0.06
+              },
               "summary": "Top outcomes: Chicago 0.10, Miami 0.08."
             },
             {
               "question_id": "581783",
               "question_title": "Question 581783",
               "event_idx": 1401,
+              "outcomes": {
+                "BBC": 0.25,
+                "GB News": 0.15,
+                "Sky News": 0.12,
+                "ITV News": 0.07,
+                "LBC": 0.04
+              },
               "summary": "Top outcomes: BBC 0.25, GB News 0.15."
             },
             {
               "question_id": "718848",
               "question_title": "Question 718848",
               "event_idx": 1403,
+              "outcomes": {
+                "Kfar Kila": 0.1,
+                "Aitaroun": 0.08,
+                "Mays al-Jabal": 0.08,
+                "Houla": 0.06,
+                "Blida": 0.06
+              },
               "summary": "Top outcomes: Kfar Kila 0.10, Aitaroun 0.08."
             },
             {
               "question_id": "740952",
               "question_title": "Question 740952",
               "event_idx": 1405,
+              "outcomes": {
+                "Israeli Air Force": 0.18,
+                "US Air Force": 0.18,
+                "Iranian Air Force": 0.15,
+                "Pakistan Air Force": 0.06,
+                "Indian Air Force": 0.04
+              },
               "summary": "Top outcomes: Israeli Air Force 0.18, US Air Force 0.18."
             },
             {
               "question_id": "262505",
               "question_title": "Question 262505",
               "event_idx": 1407,
+              "outcomes": {
+                "Qatar": 0.55,
+                "United Arab Emirates": 0.1,
+                "Pakistan": 0.05,
+                "Turkey": 0.04
+              },
               "summary": "Top outcomes: Qatar 0.55, United Arab Emirates 0.10."
             }
           ]
@@ -476,8 +719,9 @@
           "event_idx_start": 1475,
           "event_idx_end": 1546,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 5 news search(es); used 4 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 5 news search(es); used 4 workspace/tool call(s); advanced the simulation day.",
           "action_count": 13,
+          "tool_call_count": 11,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -494,6 +738,10 @@
             1509,
             1546
           ],
+          "model_messages": [
+            "Key find: Aguerd injury talk before Morocco's match \u2014 directly relevant to q343689. Let me update and dig further.",
+            "q883856 starts Jan 19 (future event \u2014 abstention correct). Chelsea question created today \u2014 strong signal Maresca exits within weeks. Two more checks:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -503,6 +751,20 @@
               "question_id": "343689",
               "question_title": "Question 343689",
               "event_idx": 1493,
+              "outcomes": {
+                "Nayef Aguerd": 0.32,
+                "Achraf Hakimi": 0.06,
+                "Sofyan Amrabat": 0.05,
+                "Noussair Mazraoui": 0.05,
+                "Azzedine Ounahi": 0.04
+              },
+              "previous_outcomes": {
+                "Nayef Aguerd": 0.09,
+                "Achraf Hakimi": 0.08,
+                "Sofyan Amrabat": 0.07,
+                "Noussair Mazraoui": 0.07,
+                "Azzedine Ounahi": 0.05
+              },
               "summary": "Top outcomes: Nayef Aguerd 0.32, Achraf Hakimi 0.06."
             }
           ]
@@ -540,8 +802,9 @@
           "event_idx_start": 1551,
           "event_idx_end": 1591,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 3 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 3 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 7,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -567,12 +830,40 @@
               "question_id": "703511",
               "question_title": "Question 703511",
               "event_idx": 1577,
+              "outcomes": {
+                "Algeria": 0.28,
+                "Egypt": 0.12,
+                "Morocco": 0.08,
+                "Nigeria": 0.06,
+                "Ivory Coast": 0.05
+              },
+              "previous_outcomes": {
+                "Egypt": 0.16,
+                "South Africa": 0.16,
+                "Angola": 0.06,
+                "Mali": 0.06,
+                "Nigeria": 0.05
+              },
               "summary": "Top outcomes: Algeria 0.28, Egypt 0.12."
             },
             {
               "question_id": "459037",
               "question_title": "Question 459037",
               "event_idx": 1579,
+              "outcomes": {
+                "Egypt": 0.2,
+                "Senegal": 0.18,
+                "Algeria": 0.12,
+                "Nigeria": 0.08,
+                "Ivory Coast": 0.06
+              },
+              "previous_outcomes": {
+                "Egypt": 0.18,
+                "Senegal": 0.15,
+                "Algeria": 0.12,
+                "Ivory Coast": 0.12,
+                "Nigeria": 0.1
+              },
               "summary": "Top outcomes: Egypt 0.20, Senegal 0.18."
             }
           ]
@@ -610,8 +901,9 @@
           "event_idx_start": 1593,
           "event_idx_end": 1613,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 5,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -637,6 +929,20 @@
               "question_id": "892867",
               "question_title": "Which Austrian alpine skier will be ruled out of the Milano Cortina Winter Olymp",
               "event_idx": 1604,
+              "outcomes": {
+                "Vincent Kriechmayr": 0.12,
+                "Daniel Hemetsberger": 0.08,
+                "Stefan Babinsky": 0.06,
+                "Otmar Striedinger": 0.05,
+                "Mirjam Puchner": 0.05
+              },
+              "previous_outcomes": {
+                "Vincent Kriechmayr": 0.1,
+                "Marco Schwarz": 0.07,
+                "Daniel Hemetsberger": 0.07,
+                "Cornelia Huetter": 0.06,
+                "Mirjam Puchner": 0.05
+              },
               "summary": "Top outcomes: Vincent Kriechmayr 0.12, Daniel Hemetsberger 0.08."
             }
           ]
@@ -674,8 +980,9 @@
           "event_idx_start": 1615,
           "event_idx_end": 1638,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 5,
           "tools": [
             "Bash",
             "Search News",
@@ -701,6 +1008,17 @@
               "question_id": "220862",
               "question_title": "Question 220862",
               "event_idx": 1634,
+              "outcomes": {
+                "Arsenal": 0.53,
+                "Chelsea": 0.43
+              },
+              "previous_outcomes": {
+                "Chelsea": 0.28,
+                "Arsenal": 0.14,
+                "Newcastle United": 0.1,
+                "Liverpool": 0.08,
+                "Tottenham Hotspur": 0.06
+              },
               "summary": "Top outcomes: Arsenal 0.53, Chelsea 0.43."
             }
           ]
@@ -738,8 +1056,9 @@
           "event_idx_start": 1640,
           "event_idx_end": 1665,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -756,6 +1075,9 @@
             1660,
             1665
           ],
+          "model_messages": [
+            "Raphael Haaser (Austria) crashed in the Livigno Super-G \u2014 adding him as a candidate for the \"ruled out of Olympics\" question:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -765,12 +1087,40 @@
               "question_id": "703511",
               "question_title": "Question 703511",
               "event_idx": 1649,
+              "outcomes": {
+                "Algeria": 0.34,
+                "Egypt": 0.1,
+                "Morocco": 0.08,
+                "Nigeria": 0.05,
+                "Senegal": 0.05
+              },
+              "previous_outcomes": {
+                "Algeria": 0.28,
+                "Egypt": 0.12,
+                "Morocco": 0.08,
+                "Nigeria": 0.06,
+                "Ivory Coast": 0.05
+              },
               "summary": "Top outcomes: Algeria 0.34, Egypt 0.10."
             },
             {
               "question_id": "892867",
               "question_title": "Which Austrian alpine skier will be ruled out of the Milano Cortina Winter Olymp",
               "event_idx": 1661,
+              "outcomes": {
+                "Raphael Haaser": 0.15,
+                "Vincent Kriechmayr": 0.1,
+                "Daniel Hemetsberger": 0.06,
+                "Otmar Striedinger": 0.04,
+                "Mirjam Puchner": 0.04
+              },
+              "previous_outcomes": {
+                "Vincent Kriechmayr": 0.12,
+                "Daniel Hemetsberger": 0.08,
+                "Stefan Babinsky": 0.06,
+                "Otmar Striedinger": 0.05,
+                "Mirjam Puchner": 0.05
+              },
               "summary": "Top outcomes: Raphael Haaser 0.15, Vincent Kriechmayr 0.10."
             }
           ]
@@ -808,8 +1158,9 @@
           "event_idx_start": 1667,
           "event_idx_end": 1693,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 6,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -835,12 +1186,38 @@
               "question_id": "703511",
               "question_title": "Question 703511",
               "event_idx": 1681,
+              "outcomes": {
+                "Algeria": 0.55,
+                "Egypt": 0.18,
+                "Morocco": 0.03,
+                "Senegal": 0.02,
+                "Nigeria": 0.02
+              },
+              "previous_outcomes": {
+                "Algeria": 0.34,
+                "Egypt": 0.1,
+                "Morocco": 0.08,
+                "Nigeria": 0.05,
+                "Senegal": 0.05
+              },
               "summary": "Top outcomes: Algeria 0.55, Egypt 0.18."
             },
             {
               "question_id": "406433",
               "question_title": "Question 406433",
               "event_idx": 1689,
+              "outcomes": {
+                "Real Madrid": 0.38,
+                "Liverpool": 0.28,
+                "Bayern Munich": 0.1,
+                "Barcelona": 0.06
+              },
+              "previous_outcomes": {
+                "Real Madrid": 0.35,
+                "Liverpool": 0.3,
+                "Bayern Munich": 0.1,
+                "Barcelona": 0.06
+              },
               "summary": "Top outcomes: Real Madrid 0.38, Liverpool 0.28."
             }
           ]
@@ -850,7 +1227,7 @@
     {
       "date": "2025-12-31",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2025-12-31.json",
-      "title": "2025-12-31: 5 visible actions",
+      "title": "2025-12-31: 4 tool calls",
       "display_summary": "Ran 1 news search(es).",
       "stats": {
         "event_count_in_shard": 9,
@@ -874,8 +1251,9 @@
           "event_idx_start": 1695,
           "event_idx_end": 1713,
           "label": "News research",
-          "summary": "Ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Search News",
@@ -889,6 +1267,9 @@
             1695,
             1705,
             1713
+          ],
+          "model_messages": [
+            "Maresca survives into January per Sky. Venezuela escalating (first US strike inside Venezuela). Let me hunt the Austrian skier question once more before its Jan 2 deadline:"
           ]
         }
       ]
@@ -924,8 +1305,9 @@
           "event_idx_start": 1727,
           "event_idx_end": 1781,
           "label": "Research and forecast updates",
-          "summary": "Submitted 4 forecast update(s); ran 3 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 4 forecast update(s); ran 3 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 11,
+          "tool_call_count": 10,
           "tools": [
             "Bash",
             "Search News",
@@ -942,6 +1324,9 @@
             1761,
             1781
           ],
+          "model_messages": [
+            "Maresca's exit confirmed. Let me get the full AFCON R16 bracket to refine the Morocco-side questions:"
+          ],
           "question_scope": {
             "count": 4,
             "mode": "forecast submissions"
@@ -951,24 +1336,75 @@
               "question_id": "459037",
               "question_title": "Question 459037",
               "event_idx": 1757,
+              "outcomes": {
+                "Algeria": 0.36,
+                "Nigeria": 0.36,
+                "DR Congo": 0.14,
+                "Mozambique": 0.05
+              },
+              "previous_outcomes": {
+                "Egypt": 0.2,
+                "Senegal": 0.18,
+                "Algeria": 0.12,
+                "Nigeria": 0.08,
+                "Ivory Coast": 0.06
+              },
               "summary": "Top outcomes: Algeria 0.36, Nigeria 0.36."
             },
             {
               "question_id": "573851",
               "question_title": "Question 573851",
               "event_idx": 1759,
+              "outcomes": {
+                "Senegal": 0.13,
+                "Egypt": 0.13,
+                "Morocco": 0.12,
+                "Ivory Coast": 0.11,
+                "Mali": 0.04
+              },
+              "previous_outcomes": {
+                "Morocco": 0.15,
+                "Egypt": 0.12,
+                "Algeria": 0.11,
+                "Senegal": 0.1,
+                "Ivory Coast": 0.08
+              },
               "summary": "Top outcomes: Senegal 0.13, Egypt 0.13."
             },
             {
               "question_id": "651727",
               "question_title": "Who will be sworn in as Venezuela\u2019s interim president by January 2026?",
               "event_idx": 1761,
+              "outcomes": {
+                "Delcy Rodriguez": 0.3,
+                "Maria Corina Machado": 0.2,
+                "Edmundo Gonzalez Urrutia": 0.14,
+                "Vladimir Padrino Lopez": 0.07,
+                "Jorge Rodriguez": 0.04
+              },
+              "previous_outcomes": {
+                "Delcy Rodriguez": 0.28,
+                "Maria Corina Machado": 0.18,
+                "Edmundo Gonzalez Urrutia": 0.15,
+                "Vladimir Padrino Lopez": 0.07,
+                "Jorge Rodriguez": 0.05
+              },
               "summary": "Top outcomes: Delcy Rodriguez 0.30, Maria Corina Machado 0.20."
             },
             {
               "question_id": "468637",
               "question_title": "What country will Bangladesh ask the ICC to move its 2026 Men\u2019s T20 World Cup ma",
               "event_idx": 1777,
+              "outcomes": {
+                "Sri Lanka": 0.7,
+                "United Arab Emirates": 0.08,
+                "Pakistan": 0.03
+              },
+              "previous_outcomes": {
+                "Sri Lanka": 0.65,
+                "United Arab Emirates": 0.1,
+                "Pakistan": 0.04
+              },
               "summary": "Top outcomes: Sri Lanka 0.70, United Arab Emirates 0.08."
             }
           ]
@@ -1006,8 +1442,9 @@
           "event_idx_start": 1790,
           "event_idx_end": 1819,
           "label": "Research and forecast updates",
-          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 8,
+          "tool_call_count": 7,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -1024,6 +1461,9 @@
             1808,
             1819
           ],
+          "model_messages": [
+            "Maduro is still negotiating per today's news (the \"interim president\" article must have been more nuanced) \u2014 rebalancing Starlink back toward Jamaica:"
+          ],
           "question_scope": {
             "count": 3,
             "mode": "forecast submissions"
@@ -1033,18 +1473,56 @@
               "question_id": "935533",
               "question_title": "Question 935533",
               "event_idx": 1790,
+              "outcomes": {
+                "Venezuela": 0.45,
+                "Jamaica": 0.18,
+                "Cuba": 0.06,
+                "Philippines": 0.03,
+                "Syria": 0.03
+              },
+              "previous_outcomes": {
+                "Jamaica": 0.3,
+                "Venezuela": 0.22,
+                "Cuba": 0.06,
+                "Philippines": 0.05,
+                "Syria": 0.04
+              },
               "summary": "Top outcomes: Venezuela 0.45, Jamaica 0.18."
             },
             {
               "question_id": "279531",
               "question_title": "Question 279531",
               "event_idx": 1792,
+              "outcomes": {
+                "Middle East": 0.45,
+                "Caribbean": 0.22,
+                "Persian Gulf": 0.1
+              },
+              "previous_outcomes": {
+                "Middle East": 0.4,
+                "Caribbean": 0.3,
+                "Persian Gulf": 0.1
+              },
               "summary": "Top outcomes: Middle East 0.45, Caribbean 0.22."
             },
             {
               "question_id": "935533",
               "question_title": "Question 935533",
               "event_idx": 1808,
+              "outcomes": {
+                "Venezuela": 0.32,
+                "Jamaica": 0.28,
+                "Cuba": 0.08,
+                "Philippines": 0.03,
+                "Syria": 0.03
+              },
+              "previous_outcomes": {
+                "Venezuela": 0.45,
+                "Jamaica": 0.18,
+                "Cuba": 0.06,
+                "Philippines": 0.03,
+                "Syria": 0.03
+              },
               "summary": "Top outcomes: Venezuela 0.32, Jamaica 0.28."
             }
           ]
@@ -1082,8 +1560,9 @@
           "event_idx_start": 1826,
           "event_idx_end": 1841,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -1098,6 +1577,10 @@
             1837,
             1841
           ],
+          "model_messages": [
+            "Ounahi (had him small) and Venezuela Starlink hit (+31). Scanning Jan 3 for the cluster resolving Jan 4-5:",
+            "Maduro CAPTURED in a US military operation \u2014 the Caribbean armada chapter closes; the next \"forming armada\" points to the Middle East:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1107,6 +1590,16 @@
               "question_id": "279531",
               "question_title": "Question 279531",
               "event_idx": 1837,
+              "outcomes": {
+                "Middle East": 0.52,
+                "Caribbean": 0.14,
+                "Persian Gulf": 0.12
+              },
+              "previous_outcomes": {
+                "Middle East": 0.45,
+                "Caribbean": 0.22,
+                "Persian Gulf": 0.1
+              },
               "summary": "Top outcomes: Middle East 0.52, Caribbean 0.14."
             }
           ]
@@ -1144,8 +1637,9 @@
           "event_idx_start": 1847,
           "event_idx_end": 1865,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 5,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -1162,6 +1656,9 @@
             1858,
             1865
           ],
+          "model_messages": [
+            "Cameroon\u2013Morocco QF confirmed \u2713. Iran protests escalating in the west \u2014 reweighting the province question; and checking the DHS 20-country pause list:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1171,6 +1668,20 @@
               "question_id": "69214",
               "question_title": "Question 69214",
               "event_idx": 1856,
+              "outcomes": {
+                "Kermanshah": 0.16,
+                "Kurdistan": 0.12,
+                "Tehran": 0.1,
+                "Sistan-Baluchestan": 0.1,
+                "Khuzestan": 0.08
+              },
+              "previous_outcomes": {
+                "Khorasan Razavi": 0.15,
+                "Sistan-Baluchestan": 0.15,
+                "Tehran": 0.12,
+                "Isfahan": 0.08,
+                "Fars": 0.06
+              },
               "summary": "Top outcomes: Kermanshah 0.16, Kurdistan 0.12."
             }
           ]
@@ -1208,8 +1719,9 @@
           "event_idx_start": 1876,
           "event_idx_end": 1890,
           "label": "Forecast submissions",
-          "summary": "Submitted 2 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 5,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -1233,12 +1745,33 @@
               "question_id": "459037",
               "question_title": "Question 459037",
               "event_idx": 1876,
+              "outcomes": {
+                "Algeria": 0.43,
+                "Nigeria": 0.41,
+                "Mozambique": 0.06
+              },
+              "previous_outcomes": {
+                "Algeria": 0.36,
+                "Nigeria": 0.36,
+                "DR Congo": 0.14,
+                "Mozambique": 0.05
+              },
               "summary": "Top outcomes: Algeria 0.43, Nigeria 0.41."
             },
             {
               "question_id": "459037",
               "question_title": "Question 459037",
               "event_idx": 1886,
+              "outcomes": {
+                "Nigeria": 0.47,
+                "Algeria": 0.45,
+                "Mozambique": 0.0
+              },
+              "previous_outcomes": {
+                "Algeria": 0.43,
+                "Nigeria": 0.41,
+                "Mozambique": 0.06
+              },
               "summary": "Top outcomes: Nigeria 0.47, Algeria 0.45."
             }
           ]
@@ -1248,7 +1781,7 @@
     {
       "date": "2026-01-06",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-06.json",
-      "title": "2026-01-06: 5 visible actions",
+      "title": "2026-01-06: 4 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 9,
@@ -1272,8 +1805,9 @@
           "event_idx_start": 1898,
           "event_idx_end": 1909,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Bash",
@@ -1287,6 +1821,9 @@
             1898,
             1900,
             1909
+          ],
+          "model_messages": [
+            "ICE and Board of Peace hits (+137). Researching the Jan 7-8 resolution cluster:"
           ]
         }
       ]
@@ -1294,7 +1831,7 @@
     {
       "date": "2026-01-07",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-07.json",
-      "title": "2026-01-07: 5 visible actions",
+      "title": "2026-01-07: 5 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 10,
@@ -1318,8 +1855,9 @@
           "event_idx_start": 1920,
           "event_idx_end": 1944,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 5,
           "tools": [
             "Bash",
             "Search News",
@@ -1368,8 +1906,9 @@
           "event_idx_start": 1952,
           "event_idx_end": 1965,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 5,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1386,6 +1925,9 @@
             1961,
             1965
           ],
+          "model_messages": [
+            "People's Party hit (+80). Let me check tomorrow's resolutions \u2014 Grok ban, Brisbane final, Yemen:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1395,6 +1937,20 @@
               "question_id": "45659",
               "question_title": "Question 45659",
               "event_idx": 1961,
+              "outcomes": {
+                "Brazil": 0.2,
+                "Malaysia": 0.18,
+                "Indonesia": 0.12,
+                "India": 0.1,
+                "Turkey": 0.05
+              },
+              "previous_outcomes": {
+                "Indonesia": 0.25,
+                "Malaysia": 0.15,
+                "Turkey": 0.1,
+                "India": 0.05,
+                "Brazil": 0.05
+              },
               "summary": "Top outcomes: Brazil 0.20, Malaysia 0.18."
             }
           ]
@@ -1432,8 +1988,9 @@
           "event_idx_start": 1976,
           "event_idx_end": 1998,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1450,6 +2007,9 @@
             1992,
             1998
           ],
+          "model_messages": [
+            "Indonesia (+38), Nigeria (+28), Taiwan (+49) \u2014 TW at 827. Checking Man United (derby manager q) and Iran province before they resolve:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -1459,12 +2019,36 @@
               "question_id": "474377",
               "question_title": "Question 474377",
               "event_idx": 1992,
+              "outcomes": {
+                "Michael Carrick": 0.45,
+                "Ole Gunnar Solskjaer": 0.3,
+                "Darren Fletcher": 0.15
+              },
+              "previous_outcomes": {
+                "Michael Carrick": 0.45,
+                "Ruben Amorim": 0.35,
+                "Darren Fletcher": 0.03
+              },
               "summary": "Top outcomes: Michael Carrick 0.45, Ole Gunnar Solskjaer 0.30."
             },
             {
               "question_id": "69214",
               "question_title": "Question 69214",
               "event_idx": 1994,
+              "outcomes": {
+                "Sistan-Baluchestan": 0.22,
+                "Kermanshah": 0.14,
+                "Ilam": 0.1,
+                "Lorestan": 0.08,
+                "Tehran": 0.06
+              },
+              "previous_outcomes": {
+                "Kermanshah": 0.16,
+                "Kurdistan": 0.12,
+                "Tehran": 0.1,
+                "Sistan-Baluchestan": 0.1,
+                "Khuzestan": 0.08
+              },
               "summary": "Top outcomes: Sistan-Baluchestan 0.22, Kermanshah 0.14."
             }
           ]
@@ -1474,7 +2058,7 @@
     {
       "date": "2026-01-10",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-10.json",
-      "title": "2026-01-10: 4 visible actions",
+      "title": "2026-01-10: 4 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 8,
@@ -1498,8 +2082,9 @@
           "event_idx_start": 2009,
           "event_idx_end": 2022,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Bash",
@@ -1520,7 +2105,7 @@
     {
       "date": "2026-01-11",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-11.json",
-      "title": "2026-01-11: 5 visible actions",
+      "title": "2026-01-11: 4 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 9,
@@ -1544,8 +2129,9 @@
           "event_idx_start": 2032,
           "event_idx_end": 2047,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Bash",
@@ -1559,6 +2145,9 @@
             2032,
             2034,
             2047
+          ],
+          "model_messages": [
+            "Huge day: +310 TW (PKK\u00d72, Iran, Carrick, DHS hits). Now hunting the abstained migrant-worker name and Gaza committee before they resolve:"
           ]
         }
       ]
@@ -1594,8 +2183,9 @@
           "event_idx_start": 2058,
           "event_idx_end": 2075,
           "label": "Research and forecast updates",
-          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Submit Forecasts",
             "Search News",
@@ -1612,6 +2202,9 @@
             2069,
             2075
           ],
+          "model_messages": [
+            "Semifinals set: Egypt\u2013Senegal and Morocco\u2013Nigeria. Brahim D\u00edaz leads tournament scoring \u2014 adjusting the final-penalty and CAS-appeal questions:"
+          ],
           "question_scope": {
             "count": 3,
             "mode": "forecast submissions"
@@ -1621,18 +2214,56 @@
               "question_id": "354370",
               "question_title": "Question 354370",
               "event_idx": 2058,
+              "outcomes": {
+                "Precision Strike Missile": 0.28,
+                "PrSM": 0.18,
+                "ATACMS": 0.18,
+                "GMLRS": 0.06
+              },
+              "previous_outcomes": {
+                "Precision Strike Missile": 0.45,
+                "ATACMS": 0.2,
+                "GMLRS": 0.08
+              },
               "summary": "Top outcomes: Precision Strike Missile 0.28, PrSM 0.18."
             },
             {
               "question_id": "799398",
               "question_title": "Question 799398",
               "event_idx": 2069,
+              "outcomes": {
+                "Brahim Diaz": 0.18,
+                "Achraf Hakimi": 0.16,
+                "Youssef En-Nesyri": 0.08,
+                "Hamza Igamane": 0.05,
+                "Ayoub El Kaabi": 0.05
+              },
+              "previous_outcomes": {
+                "Achraf Hakimi": 0.16,
+                "Youssef En-Nesyri": 0.1,
+                "Brahim Diaz": 0.1,
+                "Hamza Igamane": 0.05,
+                "Ayoub El Kaabi": 0.05
+              },
               "summary": "Top outcomes: Brahim Diaz 0.18, Achraf Hakimi 0.16."
             },
             {
               "question_id": "573851",
               "question_title": "Question 573851",
               "event_idx": 2071,
+              "outcomes": {
+                "Egypt": 0.2,
+                "Senegal": 0.16,
+                "Morocco": 0.14,
+                "Nigeria": 0.05
+              },
+              "previous_outcomes": {
+                "Senegal": 0.13,
+                "Egypt": 0.13,
+                "Morocco": 0.12,
+                "Ivory Coast": 0.11,
+                "Mali": 0.04
+              },
               "summary": "Top outcomes: Egypt 0.20, Senegal 0.16."
             }
           ]
@@ -1670,8 +2301,9 @@
           "event_idx_start": 2083,
           "event_idx_end": 2096,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1688,6 +2320,10 @@
             2092,
             2096
           ],
+          "model_messages": [
+            "Qatar (+28) and Thailand (+37) hits. Checking Syria declarations (Kurdish language / Nowruz holiday resolve Jan 15-17):",
+            "SDF expelled from Aleppo \u2014 that's almost certainly the \"city under complete control\" answer:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1697,6 +2333,20 @@
               "question_id": "904367",
               "question_title": "Question 904367",
               "event_idx": 2092,
+              "outcomes": {
+                "Aleppo": 0.55,
+                "Raqqa": 0.08,
+                "Tabqa": 0.06,
+                "Hasakah": 0.04,
+                "Manbij": 0.03
+              },
+              "previous_outcomes": {
+                "Raqqa": 0.2,
+                "Tabqa": 0.18,
+                "Deir Hafer": 0.08,
+                "Maskana": 0.06,
+                "Hasakah": 0.06
+              },
               "summary": "Top outcomes: Aleppo 0.55, Raqqa 0.08."
             }
           ]
@@ -1734,8 +2384,9 @@
           "event_idx_start": 2103,
           "event_idx_end": 2114,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1752,6 +2403,9 @@
             2110,
             2114
           ],
+          "model_messages": [
+            "The AO draw is out (Venus\u2013Danilovic known). Time to fill all the abstained draw questions:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1761,6 +2415,20 @@
               "question_id": "951896",
               "question_title": "Question 951896",
               "event_idx": 2110,
+              "outcomes": {
+                "Jannik Sinner": 0.38,
+                "Carlos Alcaraz": 0.31,
+                "Novak Djokovic": 0.05,
+                "Daniil Medvedev": 0.04,
+                "Ben Shelton": 0.03
+              },
+              "previous_outcomes": {
+                "Jannik Sinner": 0.36,
+                "Carlos Alcaraz": 0.33,
+                "Novak Djokovic": 0.06,
+                "Ben Shelton": 0.03,
+                "Alexander Zverev": 0.03
+              },
               "summary": "Top outcomes: Jannik Sinner 0.38, Carlos Alcaraz 0.31."
             }
           ]
@@ -1798,8 +2466,9 @@
           "event_idx_start": 2122,
           "event_idx_end": 2197,
           "label": "Forecast submissions",
-          "summary": "Submitted 9 forecast update(s); used 4 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 9 forecast update(s); used 4 workspace/tool call(s); advanced the simulation day.",
           "action_count": 17,
+          "tool_call_count": 14,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -1814,6 +2483,11 @@
             2181,
             2197
           ],
+          "model_messages": [
+            "Morocco\u2013Senegal final set; and a shock headline about Sinner. Reading the draw articles directly:",
+            "The \"Sinner stunned\" was a 1-point exhibition. Real draw is out. Let me extract Sinner's R2 pairing and the women's sections:",
+            "Full draw extracted. Filling all the abstained AO questions now:"
+          ],
           "question_scope": {
             "count": 9,
             "mode": "forecast submissions"
@@ -1823,30 +2497,57 @@
               "question_id": "2176",
               "question_title": "Question 2176",
               "event_idx": 2177,
+              "outcomes": {
+                "Yannick Hanfmann": 0.5,
+                "Zachary Svajda": 0.46
+              },
               "summary": "Top outcomes: Yannick Hanfmann 0.50, Zachary Svajda 0.46."
             },
             {
               "question_id": "980781",
               "question_title": "Question 980781",
               "event_idx": 2179,
+              "outcomes": {
+                "Dino Prizmic": 0.52,
+                "James Duckworth": 0.44
+              },
               "summary": "Top outcomes: Dino Prizmic 0.52, James Duckworth 0.44."
             },
             {
               "question_id": "789844",
               "question_title": "Question 789844",
               "event_idx": 2181,
+              "outcomes": {
+                "Tommy Paul": 0.32,
+                "Alejandro Davidovich Fokina": 0.18,
+                "Reilly Opelka": 0.13,
+                "Aleksandar Vukic": 0.05,
+                "Aleksandar Kovacevic": 0.05
+              },
               "summary": "Top outcomes: Tommy Paul 0.32, Alejandro Davidovich Fokina 0.18."
             },
             {
               "question_id": "464874",
               "question_title": "Question 464874",
               "event_idx": 2183,
+              "outcomes": {
+                "Emma Raducanu": 0.5,
+                "Anastasia Potapova": 0.16,
+                "Suzan Lamens": 0.12,
+                "Mananchaya Sawangkaew": 0.07
+              },
               "summary": "Top outcomes: Emma Raducanu 0.50, Anastasia Potapova 0.16."
             },
             {
               "question_id": "922844",
               "question_title": "Question 922844",
               "event_idx": 2185,
+              "outcomes": {
+                "Marta Kostyuk": 0.42,
+                "Beatriz Haddad Maia": 0.22,
+                "Yulia Putintseva": 0.14,
+                "Elsa Jacquemot": 0.1
+              },
               "summary": "Top outcomes: Marta Kostyuk 0.42, Beatriz Haddad Maia 0.22."
             }
           ]
@@ -1884,8 +2585,9 @@
           "event_idx_start": 2204,
           "event_idx_end": 2214,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1902,6 +2604,9 @@
             2210,
             2214
           ],
+          "model_messages": [
+            "Raqqa hit (+47). Checking Carabao first-leg results to tune the League Cup final question:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1911,6 +2616,14 @@
               "question_id": "220862",
               "question_title": "Question 220862",
               "event_idx": 2210,
+              "outcomes": {
+                "Arsenal": 0.6,
+                "Chelsea": 0.36
+              },
+              "previous_outcomes": {
+                "Arsenal": 0.53,
+                "Chelsea": 0.43
+              },
               "summary": "Top outcomes: Arsenal 0.60, Chelsea 0.36."
             }
           ]
@@ -1948,8 +2661,9 @@
           "event_idx_start": 2224,
           "event_idx_end": 2241,
           "label": "Research and forecast updates",
-          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 3 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1966,6 +2680,9 @@
             2234,
             2241
           ],
+          "model_messages": [
+            "Davos/WEF emerges as the likely trilateral venue (Trump and Zelensky both attending Jan 19-23, signing planned there). Updating the talks questions:"
+          ],
           "question_scope": {
             "count": 3,
             "mode": "forecast submissions"
@@ -1975,18 +2692,60 @@
               "question_id": "48762",
               "question_title": "Question 48762",
               "event_idx": 2232,
+              "outcomes": {
+                "Davos": 0.45,
+                "Geneva": 0.15,
+                "Abu Dhabi": 0.08,
+                "Istanbul": 0.06,
+                "Riyadh": 0.05
+              },
+              "previous_outcomes": {
+                "Abu Dhabi": 0.18,
+                "Geneva": 0.16,
+                "Riyadh": 0.14,
+                "Istanbul": 0.12,
+                "Doha": 0.06
+              },
               "summary": "Top outcomes: Davos 0.45, Geneva 0.15."
             },
             {
               "question_id": "655453",
               "question_title": "Question 655453",
               "event_idx": 2234,
+              "outcomes": {
+                "Switzerland": 0.55,
+                "United Arab Emirates": 0.1,
+                "Saudi Arabia": 0.08,
+                "Turkey": 0.07,
+                "Qatar": 0.04
+              },
+              "previous_outcomes": {
+                "United Arab Emirates": 0.2,
+                "Switzerland": 0.17,
+                "Saudi Arabia": 0.15,
+                "Turkey": 0.13,
+                "Qatar": 0.07
+              },
               "summary": "Top outcomes: Switzerland 0.55, United Arab Emirates 0.10."
             },
             {
               "question_id": "575662",
               "question_title": "Question 575662",
               "event_idx": 2236,
+              "outcomes": {
+                "Geneva": 0.18,
+                "Abu Dhabi": 0.13,
+                "Riyadh": 0.1,
+                "Istanbul": 0.1,
+                "Rome": 0.05
+              },
+              "previous_outcomes": {
+                "Geneva": 0.15,
+                "Abu Dhabi": 0.15,
+                "Riyadh": 0.12,
+                "Istanbul": 0.1,
+                "Rome": 0.05
+              },
               "summary": "Top outcomes: Geneva 0.18, Abu Dhabi 0.13."
             }
           ]
@@ -2024,8 +2783,9 @@
           "event_idx_start": 2248,
           "event_idx_end": 2262,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -2049,6 +2809,17 @@
               "question_id": "573851",
               "question_title": "Question 573851",
               "event_idx": 2258,
+              "outcomes": {
+                "Morocco": 0.62,
+                "Senegal": 0.18,
+                "Nigeria": 0.02
+              },
+              "previous_outcomes": {
+                "Egypt": 0.2,
+                "Senegal": 0.16,
+                "Morocco": 0.14,
+                "Nigeria": 0.05
+              },
               "summary": "Top outcomes: Morocco 0.62, Senegal 0.18."
             }
           ]
@@ -2058,8 +2829,8 @@
     {
       "date": "2026-01-19",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-19.json",
-      "title": "2026-01-19: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-01-19: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -2082,8 +2853,9 @@
           "event_idx_start": 2269,
           "event_idx_end": 2279,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2102,8 +2874,8 @@
     {
       "date": "2026-01-20",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-20.json",
-      "title": "2026-01-20: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-01-20: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -2126,8 +2898,9 @@
           "event_idx_start": 2286,
           "event_idx_end": 2293,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2174,8 +2947,9 @@
           "event_idx_start": 2305,
           "event_idx_end": 2326,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Search News",
             "Bash",
@@ -2192,6 +2966,9 @@
             2320,
             2326
           ],
+          "model_messages": [
+            "Rams beat the Bears \u2014 NFC title game is Seahawks (favorites) vs Rams. Updating Super Bowl questions:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -2201,12 +2978,37 @@
               "question_id": "694686",
               "question_title": "Question 694686",
               "event_idx": 2320,
+              "outcomes": {
+                "Sam Darnold": 0.55,
+                "Matthew Stafford": 0.38
+              },
+              "previous_outcomes": {
+                "Sam Darnold": 0.16,
+                "Matthew Stafford": 0.15,
+                "Jalen Hurts": 0.12,
+                "Caleb Williams": 0.1,
+                "Brock Purdy": 0.06
+              },
               "summary": "Top outcomes: Sam Darnold 0.55, Matthew Stafford 0.38."
             },
             {
               "question_id": "180958",
               "question_title": "Question 180958",
               "event_idx": 2322,
+              "outcomes": {
+                "Seattle Seahawks": 0.28,
+                "New England Patriots": 0.2,
+                "Los Angeles Rams": 0.18,
+                "Denver Broncos": 0.12,
+                "Houston Texans": 0.06
+              },
+              "previous_outcomes": {
+                "Denver Broncos": 0.13,
+                "Seattle Seahawks": 0.12,
+                "Los Angeles Rams": 0.12,
+                "New England Patriots": 0.09,
+                "Philadelphia Eagles": 0.08
+              },
               "summary": "Top outcomes: Seattle Seahawks 0.28, New England Patriots 0.20."
             }
           ]
@@ -2244,8 +3046,9 @@
           "event_idx_start": 2331,
           "event_idx_end": 2355,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -2262,6 +3065,9 @@
             2349,
             2355
           ],
+          "model_messages": [
+            "TW past 2000. Checking Keys's AO status and UFC Hall of Fame news before those resolve:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -2271,12 +3077,40 @@
               "question_id": "286957",
               "question_title": "Question 286957",
               "event_idx": 2349,
+              "outcomes": {
+                "Jessica Pegula": 0.25,
+                "Janice Tjen": 0.12,
+                "Karolina Pliskova": 0.1,
+                "Paula Badosa": 0.08,
+                "Sloane Stephens": 0.06
+              },
+              "previous_outcomes": {
+                "Jessica Pegula": 0.2,
+                "Leylah Fernandez": 0.13,
+                "Karolina Pliskova": 0.08,
+                "Oleksandra Oliynykova": 0.07,
+                "Janice Tjen": 0.05
+              },
               "summary": "Top outcomes: Jessica Pegula 0.25, Janice Tjen 0.12."
             },
             {
               "question_id": "456938",
               "question_title": "Question 456938",
               "event_idx": 2351,
+              "outcomes": {
+                "Amanda Nunes": 0.3,
+                "Kayla Harrison": 0.1,
+                "Miesha Tate": 0.06,
+                "Julianna Pena": 0.05,
+                "Gina Carano": 0.04
+              },
+              "previous_outcomes": {
+                "Kayla Harrison": 0.15,
+                "Amanda Nunes": 0.12,
+                "Miesha Tate": 0.08,
+                "Julianna Pena": 0.05,
+                "Gina Carano": 0.04
+              },
               "summary": "Top outcomes: Amanda Nunes 0.30, Kayla Harrison 0.10."
             }
           ]
@@ -2314,8 +3148,9 @@
           "event_idx_start": 2362,
           "event_idx_end": 2379,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -2330,6 +3165,10 @@
             2375,
             2379
           ],
+          "model_messages": [
+            "ICE Milan (+77) and Abu Dhabi round-2 (+22). Checking Sabalenka's quarter and Trump tariff threats:",
+            "Paolini stunned by Jovic \u2014 Sabalenka's QF opponent now comes from Jovic/Putintseva/Sonmez:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -2339,6 +3178,18 @@
               "question_id": "287417",
               "question_title": "Question 287417",
               "event_idx": 2375,
+              "outcomes": {
+                "Iva Jovic": 0.42,
+                "Yulia Putintseva": 0.28,
+                "Zeynep Sonmez": 0.22
+              },
+              "previous_outcomes": {
+                "Jasmine Paolini": 0.3,
+                "Marta Kostyuk": 0.18,
+                "Ekaterina Alexandrova": 0.12,
+                "Iva Jovic": 0.08,
+                "Beatriz Haddad Maia": 0.06
+              },
               "summary": "Top outcomes: Iva Jovic 0.42, Yulia Putintseva 0.28."
             }
           ]
@@ -2376,8 +3227,9 @@
           "event_idx_start": 2387,
           "event_idx_end": 2398,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -2401,6 +3253,18 @@
               "question_id": "180958",
               "question_title": "Question 180958",
               "event_idx": 2394,
+              "outcomes": {
+                "Seattle Seahawks": 0.42,
+                "New England Patriots": 0.2,
+                "Denver Broncos": 0.15
+              },
+              "previous_outcomes": {
+                "Seattle Seahawks": 0.28,
+                "New England Patriots": 0.2,
+                "Los Angeles Rams": 0.18,
+                "Denver Broncos": 0.12,
+                "Houston Texans": 0.06
+              },
               "summary": "Top outcomes: Seattle Seahawks 0.42, New England Patriots 0.20."
             }
           ]
@@ -2438,8 +3302,9 @@
           "event_idx_start": 2406,
           "event_idx_end": 2427,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 5,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -2456,6 +3321,9 @@
             2423,
             2427
           ],
+          "model_messages": [
+            "Three more hits (+92 day). UCL league phase ends Jan 28-29 \u2014 let me get standings to sharpen the playoff-draw questions before Jan 30:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -2465,12 +3333,38 @@
               "question_id": "55999",
               "question_title": "Question 55999",
               "event_idx": 2421,
+              "outcomes": {
+                "Real Madrid": 0.62,
+                "Atletico Madrid": 0.05,
+                "Liverpool": 0.04,
+                "Borussia Dortmund": 0.03
+              },
+              "previous_outcomes": {
+                "Real Madrid": 0.12,
+                "Atletico Madrid": 0.08,
+                "Liverpool": 0.08,
+                "Borussia Dortmund": 0.07,
+                "Napoli": 0.05
+              },
               "summary": "Top outcomes: Real Madrid 0.62, Atletico Madrid 0.05."
             },
             {
               "question_id": "85609",
               "question_title": "Question 85609",
               "event_idx": 2423,
+              "outcomes": {
+                "Benfica": 0.62,
+                "Monaco": 0.05,
+                "Marseille": 0.05,
+                "Juventus": 0.04
+              },
+              "previous_outcomes": {
+                "Benfica": 0.12,
+                "Monaco": 0.07,
+                "Marseille": 0.07,
+                "Juventus": 0.07,
+                "Pafos": 0.04
+              },
               "summary": "Top outcomes: Benfica 0.62, Monaco 0.05."
             }
           ]
@@ -2508,8 +3402,9 @@
           "event_idx_start": 2433,
           "event_idx_end": 2445,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -2533,6 +3428,19 @@
               "question_id": "465445",
               "question_title": "Question 465445",
               "event_idx": 2441,
+              "outcomes": {
+                "Agron Smakici": 0.3,
+                "Anthony Joshua": 0.25,
+                "Fabio Wardley": 0.1,
+                "Derek Chisora": 0.04
+              },
+              "previous_outcomes": {
+                "Anthony Joshua": 0.45,
+                "Oleksandr Usyk": 0.1,
+                "Derek Chisora": 0.08,
+                "Deontay Wilder": 0.06,
+                "Joseph Parker": 0.04
+              },
               "summary": "Top outcomes: Agron Smakici 0.30, Anthony Joshua 0.25."
             }
           ]
@@ -2542,8 +3450,8 @@
     {
       "date": "2026-01-27",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-27.json",
-      "title": "2026-01-27: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-01-27: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -2566,8 +3474,9 @@
           "event_idx_start": 2451,
           "event_idx_end": 2453,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -2585,8 +3494,8 @@
     {
       "date": "2026-01-28",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-28.json",
-      "title": "2026-01-28: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-01-28: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -2609,8 +3518,9 @@
           "event_idx_start": 2460,
           "event_idx_end": 2468,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2629,8 +3539,8 @@
     {
       "date": "2026-01-29",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-29.json",
-      "title": "2026-01-29: 4 visible actions",
-      "display_summary": "Fable 5 recorded 4 visible action(s).",
+      "title": "2026-01-29: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 7,
         "action_count": 4,
@@ -2653,8 +3563,9 @@
           "event_idx_start": 2474,
           "event_idx_end": 2482,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2666,6 +3577,9 @@
             2474,
             2480,
             2482
+          ],
+          "model_messages": [
+            "+151 day \u2014 Lutnick (+75), Vonn (+30), and the Benfica\u2013Real leak double (+56). Checking AO semifinal results:"
           ]
         }
       ]
@@ -2701,8 +3615,9 @@
           "event_idx_start": 2487,
           "event_idx_end": 2496,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -2728,6 +3643,20 @@
               "question_id": "946810",
               "question_title": "Question 946810",
               "event_idx": 2492,
+              "outcomes": {
+                "Lady Gaga": 0.3,
+                "Bad Bunny": 0.28,
+                "Kendrick Lamar": 0.18,
+                "Sabrina Carpenter": 0.05,
+                "Tyler, the Creator": 0.04
+              },
+              "previous_outcomes": {
+                "Kendrick Lamar": 0.24,
+                "Lady Gaga": 0.22,
+                "Bad Bunny": 0.16,
+                "Sabrina Carpenter": 0.08,
+                "Tyler, the Creator": 0.05
+              },
               "summary": "Top outcomes: Lady Gaga 0.30, Bad Bunny 0.28."
             }
           ]
@@ -2737,8 +3666,8 @@
     {
       "date": "2026-01-31",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-01-31.json",
-      "title": "2026-01-31: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-01-31: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -2761,8 +3690,9 @@
           "event_idx_start": 2507,
           "event_idx_end": 2512,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2781,8 +3711,8 @@
     {
       "date": "2026-02-01",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-01.json",
-      "title": "2026-02-01: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-01: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -2805,8 +3735,9 @@
           "event_idx_start": 2517,
           "event_idx_end": 2524,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -2853,8 +3784,9 @@
           "event_idx_start": 2532,
           "event_idx_end": 2547,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 6,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -2880,12 +3812,35 @@
               "question_id": "426743",
               "question_title": "Question 426743",
               "event_idx": 2532,
+              "outcomes": {
+                "Zintan": 0.3,
+                "Sirte": 0.12,
+                "Bani Walid": 0.1,
+                "Tripoli": 0.08,
+                "Sabha": 0.05
+              },
+              "previous_outcomes": {
+                "Zintan": 0.15,
+                "Sirte": 0.15,
+                "Bani Walid": 0.12,
+                "Tripoli": 0.08,
+                "Sabha": 0.08
+              },
               "summary": "Top outcomes: Zintan 0.30, Sirte 0.12."
             },
             {
               "question_id": "180958",
               "question_title": "Question 180958",
               "event_idx": 2542,
+              "outcomes": {
+                "Seattle Seahawks": 0.52,
+                "New England Patriots": 0.44
+              },
+              "previous_outcomes": {
+                "Seattle Seahawks": 0.42,
+                "New England Patriots": 0.2,
+                "Denver Broncos": 0.15
+              },
               "summary": "Top outcomes: Seattle Seahawks 0.52, New England Patriots 0.44."
             }
           ]
@@ -2895,7 +3850,7 @@
     {
       "date": "2026-02-03",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-03.json",
-      "title": "2026-02-03: 5 visible actions",
+      "title": "2026-02-03: 4 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 9,
@@ -2919,8 +3874,9 @@
           "event_idx_start": 2553,
           "event_idx_end": 2564,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Bash",
@@ -2934,6 +3890,9 @@
             2553,
             2555,
             2564
+          ],
+          "model_messages": [
+            "California (+79). Hunting the Moscow officer shooting (abstained question, started Jan 19) and Egypt reshuffle:"
           ]
         }
       ]
@@ -2969,8 +3928,9 @@
           "event_idx_start": 2566,
           "event_idx_end": 2583,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 5,
           "tools": [
             "Bash",
             "Search News",
@@ -2996,6 +3956,16 @@
               "question_id": "456284",
               "question_title": "Question 456284",
               "event_idx": 2579,
+              "outcomes": {
+                "Matt Murray": 0.25,
+                "Suzi Watford": 0.08,
+                "Patty Stonesifer": 0.05
+              },
+              "previous_outcomes": {
+                "Matt Murray": 0.18,
+                "Suzi Watford": 0.08,
+                "Patty Stonesifer": 0.07
+              },
               "summary": "Top outcomes: Matt Murray 0.25, Suzi Watford 0.08."
             }
           ]
@@ -3033,8 +4003,9 @@
           "event_idx_start": 2591,
           "event_idx_end": 2601,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Submit Forecasts",
             "Search News",
@@ -3051,6 +4022,9 @@
             2594,
             2601
           ],
+          "model_messages": [
+            "Alekseyev resolved (abstained, no loss). Pre-Olympics: updating women's downhill silver odds given the injury landscape:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3060,6 +4034,20 @@
               "question_id": "534224",
               "question_title": "Question 534224",
               "event_idx": 2592,
+              "outcomes": {
+                "Austria": 0.18,
+                "United States": 0.16,
+                "Italy": 0.14,
+                "Czech Republic": 0.06,
+                "Germany": 0.05
+              },
+              "previous_outcomes": {
+                "Austria": 0.16,
+                "Italy": 0.15,
+                "United States": 0.13,
+                "Czech Republic": 0.06,
+                "Norway": 0.05
+              },
               "summary": "Top outcomes: Austria 0.18, United States 0.16."
             }
           ]
@@ -3069,8 +4057,8 @@
     {
       "date": "2026-02-06",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-06.json",
-      "title": "2026-02-06: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-06: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -3093,8 +4081,9 @@
           "event_idx_start": 2606,
           "event_idx_end": 2613,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -3113,7 +4102,7 @@
     {
       "date": "2026-02-07",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-07.json",
-      "title": "2026-02-07: 4 visible actions",
+      "title": "2026-02-07: 3 tool calls",
       "display_summary": "Ran 1 news search(es).",
       "stats": {
         "event_count_in_shard": 7,
@@ -3137,8 +4126,9 @@
           "event_idx_start": 2622,
           "event_idx_end": 2630,
           "label": "News research",
-          "summary": "Ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Search News",
             "Bash",
@@ -3152,6 +4142,9 @@
             2622,
             2628,
             2630
+          ],
+          "model_messages": [
+            "Seahawks won the Super Bowl (+32). Checking the Tractor FC ACL playoff question (resolves Feb 11):"
           ]
         }
       ]
@@ -3159,8 +4152,8 @@
     {
       "date": "2026-02-08",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-08.json",
-      "title": "2026-02-08: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-08: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -3183,8 +4176,9 @@
           "event_idx_start": 2637,
           "event_idx_end": 2644,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -3203,8 +4197,8 @@
     {
       "date": "2026-02-09",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-09.json",
-      "title": "2026-02-09: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-02-09: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -3227,8 +4221,9 @@
           "event_idx_start": 2650,
           "event_idx_end": 2652,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -3274,8 +4269,9 @@
           "event_idx_start": 2654,
           "event_idx_end": 2665,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -3299,6 +4295,18 @@
               "question_id": "190197",
               "question_title": "Question 190197",
               "event_idx": 2661,
+              "outcomes": {
+                "Netherlands": 0.42,
+                "Namibia": 0.18,
+                "India": 0.08,
+                "United States": 0.05
+              },
+              "previous_outcomes": {
+                "Netherlands": 0.2,
+                "United States": 0.2,
+                "Namibia": 0.15,
+                "Canada": 0.03
+              },
               "summary": "Top outcomes: Netherlands 0.42, Namibia 0.18."
             }
           ]
@@ -3308,8 +4316,8 @@
     {
       "date": "2026-02-11",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-11.json",
-      "title": "2026-02-11: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-11: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -3332,8 +4340,9 @@
           "event_idx_start": 2670,
           "event_idx_end": 2677,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -3380,8 +4389,9 @@
           "event_idx_start": 2686,
           "event_idx_end": 2699,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -3398,6 +4408,9 @@
             2695,
             2699
           ],
+          "model_messages": [
+            "Storm sequence K-L-M-N (Kristin, Leonardo, Marta, Nils) \u2014 next is a female O-name. Filling the abstained storm question:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3407,6 +4420,13 @@
               "question_id": "548734",
               "question_title": "Question 548734",
               "event_idx": 2695,
+              "outcomes": {
+                "Storm Olivia": 0.3,
+                "Olivia": 0.1,
+                "Storm Ophelia": 0.06,
+                "Storm Odile": 0.05,
+                "Storm Oriane": 0.04
+              },
               "summary": "Top outcomes: Storm Olivia 0.30, Olivia 0.10."
             }
           ]
@@ -3444,8 +4464,9 @@
           "event_idx_start": 2705,
           "event_idx_end": 2709,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -3469,6 +4490,16 @@
               "question_id": "994042",
               "question_title": "Question 994042",
               "event_idx": 2705,
+              "outcomes": {
+                "Al-Manar": 0.35,
+                "IRIB": 0.3,
+                "Press TV": 0.05
+              },
+              "previous_outcomes": {
+                "IRIB": 0.4,
+                "Al-Manar": 0.25,
+                "Press TV": 0.05
+              },
               "summary": "Top outcomes: Al-Manar 0.35, IRIB 0.30."
             }
           ]
@@ -3478,8 +4509,8 @@
     {
       "date": "2026-02-14",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-14.json",
-      "title": "2026-02-14: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-14: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -3502,8 +4533,9 @@
           "event_idx_start": 2711,
           "event_idx_end": 2718,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -3550,8 +4582,9 @@
           "event_idx_start": 2723,
           "event_idx_end": 2738,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -3568,6 +4601,9 @@
             2734,
             2738
           ],
+          "model_messages": [
+            "West Indies qualified \u2014 they can't be the \"former champion failing to reach Super 8s\" anymore. Sri Lanka becomes the prime candidate:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3577,6 +4613,18 @@
               "question_id": "454482",
               "question_title": "Question 454482",
               "event_idx": 2734,
+              "outcomes": {
+                "Sri Lanka": 0.48,
+                "England": 0.15,
+                "Australia": 0.06,
+                "Pakistan": 0.02
+              },
+              "previous_outcomes": {
+                "West Indies": 0.28,
+                "Sri Lanka": 0.22,
+                "England": 0.1,
+                "Pakistan": 0.08
+              },
               "summary": "Top outcomes: Sri Lanka 0.48, England 0.15."
             }
           ]
@@ -3614,8 +4662,9 @@
           "event_idx_start": 2745,
           "event_idx_end": 2754,
           "label": "Forecast submissions",
-          "summary": "Submitted 3 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 3 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 5,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -3630,6 +4679,9 @@
             2750,
             2754
           ],
+          "model_messages": [
+            "Australia crashed out \u2014 removing them from Super Eights questions:"
+          ],
           "question_scope": {
             "count": 3,
             "mode": "forecast submissions"
@@ -3639,18 +4691,60 @@
               "question_id": "992626",
               "question_title": "Question 992626",
               "event_idx": 2746,
+              "outcomes": {
+                "India": 0.3,
+                "England": 0.18,
+                "South Africa": 0.12,
+                "New Zealand": 0.1,
+                "West Indies": 0.06
+              },
+              "previous_outcomes": {
+                "India": 0.28,
+                "Australia": 0.18,
+                "England": 0.15,
+                "South Africa": 0.1,
+                "New Zealand": 0.08
+              },
               "summary": "Top outcomes: India 0.30, England 0.18."
             },
             {
               "question_id": "333107",
               "question_title": "Question 333107",
               "event_idx": 2748,
+              "outcomes": {
+                "India": 0.25,
+                "England": 0.18,
+                "New Zealand": 0.12,
+                "West Indies": 0.08,
+                "Pakistan": 0.07
+              },
+              "previous_outcomes": {
+                "India": 0.22,
+                "Australia": 0.16,
+                "England": 0.14,
+                "New Zealand": 0.1,
+                "West Indies": 0.06
+              },
               "summary": "Top outcomes: India 0.25, England 0.18."
             },
             {
               "question_id": "307616",
               "question_title": "Question 307616",
               "event_idx": 2750,
+              "outcomes": {
+                "England": 0.14,
+                "South Africa": 0.12,
+                "New Zealand": 0.12,
+                "West Indies": 0.1,
+                "Sri Lanka": 0.08
+              },
+              "previous_outcomes": {
+                "Australia": 0.12,
+                "England": 0.12,
+                "South Africa": 0.1,
+                "New Zealand": 0.1,
+                "West Indies": 0.08
+              },
               "summary": "Top outcomes: England 0.14, South Africa 0.12."
             }
           ]
@@ -3688,8 +4782,9 @@
           "event_idx_start": 2763,
           "event_idx_end": 2778,
           "label": "Forecast submissions",
-          "summary": "Submitted 3 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 3 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 6,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -3704,6 +4799,9 @@
             2772,
             2778
           ],
+          "model_messages": [
+            "Geneva is now the Iran-talks venue \u2014 updating the talks-location questions:"
+          ],
           "question_scope": {
             "count": 3,
             "mode": "forecast submissions"
@@ -3713,18 +4811,58 @@
               "question_id": "489902",
               "question_title": "Question 489902",
               "event_idx": 2770,
+              "outcomes": {
+                "Geneva": 0.35,
+                "Muscat": 0.2,
+                "Doha": 0.1,
+                "Rome": 0.05,
+                "Abu Dhabi": 0.04
+              },
+              "previous_outcomes": {
+                "Muscat": 0.35,
+                "Doha": 0.18,
+                "Geneva": 0.1,
+                "Rome": 0.08,
+                "Abu Dhabi": 0.05
+              },
               "summary": "Top outcomes: Geneva 0.35, Muscat 0.20."
             },
             {
               "question_id": "415069",
               "question_title": "Question 415069",
               "event_idx": 2772,
+              "outcomes": {
+                "Switzerland": 0.3,
+                "Oman": 0.3,
+                "Qatar": 0.1,
+                "United Arab Emirates": 0.05
+              },
+              "previous_outcomes": {
+                "Oman": 0.45,
+                "Qatar": 0.2,
+                "Switzerland": 0.06,
+                "United Arab Emirates": 0.05
+              },
               "summary": "Top outcomes: Switzerland 0.30, Oman 0.30."
             },
             {
               "question_id": "120805",
               "question_title": "Question 120805",
               "event_idx": 2774,
+              "outcomes": {
+                "Oman": 0.28,
+                "Switzerland": 0.25,
+                "Qatar": 0.2,
+                "Turkey": 0.04,
+                "Iraq": 0.03
+              },
+              "previous_outcomes": {
+                "Oman": 0.35,
+                "Qatar": 0.25,
+                "Switzerland": 0.15,
+                "Turkey": 0.05,
+                "Iraq": 0.04
+              },
               "summary": "Top outcomes: Oman 0.28, Switzerland 0.25."
             }
           ]
@@ -3762,8 +4900,9 @@
           "event_idx_start": 2785,
           "event_idx_end": 2802,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 5,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -3780,6 +4919,10 @@
             2796,
             2802
           ],
+          "model_messages": [
+            "Spanberger (+25) and Grok (+61). Olympics closing weekend \u2014 checking the medal table and hockey bracket:",
+            "Canada has only ~9 medals \u2014 can't hit 30. The \"30 medals national record\" must be host Italy or another sub-30-record nation:"
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -3789,12 +4932,39 @@
               "question_id": "162065",
               "question_title": "Question 162065",
               "event_idx": 2796,
+              "outcomes": {
+                "Italy": 0.4,
+                "France": 0.15,
+                "Austria": 0.12,
+                "Netherlands": 0.08,
+                "Switzerland": 0.06
+              },
+              "previous_outcomes": {
+                "Canada": 0.5,
+                "Austria": 0.1,
+                "France": 0.06,
+                "Italy": 0.05
+              },
               "summary": "Top outcomes: Italy 0.40, France 0.15."
             },
             {
               "question_id": "221278",
               "question_title": "Question 221278",
               "event_idx": 2798,
+              "outcomes": {
+                "Canada": 0.38,
+                "United States": 0.26,
+                "Sweden": 0.1,
+                "Finland": 0.07,
+                "Czech Republic": 0.05
+              },
+              "previous_outcomes": {
+                "Canada": 0.33,
+                "United States": 0.25,
+                "Sweden": 0.12,
+                "Finland": 0.07,
+                "Czech Republic": 0.05
+              },
               "summary": "Top outcomes: Canada 0.38, United States 0.26."
             }
           ]
@@ -3832,8 +5002,9 @@
           "event_idx_start": 2808,
           "event_idx_end": 2813,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -3848,6 +5019,9 @@
             2811,
             2813
           ],
+          "model_messages": [
+            "Hamas again (novelty lesson applies to Lebanon questions) \u2014 rebalancing the Beirut apartment question:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3857,6 +5031,18 @@
               "question_id": "828811",
               "question_title": "Question 828811",
               "event_idx": 2809,
+              "outcomes": {
+                "Hezbollah": 0.38,
+                "Hamas": 0.22,
+                "Palestinian Islamic Jihad": 0.1,
+                "Amal Movement": 0.04
+              },
+              "previous_outcomes": {
+                "Hezbollah": 0.5,
+                "Palestinian Islamic Jihad": 0.1,
+                "Hamas": 0.1,
+                "Amal Movement": 0.04
+              },
               "summary": "Top outcomes: Hezbollah 0.38, Hamas 0.22."
             }
           ]
@@ -3894,8 +5080,9 @@
           "event_idx_start": 2819,
           "event_idx_end": 2830,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -3910,6 +5097,9 @@
             2826,
             2830
           ],
+          "model_messages": [
+            "Canada reached the men's hockey final; Trump set a 10-15 day Iran deadline. Updating hockey gold:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3919,6 +5109,18 @@
               "question_id": "221278",
               "question_title": "Question 221278",
               "event_idx": 2826,
+              "outcomes": {
+                "Canada": 0.5,
+                "United States": 0.36,
+                "Sweden": 0.06
+              },
+              "previous_outcomes": {
+                "Canada": 0.38,
+                "United States": 0.26,
+                "Sweden": 0.1,
+                "Finland": 0.07,
+                "Czech Republic": 0.05
+              },
               "summary": "Top outcomes: Canada 0.50, United States 0.36."
             }
           ]
@@ -3956,8 +5158,9 @@
           "event_idx_start": 2837,
           "event_idx_end": 2848,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -3974,6 +5177,10 @@
             2844,
             2848
           ],
+          "model_messages": [
+            "+140 day (US hockey, India, Kushner). The Gorton & Denton by-election is Feb 26 \u2014 candidate names should exist now:",
+            "Filling the by-election with named candidates (Green leads the constituency poll):"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -3983,6 +5190,11 @@
               "question_id": "55315",
               "question_title": "Question 55315",
               "event_idx": 2844,
+              "outcomes": {
+                "Hannah Spencer": 0.38,
+                "Matt Goodwin": 0.28,
+                "Angeliki Stogia": 0.22
+              },
               "summary": "Top outcomes: Hannah Spencer 0.38, Matt Goodwin 0.28."
             }
           ]
@@ -4020,8 +5232,9 @@
           "event_idx_start": 2853,
           "event_idx_end": 2857,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -4045,6 +5258,20 @@
               "question_id": "333107",
               "question_title": "Question 333107",
               "event_idx": 2853,
+              "outcomes": {
+                "India": 0.2,
+                "West Indies": 0.2,
+                "England": 0.15,
+                "New Zealand": 0.1,
+                "Pakistan": 0.07
+              },
+              "previous_outcomes": {
+                "India": 0.25,
+                "England": 0.18,
+                "New Zealand": 0.12,
+                "West Indies": 0.08,
+                "Pakistan": 0.07
+              },
               "summary": "Top outcomes: India 0.20, West Indies 0.20."
             }
           ]
@@ -4082,8 +5309,9 @@
           "event_idx_start": 2864,
           "event_idx_end": 2868,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -4107,6 +5335,20 @@
               "question_id": "443306",
               "question_title": "Question 443306",
               "event_idx": 2864,
+              "outcomes": {
+                "Geneva": 0.35,
+                "Oman": 0.12,
+                "Muscat": 0.06,
+                "Doha": 0.06,
+                "Rome": 0.03
+              },
+              "previous_outcomes": {
+                "Oman": 0.2,
+                "Muscat": 0.1,
+                "Doha": 0.1,
+                "Geneva": 0.08,
+                "Rome": 0.06
+              },
               "summary": "Top outcomes: Geneva 0.35, Oman 0.12."
             }
           ]
@@ -4116,8 +5358,8 @@
     {
       "date": "2026-02-24",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-02-24.json",
-      "title": "2026-02-24: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-02-24: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -4140,8 +5382,9 @@
           "event_idx_start": 2873,
           "event_idx_end": 2880,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -4188,8 +5431,9 @@
           "event_idx_start": 2885,
           "event_idx_end": 2890,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -4204,6 +5448,9 @@
             2888,
             2890
           ],
+          "model_messages": [
+            "Vienna! The talks moved to Austria \u2014 updating the \"final talks collapsed\" location:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -4213,6 +5460,20 @@
               "question_id": "443306",
               "question_title": "Question 443306",
               "event_idx": 2886,
+              "outcomes": {
+                "Vienna": 0.3,
+                "Geneva": 0.15,
+                "Austria": 0.08,
+                "Oman": 0.05,
+                "Muscat": 0.03
+              },
+              "previous_outcomes": {
+                "Geneva": 0.35,
+                "Oman": 0.12,
+                "Muscat": 0.06,
+                "Doha": 0.06,
+                "Rome": 0.03
+              },
               "summary": "Top outcomes: Vienna 0.30, Geneva 0.15."
             }
           ]
@@ -4250,8 +5511,9 @@
           "event_idx_start": 2900,
           "event_idx_end": 2905,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -4266,6 +5528,9 @@
             2903,
             2905
           ],
+          "model_messages": [
+            "Newcastle hosts Barcelona in the R16 \u2014 that bracket slot likely feeds Arsenal's QF:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -4275,6 +5540,20 @@
               "question_id": "167989",
               "question_title": "Question 167989",
               "event_idx": 2901,
+              "outcomes": {
+                "Barcelona": 0.3,
+                "Newcastle United": 0.15,
+                "Bayern Munich": 0.08,
+                "Inter Milan": 0.08,
+                "Paris Saint-Germain": 0.06
+              },
+              "previous_outcomes": {
+                "Bayern Munich": 0.12,
+                "Inter Milan": 0.1,
+                "Paris Saint-Germain": 0.1,
+                "Barcelona": 0.1,
+                "Real Madrid": 0.08
+              },
               "summary": "Top outcomes: Barcelona 0.30, Newcastle United 0.15."
             }
           ]
@@ -4312,8 +5591,9 @@
           "event_idx_start": 2914,
           "event_idx_end": 2925,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -4337,6 +5617,20 @@
               "question_id": "59501",
               "question_title": "Question 59501",
               "event_idx": 2921,
+              "outcomes": {
+                "Qatar": 0.42,
+                "Bahrain": 0.18,
+                "Saudi Arabia": 0.12,
+                "Kuwait": 0.08,
+                "United Arab Emirates": 0.06
+              },
+              "previous_outcomes": {
+                "Qatar": 0.35,
+                "Bahrain": 0.2,
+                "Saudi Arabia": 0.12,
+                "Kuwait": 0.08,
+                "United Arab Emirates": 0.08
+              },
               "summary": "Top outcomes: Qatar 0.42, Bahrain 0.18."
             }
           ]
@@ -4374,8 +5668,9 @@
           "event_idx_start": 2935,
           "event_idx_end": 2940,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -4390,6 +5685,9 @@
             2938,
             2940
           ],
+          "model_messages": [
+            "Khamenei is dead (hence the interim council \u2014 Arafi \u2713\u00d72, PrSM hedge \u2713 +34). UAE took most missiles \u2014 tilting the Gulf energy-strike question toward UAE sites:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -4399,6 +5697,20 @@
               "question_id": "971319",
               "question_title": "Question 971319",
               "event_idx": 2936,
+              "outcomes": {
+                "Ruwais": 0.15,
+                "Ras Laffan": 0.12,
+                "Ras Tanura": 0.12,
+                "Das Island": 0.06,
+                "Abqaiq": 0.06
+              },
+              "previous_outcomes": {
+                "Ras Tanura": 0.15,
+                "Ras Laffan": 0.15,
+                "Abqaiq": 0.1,
+                "Ruwais": 0.08,
+                "Das Island": 0.05
+              },
               "summary": "Top outcomes: Ruwais 0.15, Ras Laffan 0.12."
             }
           ]
@@ -4408,8 +5720,8 @@
     {
       "date": "2026-03-01",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-01.json",
-      "title": "2026-03-01: 4 visible actions",
-      "display_summary": "Fable 5 recorded 4 visible action(s).",
+      "title": "2026-03-01: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 7,
         "action_count": 4,
@@ -4432,8 +5744,9 @@
           "event_idx_start": 2947,
           "event_idx_end": 2955,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -4445,6 +5758,9 @@
             2947,
             2953,
             2955
+          ],
+          "model_messages": [
+            "+198 day! (Bahrain AWS +57, IRIB +53, Rawalpindi +38, Ras Laffan +24). TW 3578. Continuing March maintenance:"
           ]
         }
       ]
@@ -4452,8 +5768,8 @@
     {
       "date": "2026-03-02",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-02.json",
-      "title": "2026-03-02: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-03-02: 3 tool calls",
+      "display_summary": "Fable 5 made 3 tool call(s).",
       "stats": {
         "event_count_in_shard": 6,
         "action_count": 3,
@@ -4476,8 +5792,9 @@
           "event_idx_start": 2961,
           "event_idx_end": 2968,
           "label": "Save state and advance day",
-          "summary": "Used 2 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 3,
           "tools": [
             "Bash",
             "Next Day"
@@ -4496,8 +5813,8 @@
     {
       "date": "2026-03-03",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-03.json",
-      "title": "2026-03-03: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-03-03: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -4520,8 +5837,9 @@
           "event_idx_start": 2973,
           "event_idx_end": 2976,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4533,6 +5851,9 @@
             2973,
             2974,
             2976
+          ],
+          "model_messages": [
+            "Bondi (+52) and Hormuz (+41). Under 100 questions remain. Advancing through March:"
           ]
         }
       ]
@@ -4540,8 +5861,8 @@
     {
       "date": "2026-03-04",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-04.json",
-      "title": "2026-03-04: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-04: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4564,8 +5885,9 @@
           "event_idx_start": 2982,
           "event_idx_end": 2984,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4611,8 +5933,9 @@
           "event_idx_start": 2987,
           "event_idx_end": 2997,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -4629,6 +5952,9 @@
             2993,
             2997
           ],
+          "model_messages": [
+            "Nepal voted \u2014 Balendra Shah is the PM favorite. Raising him:"
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -4638,6 +5964,20 @@
               "question_id": "758920",
               "question_title": "Question 758920",
               "event_idx": 2993,
+              "outcomes": {
+                "Balendra Shah": 0.35,
+                "Gagan Thapa": 0.15,
+                "Rabi Lamichhane": 0.07,
+                "Sushila Karki": 0.05,
+                "KP Sharma Oli": 0.04
+              },
+              "previous_outcomes": {
+                "Balendra Shah": 0.2,
+                "Rabi Lamichhane": 0.12,
+                "Gagan Thapa": 0.1,
+                "Sushila Karki": 0.08,
+                "KP Sharma Oli": 0.05
+              },
               "summary": "Top outcomes: Balendra Shah 0.35, Gagan Thapa 0.15."
             }
           ]
@@ -4647,8 +5987,8 @@
     {
       "date": "2026-03-06",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-06.json",
-      "title": "2026-03-06: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-06: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4671,8 +6011,9 @@
           "event_idx_start": 3003,
           "event_idx_end": 3005,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4690,8 +6031,8 @@
     {
       "date": "2026-03-07",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-07.json",
-      "title": "2026-03-07: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-07: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4714,8 +6055,9 @@
           "event_idx_start": 3010,
           "event_idx_end": 3012,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4761,8 +6103,9 @@
           "event_idx_start": 3018,
           "event_idx_end": 3035,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 6,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -4788,12 +6131,40 @@
               "question_id": "932855",
               "question_title": "Question 932855",
               "event_idx": 3029,
+              "outcomes": {
+                "Vietnam": 0.18,
+                "Chinese Taipei": 0.14,
+                "Australia": 0.12,
+                "Uzbekistan": 0.1,
+                "Philippines": 0.07
+              },
+              "previous_outcomes": {
+                "Vietnam": 0.15,
+                "South Korea": 0.12,
+                "Philippines": 0.12,
+                "Uzbekistan": 0.08,
+                "Chinese Taipei": 0.08
+              },
               "summary": "Top outcomes: Vietnam 0.18, Chinese Taipei 0.14."
             },
             {
               "question_id": "857856",
               "question_title": "Question 857856",
               "event_idx": 3031,
+              "outcomes": {
+                "Vietnam": 0.12,
+                "Philippines": 0.12,
+                "Chinese Taipei": 0.1,
+                "Uzbekistan": 0.08,
+                "South Korea": 0.08
+              },
+              "previous_outcomes": {
+                "Vietnam": 0.12,
+                "Philippines": 0.12,
+                "Chinese Taipei": 0.1,
+                "Uzbekistan": 0.08,
+                "India": 0.08
+              },
               "summary": "Top outcomes: Vietnam 0.12, Philippines 0.12."
             }
           ]
@@ -4803,8 +6174,8 @@
     {
       "date": "2026-03-09",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-09.json",
-      "title": "2026-03-09: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-03-09: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -4827,8 +6198,9 @@
           "event_idx_start": 3042,
           "event_idx_end": 3045,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4840,6 +6212,9 @@
             3042,
             3043,
             3045
+          ],
+          "model_messages": [
+            "Mexico (+40); \"Taiwan\" vs \"Chinese Taipei\" phrasing cost again. UCL R16 this week \u2014 positions held:"
           ]
         }
       ]
@@ -4847,8 +6222,8 @@
     {
       "date": "2026-03-10",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-10.json",
-      "title": "2026-03-10: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-10: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4871,8 +6246,9 @@
           "event_idx_start": 3061,
           "event_idx_end": 3063,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4890,8 +6266,8 @@
     {
       "date": "2026-03-11",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-11.json",
-      "title": "2026-03-11: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-11: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4914,8 +6290,9 @@
           "event_idx_start": 3068,
           "event_idx_end": 3070,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4933,8 +6310,8 @@
     {
       "date": "2026-03-12",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-12.json",
-      "title": "2026-03-12: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-12: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -4957,8 +6334,9 @@
           "event_idx_start": 3073,
           "event_idx_end": 3075,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4976,8 +6354,8 @@
     {
       "date": "2026-03-13",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-13.json",
-      "title": "2026-03-13: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-13: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5000,8 +6378,9 @@
           "event_idx_start": 3078,
           "event_idx_end": 3080,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5019,8 +6398,8 @@
     {
       "date": "2026-03-14",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-14.json",
-      "title": "2026-03-14: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-14: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5043,8 +6422,9 @@
           "event_idx_start": 3085,
           "event_idx_end": 3087,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5062,8 +6442,8 @@
     {
       "date": "2026-03-15",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-15.json",
-      "title": "2026-03-15: 3 visible actions",
-      "display_summary": "Fable 5 recorded 3 visible action(s).",
+      "title": "2026-03-15: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -5086,8 +6466,9 @@
           "event_idx_start": 3094,
           "event_idx_end": 3097,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5099,6 +6480,9 @@
             3094,
             3095,
             3097
+          ],
+          "model_messages": [
+            "Japan (+47); \"Zircon\" vs my \"Tsirkon\" \u2014 transliteration miss again. Pressing on:"
           ]
         }
       ]
@@ -5106,8 +6490,8 @@
     {
       "date": "2026-03-16",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-16.json",
-      "title": "2026-03-16: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-16: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5130,8 +6514,9 @@
           "event_idx_start": 3103,
           "event_idx_end": 3105,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5149,8 +6534,8 @@
     {
       "date": "2026-03-17",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-17.json",
-      "title": "2026-03-17: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-17: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5173,8 +6558,9 @@
           "event_idx_start": 3107,
           "event_idx_end": 3109,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5192,8 +6578,8 @@
     {
       "date": "2026-03-18",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-18.json",
-      "title": "2026-03-18: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-18: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5216,8 +6602,9 @@
           "event_idx_start": 3118,
           "event_idx_end": 3120,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5235,8 +6622,8 @@
     {
       "date": "2026-03-19",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-19.json",
-      "title": "2026-03-19: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-19: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5259,8 +6646,9 @@
           "event_idx_start": 3126,
           "event_idx_end": 3128,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5278,8 +6666,8 @@
     {
       "date": "2026-03-20",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-20.json",
-      "title": "2026-03-20: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-20: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5302,8 +6690,9 @@
           "event_idx_start": 3133,
           "event_idx_end": 3135,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5321,8 +6710,8 @@
     {
       "date": "2026-03-21",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-21.json",
-      "title": "2026-03-21: 1 visible actions",
-      "display_summary": "Fable 5 recorded 1 visible action(s).",
+      "title": "2026-03-21: 1 tool calls",
+      "display_summary": "Fable 5 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -5347,6 +6736,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -5362,8 +6752,8 @@
     {
       "date": "2026-03-22",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-22.json",
-      "title": "2026-03-22: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-22: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5386,8 +6776,9 @@
           "event_idx_start": 3144,
           "event_idx_end": 3146,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5405,8 +6796,8 @@
     {
       "date": "2026-03-23",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-23.json",
-      "title": "2026-03-23: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-23: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5429,8 +6820,9 @@
           "event_idx_start": 3151,
           "event_idx_end": 3153,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5448,8 +6840,8 @@
     {
       "date": "2026-03-24",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-24.json",
-      "title": "2026-03-24: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-24: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5472,8 +6864,9 @@
           "event_idx_start": 3155,
           "event_idx_end": 3157,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5491,8 +6884,8 @@
     {
       "date": "2026-03-25",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-25.json",
-      "title": "2026-03-25: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-25: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5515,8 +6908,9 @@
           "event_idx_start": 3165,
           "event_idx_end": 3167,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5534,8 +6928,8 @@
     {
       "date": "2026-03-26",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-26.json",
-      "title": "2026-03-26: 1 visible actions",
-      "display_summary": "Fable 5 recorded 1 visible action(s).",
+      "title": "2026-03-26: 1 tool calls",
+      "display_summary": "Fable 5 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -5560,6 +6954,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -5575,8 +6970,8 @@
     {
       "date": "2026-03-27",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-27.json",
-      "title": "2026-03-27: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-27: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -5599,8 +6994,9 @@
           "event_idx_start": 3174,
           "event_idx_end": 3176,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -5618,8 +7014,8 @@
     {
       "date": "2026-03-28",
       "trace_path": "runs/fable-5/26-06-10-01-14-28/2026-03-28.json",
-      "title": "2026-03-28: 2 visible actions",
-      "display_summary": "Fable 5 recorded 2 visible action(s).",
+      "title": "2026-03-28: 2 tool calls",
+      "display_summary": "Fable 5 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -5642,8 +7038,9 @@
           "event_idx_start": 3183,
           "event_idx_end": 3186,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"

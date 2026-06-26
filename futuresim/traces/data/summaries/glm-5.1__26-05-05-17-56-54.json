@@ -19,7 +19,7 @@
   "linking_contract": {
     "day_trace_path": "days[].trace_path is relative to trace_data_base",
     "segment_event_range": "segments[].event_idx_start and segments[].event_idx_end refer to day.events[].idx in the trace shard",
-    "segment_grouping": "Segments are consecutive visible action sequences, split around day transitions and roughly 60 visible actions.",
+    "segment_grouping": "Segments are consecutive trace sequences, split around day transitions and roughly 60 rendered entries.",
     "ui_behavior": "The visualizer renders each segment summary first, then expands all trace events whose idx is within the segment range."
   },
   "days": [
@@ -54,8 +54,9 @@
           "event_idx_start": 2,
           "event_idx_end": 110,
           "label": "Research and forecast updates",
-          "summary": "Submitted 8 forecast update(s); ran 25 news search(es); used 14 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 8 forecast update(s); ran 25 news search(es); used 14 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 47,
           "tools": [
             "Read",
             "Bash",
@@ -72,6 +73,16 @@
             55,
             110
           ],
+          "model_messages": [
+            "Let me start by researching the earliest-resolving questions. I'll batch my research by topic to be efficient.",
+            "Let me search for more specific and recent articles for these early questions.",
+            "Let me continue researching the early questions more specifically.",
+            "Let me research more question topics in parallel.",
+            "Now let me read all the questions systematically and start making predictions. I'll extract all question data first.",
+            "I have good information now. Let me start submitting predictions for the earliest-resolving questions where I have the best evidence. I'll begin with high-confidence ones.",
+            "Let me search for more specific topics for the early questions.",
+            "Let me submit predictions for more early-resolving questions and continue researching."
+          ],
           "question_scope": {
             "count": 8,
             "mode": "forecast submissions"
@@ -79,32 +90,63 @@
           "representative_forecasts": [
             {
               "question_id": "369962",
-              "question_title": "2026-01-05 | Which armed group will Syria name as the target of a military operation in Alepp",
+              "question_title": "Which armed group will Syria name as the target of a military operation in Alepp",
               "event_idx": 83,
+              "outcomes": {
+                "SDF": 0.65,
+                "Syrian Democratic Forces": 0.15,
+                "ISIS": 0.05,
+                "ISIL": 0.05,
+                "Hayat Tahrir al-Sham": 0.05
+              },
               "summary": "Top outcomes: SDF 0.65, Syrian Democratic Forces 0.15."
             },
             {
               "question_id": "93950",
-              "question_title": "2026-01-01 | Which U.S. state will report that its measles outbreak has grown to 185 cases by",
+              "question_title": "Which U.S. state will report that its measles outbreak has grown to 185 cases by",
               "event_idx": 84,
+              "outcomes": {
+                "Arizona": 0.45,
+                "South Carolina": 0.25,
+                "Texas": 0.1,
+                "Utah": 0.1
+              },
               "summary": "Top outcomes: Arizona 0.45, South Carolina 0.25."
             },
             {
               "question_id": "630728",
-              "question_title": "2026-01-05 | Who will Denmark and Greenland request a meeting with by January 13, 2026, over",
+              "question_title": "Who will Denmark and Greenland request a meeting with by January 13, 2026, over",
               "event_idx": 85,
+              "outcomes": {
+                "Donald Trump": 0.35,
+                "Jeff Landry": 0.25,
+                "Marco Rubio": 0.15,
+                "Pete Hegseth": 0.1
+              },
               "summary": "Top outcomes: Donald Trump 0.35, Jeff Landry 0.25."
             },
             {
               "question_id": "433526",
-              "question_title": "2026-01-05 | Which Iranian military complex will satellite imagery show by February 19, 2026",
+              "question_title": "Which Iranian military complex will satellite imagery show by February 19, 2026",
               "event_idx": 89,
+              "outcomes": {
+                "Natanz": 0.3,
+                "Fordo": 0.25,
+                "Isfahan": 0.2,
+                "Parchin": 0.1
+              },
               "summary": "Top outcomes: Natanz 0.30, Fordo 0.25."
             },
             {
               "question_id": "935533",
-              "question_title": "2026-01-03 | Which country will receive free Starlink broadband service through February 3, 2",
+              "question_title": "Which country will receive free Starlink broadband service through February 3, 2",
               "event_idx": 90,
+              "outcomes": {
+                "Ukraine": 0.3,
+                "Gaza": 0.15,
+                "Sudan": 0.1,
+                "Syria": 0.1
+              },
               "summary": "Top outcomes: Ukraine 0.30, Gaza 0.15."
             }
           ]
@@ -114,8 +156,9 @@
           "event_idx_start": 111,
           "event_idx_end": 221,
           "label": "Research and forecast updates",
-          "summary": "Submitted 45 forecast update(s); ran 5 news search(es); used 2 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 45 forecast update(s); ran 5 news search(es); used 2 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 52,
           "tools": [
             "Submit Forecasts",
             "TodoWrite",
@@ -131,6 +174,11 @@
             162,
             221
           ],
+          "model_messages": [
+            "Good, I've covered the earliest questions (Jan 1-5). Now let me research and predict the Jan 6-15 batch. Let me first read those questions and then research key topics.",
+            "Let me research the key topics in this batch.",
+            "Let me now submit predictions for the Jan 6-15 batch. I'll do this efficiently."
+          ],
           "question_scope": {
             "count": 45,
             "mode": "forecast submissions"
@@ -138,32 +186,64 @@
           "representative_forecasts": [
             {
               "question_id": "227432",
-              "question_title": "2026-01-01 | Who will Volodymyr Zelenskyy nominate as Ukraine's defence minister by January 3",
+              "question_title": "Who will Volodymyr Zelenskyy nominate as Ukraine's defence minister by January 3",
               "event_idx": 111,
+              "outcomes": {
+                "Rustem Umerov": 0.3,
+                "Oleksandr Kamyshin": 0.15,
+                "Oleksandr Kubrakov": 0.1,
+                "Valerii Zaluzhnyi": 0.1
+              },
               "summary": "Top outcomes: Rustem Umerov 0.30, Oleksandr Kamyshin 0.15."
             },
             {
               "question_id": "892867",
-              "question_title": "2026-01-01 | Which Austrian alpine skier will be ruled out of the Milano Cortina Winter Olymp",
+              "question_title": "Which Austrian alpine skier will be ruled out of the Milano Cortina Winter Olymp",
               "event_idx": 112,
+              "outcomes": {
+                "Vincent Kriechmayr": 0.15,
+                "Marco Schwarz": 0.1,
+                "Manuel Feller": 0.1,
+                "Matthias Mayer": 0.1,
+                "Stefan Brennsteiner": 0.1
+              },
               "summary": "Top outcomes: Vincent Kriechmayr 0.15, Marco Schwarz 0.10."
             },
             {
               "question_id": "628026",
-              "question_title": "2026-01-01 | What town outside Charlotte, North Carolina, will authorities name by January 20",
+              "question_title": "What town outside Charlotte, North Carolina, will authorities name by January 20",
               "event_idx": 113,
+              "outcomes": {
+                "Gastonia": 0.15,
+                "Huntersville": 0.1,
+                "Concord": 0.1,
+                "Monroe": 0.1,
+                "Mint Hill": 0.1
+              },
               "summary": "Top outcomes: Gastonia 0.15, Huntersville 0.10."
             },
             {
               "question_id": "468637",
-              "question_title": "2026-01-02 | What country will Bangladesh ask the ICC to move its 2026 Men\u2019s T20 World Cup ma",
+              "question_title": "What country will Bangladesh ask the ICC to move its 2026 Men\u2019s T20 World Cup ma",
               "event_idx": 119,
+              "outcomes": {
+                "India": 0.25,
+                "Sri Lanka": 0.2,
+                "United Arab Emirates": 0.15,
+                "Oman": 0.1
+              },
               "summary": "Top outcomes: India 0.25, Sri Lanka 0.20."
             },
             {
               "question_id": "651727",
-              "question_title": "2026-01-02 | Who will be sworn in as Venezuela\u2019s interim president by January 2026?",
+              "question_title": "Who will be sworn in as Venezuela\u2019s interim president by January 2026?",
               "event_idx": 120,
+              "outcomes": {
+                "Maria Corina Machado": 0.2,
+                "Edmundo Gonzalez": 0.15,
+                "Juan Guaido": 0.1,
+                "Delsa Solorzano": 0.1
+              },
               "summary": "Top outcomes: Maria Corina Machado 0.20, Edmundo Gonzalez 0.15."
             }
           ]
@@ -173,8 +253,9 @@
           "event_idx_start": 222,
           "event_idx_end": 346,
           "label": "Forecast submissions",
-          "summary": "Submitted 42 forecast update(s); used 5 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 42 forecast update(s); used 5 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 47,
           "tools": [
             "Submit Forecasts",
             "TodoWrite",
@@ -189,6 +270,16 @@
             287,
             346
           ],
+          "model_messages": [
+            "Good, I've covered Jan 6-15. Now let me move to Jan 16-31 and beyond. Let me use a Python script to batch-submit predictions for the remaining questions more efficiently.",
+            "This is a huge number of questions. Let me use a Python script to batch process the remaining questions by creating reasonable predictions based on context from the question text and what I know. Let me first research a few more key topics, then submit all remaining predictions.",
+            "While the agent works on Jan 16-31, let me handle the remaining questions. Let me research a few key Feb topics and start submitting.",
+            "I have 262 remaining questions. Let me take a more efficient approach - use Python to generate and submit predictions in bulk.",
+            "Let me continue submitting predictions in batches. I'll focus on covering all remaining questions efficiently.",
+            "Let me continue rapidly submitting predictions for the remaining questions. I'll batch them more efficiently.",
+            "Good, the background agent completed and some of those were duplicates of what I submitted. Let me now rapidly cover the remaining Jan 16-31 and Feb questions.",
+            "Let me continue submitting the remaining Jan 16-31 questions and then move to February and March. I'll speed up by submitting multiple per call."
+          ],
           "question_scope": {
             "count": 42,
             "mode": "forecast submissions"
@@ -196,32 +287,61 @@
           "representative_forecasts": [
             {
               "question_id": "172391",
-              "question_title": "2026-01-15 | string (holiday) | What festival will Syria declare a paid national holiday by January 18, 2026?",
+              "question_title": "string (holiday)",
               "event_idx": 222,
+              "outcomes": {
+                "Eid al-Fitr": 0.2,
+                "Christmas": 0.15,
+                "Revolution Day": 0.15,
+                "Eid al-Adha": 0.1
+              },
               "summary": "Top outcomes: Eid al-Fitr 0.20, Christmas 0.15."
             },
             {
               "question_id": "406433",
-              "question_title": "2026-01-15 | string (club name) | Which club will be reported to have agreed in principle to sign Marc Guehi by January 2026",
+              "question_title": "string (club name)",
               "event_idx": 223,
+              "outcomes": {
+                "Liverpool": 0.15,
+                "Newcastle": 0.15,
+                "Tottenham": 0.1,
+                "Arsenal": 0.1
+              },
               "summary": "Top outcomes: Liverpool 0.15, Newcastle 0.15."
             },
             {
               "question_id": "579233",
-              "question_title": "2026-01-15 | string (language) | What language will Syria formally declare a \"national language\" by January 17, 2026?",
+              "question_title": "string (language)",
               "event_idx": 224,
+              "outcomes": {
+                "Kurdish": 0.25,
+                "Syriac": 0.1,
+                "Turkish": 0.1
+              },
               "summary": "Top outcomes: Kurdish 0.25, Syriac 0.10."
             },
             {
               "question_id": "599463",
-              "question_title": "2026-01-15 | string (name) | Which governor will the US Department of Justice open an investigation into by January 31",
+              "question_title": "string (name)",
               "event_idx": 230,
+              "outcomes": {
+                "Greg Abbott": 0.15,
+                "Ron DeSantis": 0.1,
+                "Gavin Newsom": 0.1,
+                "Jared Polis": 0.05
+              },
               "summary": "Top outcomes: Greg Abbott 0.15, Ron DeSantis 0.10."
             },
             {
               "question_id": "972999",
-              "question_title": "2026-01-15 | string (country) | Which country will say it is set to provide Ukraine with combat planes shortly by January",
+              "question_title": "string (country)",
               "event_idx": 231,
+              "outcomes": {
+                "France": 0.25,
+                "Netherlands": 0.15,
+                "Denmark": 0.15,
+                "United States": 0.1
+              },
               "summary": "Top outcomes: France 0.25, Netherlands 0.15."
             }
           ]
@@ -231,8 +351,9 @@
           "event_idx_start": 347,
           "event_idx_end": 463,
           "label": "Forecast submissions",
-          "summary": "Submitted 51 forecast update(s); used 2 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 51 forecast update(s); used 2 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 53,
           "tools": [
             "Submit Forecasts",
             "TodoWrite",
@@ -246,6 +367,10 @@
             404,
             463
           ],
+          "model_messages": [
+            "Good, Jan 16-31 is done. Now let me move to February. Let me use an agent to handle the February questions in background while I handle March.",
+            "While that agent handles Feb 1-14, let me handle Feb 15-28 and March."
+          ],
           "question_scope": {
             "count": 51,
             "mode": "forecast submissions"
@@ -253,32 +378,61 @@
           "representative_forecasts": [
             {
               "question_id": "286957",
-              "question_title": "2026-01-24 | Who will eliminate defending women\u2019s champion Madison Keys from the 2026 Australian Open by Jan",
+              "question_title": "Who will eliminate defending women\u2019s champion Madison Keys from the 2026 Australian Open by Jan",
               "event_idx": 347,
+              "outcomes": {
+                "Aryna Sabalenka": 0.2,
+                "Coco Gauff": 0.15,
+                "Iga Swiatek": 0.1,
+                "Elena Rybakina": 0.1
+              },
               "summary": "Top outcomes: Aryna Sabalenka 0.20, Coco Gauff 0.15."
             },
             {
               "question_id": "287417",
-              "question_title": "2026-01-24 | Who will Aryna Sabalenka face in the Australian Open women\u2019s singles quarterfinals by January 2",
+              "question_title": "Who will Aryna Sabalenka face in the Australian Open women\u2019s singles quarterfinals by January 2",
               "event_idx": 348,
+              "outcomes": {
+                "Iga Swiatek": 0.15,
+                "Coco Gauff": 0.1,
+                "Elena Rybakina": 0.1,
+                "Qinwen Zheng": 0.1
+              },
               "summary": "Top outcomes: Iga Swiatek 0.15, Coco Gauff 0.10."
             },
             {
               "question_id": "694686",
-              "question_title": "2026-01-24 | Who will be the starting quarterback of the NFC team that reaches Super Bowl 2026 by January 26",
+              "question_title": "Who will be the starting quarterback of the NFC team that reaches Super Bowl 2026 by January 26",
               "event_idx": 349,
+              "outcomes": {
+                "Jalen Hurts": 0.2,
+                "Dak Prescott": 0.1,
+                "Brock Purdy": 0.1,
+                "Sam Darnold": 0.1
+              },
               "summary": "Top outcomes: Jalen Hurts 0.20, Dak Prescott 0.10."
             },
             {
               "question_id": "110125",
-              "question_title": "2026-01-25 | What city will authorities identify as the site of the explosive-device attack on an Indigenous",
+              "question_title": "What city will authorities identify as the site of the explosive-device attack on an Indigenous",
               "event_idx": 350,
+              "outcomes": {
+                "Winnipeg": 0.1,
+                "Ottawa": 0.1,
+                "Toronto": 0.1,
+                "Vancouver": 0.1
+              },
               "summary": "Top outcomes: Winnipeg 0.10, Ottawa 0.10."
             },
             {
               "question_id": "238071",
-              "question_title": "2026-01-25 | In which Sudanese state will the town be located when Sudan's military says its siege has been",
+              "question_title": "In which Sudanese state will the town be located when Sudan's military says its siege has been",
               "event_idx": 358,
+              "outcomes": {
+                "North Darfur": 0.3,
+                "South Darfur": 0.15,
+                "West Darfur": 0.1
+              },
               "summary": "Top outcomes: North Darfur 0.30, South Darfur 0.15."
             }
           ]
@@ -288,8 +442,9 @@
           "event_idx_start": 471,
           "event_idx_end": 718,
           "label": "Research and forecast updates",
-          "summary": "Submitted 31 forecast update(s); ran 2 news search(es); used 10 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 31 forecast update(s); ran 2 news search(es); used 10 workspace/tool call(s); advanced the simulation day.",
           "action_count": 54,
+          "tool_call_count": 44,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -310,6 +465,17 @@
             535,
             718
           ],
+          "model_messages": [
+            "Now let me move to the March questions. Let me launch another background agent for the remaining Feb questions I may have missed, and start on March.",
+            "Let me launch a background agent for the March questions while I handle any remaining ones.",
+            "Good, the Feb 1-14 agent completed. The March agent is still running in the background. Let me now save my memory/tracking file while waiting, and set up a strategy document for future sessions.",
+            "Now let me check if there are any remaining questions I haven't covered. Let me also check on some key questions that could benefit from more research.",
+            "Good coverage. The March background agent is handling 116 predictions. Let me also check if there are any remaining February questions I might have missed by looking at the qids I haven't submitted for.",
+            "The March agent is still running and should handle those 117 questions. Let me submit the one question I see was already submitted but not tracked (915183 is already done). Let me verify by checking if the background agent completed and handle any remaining gaps.",
+            "All 214 non-March predictions are submitted, and the March background agent is handling the remaining 116. Let me now wait for the March agent to complete, and in the meantime, let me verify the coverage is good.",
+            "The background agent for March predictions is still running. Let me now advance to the next day once it's done. While I wait, let me do a final check on the quality of some key predictions.",
+            "All 116 March predictions confirmed submitted. All 330 questions now have predictions. Let me advance to the next day."
+          ],
           "question_scope": {
             "count": 31,
             "mode": "forecast submissions"
@@ -317,32 +483,60 @@
           "representative_forecasts": [
             {
               "question_id": "392014",
-              "question_title": "2026-02-24 | string (location) | Which city will Congolese authorities say had two mass graves discovered on its",
+              "question_title": "string (location)",
               "event_idx": 471,
+              "outcomes": {
+                "Goma": 0.2,
+                "Bukavu": 0.1,
+                "Kinshasa": 0.1
+              },
               "summary": "Top outcomes: Goma 0.20, Bukavu 0.10."
             },
             {
               "question_id": "632535",
-              "question_title": "2026-02-24 | string (country) | Which team will Spain announce as its final warm-up opponent before the 2026 Wor",
+              "question_title": "string (country)",
               "event_idx": 472,
+              "outcomes": {
+                "Brazil": 0.15,
+                "Argentina": 0.1,
+                "Colombia": 0.1,
+                "Morocco": 0.1
+              },
               "summary": "Top outcomes: Brazil 0.15, Argentina 0.10."
             },
             {
               "question_id": "726747",
-              "question_title": "2026-02-24 | string (location) | In which UK city will police report arresting a man after he allegedly enters a",
+              "question_title": "string (location)",
               "event_idx": 473,
+              "outcomes": {
+                "London": 0.15,
+                "Manchester": 0.1,
+                "Birmingham": 0.1,
+                "Leeds": 0.1
+              },
               "summary": "Top outcomes: London 0.15, Manchester 0.10."
             },
             {
               "question_id": "415069",
-              "question_title": "2026-02-25 | string (location) | Which country will host the next round of indirect US-Iran talks on Monday, Marc",
+              "question_title": "string (location)",
               "event_idx": 474,
+              "outcomes": {
+                "Oman": 0.2,
+                "Qatar": 0.15,
+                "Switzerland": 0.1
+              },
               "summary": "Top outcomes: Oman 0.20, Qatar 0.15."
             },
             {
               "question_id": "422164",
-              "question_title": "2026-02-25 | string (name) | Which university will say by February 28, 2026 that US immigration agents made m",
+              "question_title": "string (name)",
               "event_idx": 475,
+              "outcomes": {
+                "Columbia University": 0.15,
+                "Harvard University": 0.1,
+                "MIT": 0.1,
+                "Stanford": 0.1
+              },
               "summary": "Top outcomes: Columbia University 0.15, Harvard University 0.10."
             }
           ]
@@ -380,8 +574,9 @@
           "event_idx_start": 721,
           "event_idx_end": 800,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 20 news search(es); used 9 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 20 news search(es); used 9 workspace/tool call(s); advanced the simulation day.",
           "action_count": 36,
+          "tool_call_count": 31,
           "tools": [
             "Read",
             "Bash",
@@ -401,6 +596,13 @@
             758,
             800
           ],
+          "model_messages": [
+            "Day advanced to 2025-12-25. Let me check for any resolved questions and research new developments to update predictions.",
+            "No resolved questions yet. Let me research key developments for early-resolving questions and update predictions.",
+            "Let me now focus on a few more key research areas and then update any predictions that need refinement.",
+            "Good research. Let me now update a few key predictions where new evidence is significant, then update memory files and advance.",
+            "All 330 questions have predictions. Let me update the session notes and advance."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -408,8 +610,20 @@
           "representative_forecasts": [
             {
               "question_id": "165622",
-              "question_title": "2026-01-01 | Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
+              "question_title": "Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
               "event_idx": 775,
+              "outcomes": {
+                "Enzo Maresca": 0.4,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
+              "previous_outcomes": {
+                "Enzo Maresca": 0.25,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
               "summary": "Top outcomes: Enzo Maresca 0.40, Roberto Mancini 0.10."
             }
           ]
@@ -419,7 +633,7 @@
     {
       "date": "2025-12-26",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2025-12-26.json",
-      "title": "2025-12-26: 16 visible actions",
+      "title": "2025-12-26: 14 tool calls",
       "display_summary": "Ran 9 news search(es).",
       "stats": {
         "event_count_in_shard": 30,
@@ -443,8 +657,9 @@
           "event_idx_start": 803,
           "event_idx_end": 838,
           "label": "News research",
-          "summary": "Ran 9 news search(es); used 4 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 9 news search(es); used 4 workspace/tool call(s); advanced the simulation day.",
           "action_count": 16,
+          "tool_call_count": 14,
           "tools": [
             "Search News",
             "Bash",
@@ -459,6 +674,10 @@
             803,
             821,
             838
+          ],
+          "model_messages": [
+            "Day advanced to 2025-12-26. Let me research key developments.",
+            "Predictions are stable. Let me save session notes and advance."
           ]
         }
       ]
@@ -494,8 +713,9 @@
           "event_idx_start": 841,
           "event_idx_end": 857,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 3 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 3 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 9,
+          "tool_call_count": 7,
           "tools": [
             "Search News",
             "TodoWrite",
@@ -513,6 +733,10 @@
             849,
             857
           ],
+          "model_messages": [
+            "Day advanced to 2025-12-27. Key events today: AFCON games, Chelsea vs Villa, Thailand-Cambodia defense talks.",
+            "Key updates from Dec 27: Chelsea lost 1-2 to Villa, Thailand-Cambodia signed ceasefire, Nigeria beat Tunisia in AFCON. Let me update predictions if needed and continue."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -520,8 +744,20 @@
           "representative_forecasts": [
             {
               "question_id": "165622",
-              "question_title": "2026-01-01 | Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
+              "question_title": "Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
               "event_idx": 852,
+              "outcomes": {
+                "Enzo Maresca": 0.35,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
+              "previous_outcomes": {
+                "Enzo Maresca": 0.4,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
               "summary": "Top outcomes: Enzo Maresca 0.35, Roberto Mancini 0.10."
             }
           ]
@@ -531,7 +767,7 @@
     {
       "date": "2025-12-28",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2025-12-28.json",
-      "title": "2025-12-28: 5 visible actions",
+      "title": "2025-12-28: 4 tool calls",
       "display_summary": "Ran 3 news search(es).",
       "stats": {
         "event_count_in_shard": 9,
@@ -557,6 +793,7 @@
           "label": "News research",
           "summary": "Ran 3 news search(es); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Next Day"
@@ -569,6 +806,9 @@
             860,
             862,
             868
+          ],
+          "model_messages": [
+            "Day advanced to 2025-12-28. Let me do quick research and advance efficiently."
           ]
         }
       ]
@@ -576,7 +816,7 @@
     {
       "date": "2025-12-29",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2025-12-29.json",
-      "title": "2025-12-29: 4 visible actions",
+      "title": "2025-12-29: 3 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 7,
@@ -602,6 +842,7 @@
           "label": "News research",
           "summary": "Ran 2 news search(es); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 3,
           "tools": [
             "Search News",
             "Next Day"
@@ -614,6 +855,9 @@
             871,
             876,
             877
+          ],
+          "model_messages": [
+            "No major changes needed. Let me advance through the remaining days efficiently."
           ]
         }
       ]
@@ -649,8 +893,9 @@
           "event_idx_start": 879,
           "event_idx_end": 889,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -666,6 +911,10 @@
             885,
             889
           ],
+          "model_messages": [
+            "Critical AFCON update: DRC will play Algeria in the Round of 16, with winner facing Nigeria in quarterfinals. Let me update my prediction.",
+            "Now let me continue advancing through the remaining days."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -673,8 +922,21 @@
           "representative_forecasts": [
             {
               "question_id": "703511",
-              "question_title": "2026-01-05 | Which team will knock DR Congo out of AFCON 2025 in January 2026?",
+              "question_title": "Which team will knock DR Congo out of AFCON 2025 in January 2026?",
               "event_idx": 885,
+              "outcomes": {
+                "Algeria": 0.3,
+                "Nigeria": 0.25,
+                "Egypt": 0.05,
+                "Morocco": 0.05
+              },
+              "previous_outcomes": {
+                "Senegal": 0.2,
+                "Nigeria": 0.15,
+                "Ivory Coast": 0.1,
+                "Morocco": 0.1,
+                "Egypt": 0.1
+              },
               "summary": "Top outcomes: Algeria 0.30, Nigeria 0.25."
             }
           ]
@@ -712,8 +974,9 @@
           "event_idx_start": 891,
           "event_idx_end": 898,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -736,8 +999,20 @@
           "representative_forecasts": [
             {
               "question_id": "165622",
-              "question_title": "2026-01-01 | Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
+              "question_title": "Who will Chelsea appoint as its next permanent head coach by January 31, 2026?",
               "event_idx": 896,
+              "outcomes": {
+                "Enzo Maresca": 0.3,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
+              "previous_outcomes": {
+                "Enzo Maresca": 0.35,
+                "Roberto Mancini": 0.1,
+                "Thomas Tuchel": 0.1,
+                "Graham Potter": 0.05
+              },
               "summary": "Top outcomes: Enzo Maresca 0.30, Roberto Mancini 0.10."
             }
           ]
@@ -775,8 +1050,9 @@
           "event_idx_start": 901,
           "event_idx_end": 980,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 17 news search(es); used 11 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 17 news search(es); used 11 workspace/tool call(s); advanced the simulation day.",
           "action_count": 36,
+          "tool_call_count": 31,
           "tools": [
             "Search News",
             "Read",
@@ -796,6 +1072,12 @@
             939,
             980
           ],
+          "model_messages": [
+            "First 5 questions resolved. Key lessons: need wider nets for person/team predictions. TW-Score: 1.47. Let me research new developments and focus on upcoming questions.",
+            "Let me read the specific questions more carefully and search for more targeted news.",
+            "Key finding: IS-linked suicide bombing in Aleppo on Dec 31. This changes my Syria prediction. Let me update key predictions and advance.",
+            "Now let me advance to the next day to continue the simulation."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -803,14 +1085,40 @@
           "representative_forecasts": [
             {
               "question_id": "369962",
-              "question_title": "2026-01-05 | Which armed group will Syria name as the target of a military operation in Alepp",
+              "question_title": "Which armed group will Syria name as the target of a military operation in Alepp",
               "event_idx": 974,
+              "outcomes": {
+                "Islamic State": 0.35,
+                "ISIS": 0.15,
+                "ISIL": 0.1,
+                "SDF": 0.1,
+                "Daesh": 0.05
+              },
+              "previous_outcomes": {
+                "SDF": 0.65,
+                "Syrian Democratic Forces": 0.15,
+                "ISIS": 0.05,
+                "ISIL": 0.05,
+                "Hayat Tahrir al-Sham": 0.05
+              },
               "summary": "Top outcomes: Islamic State 0.35, ISIS 0.15."
             },
             {
               "question_id": "651727",
-              "question_title": "2026-01-02 | Who will be sworn in as Venezuela\u2019s interim president by January 2026?",
+              "question_title": "Who will be sworn in as Venezuela\u2019s interim president by January 2026?",
               "event_idx": 975,
+              "outcomes": {
+                "Edmundo Gonzalez": 0.25,
+                "Maria Corina Machado": 0.15,
+                "Juan Guaido": 0.1,
+                "Delsa Solorzano": 0.05
+              },
+              "previous_outcomes": {
+                "Maria Corina Machado": 0.2,
+                "Edmundo Gonzalez": 0.15,
+                "Juan Guaido": 0.1,
+                "Delsa Solorzano": 0.1
+              },
               "summary": "Top outcomes: Edmundo Gonzalez 0.25, Maria Corina Machado 0.15."
             }
           ]
@@ -848,8 +1156,9 @@
           "event_idx_start": 983,
           "event_idx_end": 1009,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 8 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 8 news search(es); advanced the simulation day.",
           "action_count": 14,
+          "tool_call_count": 11,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -865,6 +1174,11 @@
             995,
             1009
           ],
+          "model_messages": [
+            "Good progress - Sri Lanka correct (+26.50 TW), missed Venezuela (Delcy Rodriguez). Cumulative TW: 19.55. Let me research the next batch of resolving questions.",
+            "Important developments! Zelensky appointed Budanov as chief of staff. AFCON R16 schedule confirmed. Let me search for more specific news on other early-resolving questions.",
+            "Key findings: ICE targeting Phoenix/Arizona, massive federal operation in Minnesota over fraud, Danish PM defiant on Greenland, Iran protests. Let me update predictions where I have new evidence."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -872,14 +1186,40 @@
           "representative_forecasts": [
             {
               "question_id": "915183",
-              "question_title": "2026-01-05 | Which US state will officials describe as the site of the largest federal immigr",
+              "question_title": "Which US state will officials describe as the site of the largest federal immigr",
               "event_idx": 1004,
+              "outcomes": {
+                "Minnesota": 0.25,
+                "Arizona": 0.2,
+                "Texas": 0.15,
+                "Louisiana": 0.1,
+                "California": 0.1
+              },
+              "previous_outcomes": {
+                "Louisiana": 0.25,
+                "Texas": 0.2,
+                "New York": 0.15,
+                "California": 0.1,
+                "Minnesota": 0.1
+              },
               "summary": "Top outcomes: Minnesota 0.25, Arizona 0.20."
             },
             {
               "question_id": "814175",
-              "question_title": "2026-01-05 | What country will British MPs urge global sporting authorities to exclude from h",
+              "question_title": "What country will British MPs urge global sporting authorities to exclude from h",
               "event_idx": 1005,
+              "outcomes": {
+                "United States": 0.3,
+                "Saudi Arabia": 0.2,
+                "Russia": 0.1,
+                "Qatar": 0.05
+              },
+              "previous_outcomes": {
+                "Saudi Arabia": 0.3,
+                "United States": 0.2,
+                "Russia": 0.15,
+                "Qatar": 0.1
+              },
               "summary": "Top outcomes: United States 0.30, Saudi Arabia 0.20."
             }
           ]
@@ -917,8 +1257,9 @@
           "event_idx_start": 1012,
           "event_idx_end": 1030,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 6 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 6 news search(es); advanced the simulation day.",
           "action_count": 10,
+          "tool_call_count": 8,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -934,6 +1275,10 @@
             1022,
             1030
           ],
+          "model_messages": [
+            "TW-Score down to 1.30 after missing Morocco injury (Azzedine Ounahi) and Starlink (Venezuela). Need to improve prediction accuracy. Let me research the next batch.",
+            "Let me update the Ukraine economic adviser prediction with a wider net given past misses, then advance."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -941,8 +1286,21 @@
           "representative_forecasts": [
             {
               "question_id": "709715",
-              "question_title": "2026-01-04 | Who will Volodymyr Zelenskyy appoint as Ukraine's economic development adviser b",
+              "question_title": "Who will Volodymyr Zelenskyy appoint as Ukraine's economic development adviser b",
               "event_idx": 1028,
+              "outcomes": {
+                "Oleksandr Kamyshin": 0.15,
+                "Yulia Svyrydenko": 0.12,
+                "Sergiy Marchenko": 0.1,
+                "Morgan Williams": 0.08,
+                "Raghuram Rajan": 0.05
+              },
+              "previous_outcomes": {
+                "Raghuram Rajan": 0.15,
+                "Oleksandr Kamyshin": 0.1,
+                "Morgan Williams": 0.1,
+                "Sergiy Marchenko": 0.1
+              },
               "summary": "Top outcomes: Oleksandr Kamyshin 0.15, Yulia Svyrydenko 0.12."
             }
           ]
@@ -980,8 +1338,9 @@
           "event_idx_start": 1033,
           "event_idx_end": 1048,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 4 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 4 news search(es); advanced the simulation day.",
           "action_count": 9,
+          "tool_call_count": 7,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -997,6 +1356,10 @@
             1037,
             1048
           ],
+          "model_messages": [
+            "Missed Ukraine economic adviser (Chrystia Freeland - Canadian-Ukrainian connection). TW: -3.98. Let me push forward efficiently.",
+            "MAJOR NEWS: US military operation in Venezuela captured Maduro! Greenland situation escalating with Katie Miller's US flag post. AFCON: Senegal 3-1 Sudan, Mali beat Tunisia on penalties. Let me update key predictions."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -1004,14 +1367,40 @@
           "representative_forecasts": [
             {
               "question_id": "630728",
-              "question_title": "2026-01-05 | Who will Denmark and Greenland request a meeting with by January 13, 2026, over",
+              "question_title": "Who will Denmark and Greenland request a meeting with by January 13, 2026, over",
               "event_idx": 1044,
+              "outcomes": {
+                "Donald Trump": 0.4,
+                "Marco Rubio": 0.2,
+                "Jeff Landry": 0.1,
+                "Pete Hegseth": 0.05
+              },
+              "previous_outcomes": {
+                "Donald Trump": 0.35,
+                "Jeff Landry": 0.25,
+                "Marco Rubio": 0.15,
+                "Pete Hegseth": 0.1
+              },
               "summary": "Top outcomes: Donald Trump 0.40, Marco Rubio 0.20."
             },
             {
               "question_id": "369962",
-              "question_title": "2026-01-05 | Which armed group will Syria name as the target of a military operation in Alepp",
+              "question_title": "Which armed group will Syria name as the target of a military operation in Alepp",
               "event_idx": 1045,
+              "outcomes": {
+                "Islamic State": 0.3,
+                "ISIL": 0.2,
+                "ISIS": 0.1,
+                "Daesh": 0.1,
+                "SDF": 0.05
+              },
+              "previous_outcomes": {
+                "Islamic State": 0.35,
+                "ISIS": 0.15,
+                "ISIL": 0.1,
+                "SDF": 0.1,
+                "Daesh": 0.05
+              },
               "summary": "Top outcomes: Islamic State 0.30, ISIL 0.20."
             }
           ]
@@ -1021,7 +1410,7 @@
     {
       "date": "2026-01-05",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-05.json",
-      "title": "2026-01-05: 14 visible actions",
+      "title": "2026-01-05: 11 tool calls",
       "display_summary": "Ran 7 news search(es).",
       "stats": {
         "event_count_in_shard": 25,
@@ -1045,8 +1434,9 @@
           "event_idx_start": 1051,
           "event_idx_end": 1076,
           "label": "News research",
-          "summary": "Ran 7 news search(es); used 3 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 7 news search(es); used 3 workspace/tool call(s); advanced the simulation day.",
           "action_count": 14,
+          "tool_call_count": 11,
           "tools": [
             "TodoWrite",
             "Search News",
@@ -1061,6 +1451,11 @@
             1051,
             1064,
             1076
+          ],
+          "model_messages": [
+            "Massive improvement! TW-Score jumped to **121.52**! Got Algeria (DRC AFCON), United States (FIFA), Minnesota (immigration), and Marco Rubio (Greenland) correct. The earlier SDF prediction also paid off for Syria. Let me continue.",
+            "Let me quickly search for a few more key questions and then advance.",
+            "Let me save session notes and continue advancing efficiently."
           ]
         }
       ]
@@ -1068,7 +1463,7 @@
     {
       "date": "2026-01-06",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-06.json",
-      "title": "2026-01-06: 6 visible actions",
+      "title": "2026-01-06: 4 tool calls",
       "display_summary": "Ran 3 news search(es).",
       "stats": {
         "event_count_in_shard": 10,
@@ -1094,6 +1489,7 @@
           "label": "News research",
           "summary": "Ran 3 news search(es); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Next Day"
@@ -1106,6 +1502,10 @@
             1079,
             1082,
             1088
+          ],
+          "model_messages": [
+            "TW: 158.77! ICE correct (+43.75). Qatar missed (Board of Peace). Let me push forward efficiently through the remaining early-resolving questions.",
+            "Good - confirmed Greenland/Denmark asking to meet Rubio. Let me advance efficiently."
           ]
         }
       ]
@@ -1113,8 +1513,8 @@
     {
       "date": "2026-01-07",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-07.json",
-      "title": "2026-01-07: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-07: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1139,6 +1539,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1148,6 +1549,9 @@
           "representative_event_idxs": [
             1091,
             1092
+          ],
+          "model_messages": [
+            "TW dropped to 111.77 - missed White House (not Washington), Qatar (Carney), Arctic Sentry. Let me push forward."
           ]
         }
       ]
@@ -1183,8 +1587,9 @@
           "event_idx_start": 1095,
           "event_idx_end": 1106,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -1199,6 +1604,11 @@
             1100,
             1106
           ],
+          "model_messages": [
+            "TW: 86.77 after Jan 8 results. USS Abraham Lincoln correct (+20.50), but missed East Jerusalem, Qatar embassy, People's Party Thailand, Lviv. Let me check upcoming questions and continue advancing.",
+            "Let me advance through days quickly now - all predictions are submitted. Let me check the AFCON question first since it resolves Jan 9.",
+            "The AFCON bracket means Morocco's SF opponent comes from QF3 (Algeria/DRC/Nigeria/Mozambique bracket). Senegal is on the other side! Let me fix this."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -1206,8 +1616,20 @@
           "representative_forecasts": [
             {
               "question_id": "459037",
-              "question_title": "2026-01-09 | Which country will face host Morocco in the AFCON 2025 semifinal in Rabat on 14",
+              "question_title": "Which country will face host Morocco in the AFCON 2025 semifinal in Rabat on 14",
               "event_idx": 1104,
+              "outcomes": {
+                "Algeria": 0.35,
+                "Nigeria": 0.25,
+                "DR Congo": 0.05,
+                "Mozambique": 0.02
+              },
+              "previous_outcomes": {
+                "Senegal": 0.2,
+                "Nigeria": 0.15,
+                "Ivory Coast": 0.15,
+                "Egypt": 0.1
+              },
               "summary": "Top outcomes: Algeria 0.35, Nigeria 0.25."
             }
           ]
@@ -1217,8 +1639,8 @@
     {
       "date": "2026-01-09",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-09.json",
-      "title": "2026-01-09: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-09: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1243,6 +1665,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1252,6 +1675,9 @@
           "representative_event_idxs": [
             1109,
             1110
+          ],
+          "model_messages": [
+            "TW: 69.19. AFCON Nigeria good (+21.17), but missed Indonesia Grok ban, Taiwan trade deficit, Supreme Military Committee Yemen, Kostyuk Brisbane. Let me advance efficiently - most predictions are in place."
           ]
         }
       ]
@@ -1259,8 +1685,8 @@
     {
       "date": "2026-01-10",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-10.json",
-      "title": "2026-01-10: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-10: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1285,6 +1711,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1294,6 +1721,9 @@
           "representative_event_idxs": [
             1113,
             1114
+          ],
+          "model_messages": [
+            "TW: 2.44 - Nipah in West Bengal (not Kerala), Iran Isfahan, Thai PM Natthaphong all missed. Let me keep advancing."
           ]
         }
       ]
@@ -1301,8 +1731,8 @@
     {
       "date": "2026-01-11",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-11.json",
-      "title": "2026-01-11: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-11: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1327,6 +1757,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1336,6 +1767,9 @@
           "representative_event_idxs": [
             1117,
             1118
+          ],
+          "model_messages": [
+            "TW: 23.69. DHS correct (+40.50!), Iran BRICS (+22.75), UAE Somalia (+14.75). But missed Man Utd (Carrick), Syria (PKK not ISIS). Let me continue advancing."
           ]
         }
       ]
@@ -1343,8 +1777,8 @@
     {
       "date": "2026-01-12",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-12.json",
-      "title": "2026-01-12: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-12: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1369,6 +1803,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1378,6 +1813,9 @@
           "representative_event_idxs": [
             1120,
             1121
+          ],
+          "model_messages": [
+            "TW: 37.44. Tymoshenko correct (+24.25)! Missed Betar US and Real Betis. Let me continue advancing efficiently."
           ]
         }
       ]
@@ -1385,8 +1823,8 @@
     {
       "date": "2026-01-13",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-13.json",
-      "title": "2026-01-13: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-13: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1411,6 +1849,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1420,6 +1859,9 @@
           "representative_event_idxs": [
             1124,
             1125
+          ],
+          "model_messages": [
+            "TW: 36.69. Thailand correct (+35.00)! Qatar keeps appearing as an answer I miss. Let me keep advancing."
           ]
         }
       ]
@@ -1427,8 +1869,8 @@
     {
       "date": "2026-01-14",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-14.json",
-      "title": "2026-01-14: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-14: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1453,6 +1895,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1462,6 +1905,9 @@
           "representative_event_idxs": [
             1127,
             1128
+          ],
+          "model_messages": [
+            "TW: 37.94 (54 resolved). Chinese Basketball Association correct (+32.75)! Let me continue advancing through the remaining days efficiently."
           ]
         }
       ]
@@ -1469,8 +1915,8 @@
     {
       "date": "2026-01-15",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-15.json",
-      "title": "2026-01-15: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-15: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1495,6 +1941,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1504,6 +1951,9 @@
           "representative_event_idxs": [
             1130,
             1131
+          ],
+          "model_messages": [
+            "Kurdish language correct (+41.75)! TW: 47.44 (59 resolved). Let me keep advancing quickly - each day my existing predictions accumulate TW score."
           ]
         }
       ]
@@ -1511,8 +1961,8 @@
     {
       "date": "2026-01-16",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-16.json",
-      "title": "2026-01-16: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-16: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1537,6 +1987,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1546,6 +1997,9 @@
           "representative_event_idxs": [
             1134,
             1135
+          ],
+          "model_messages": [
+            "Raqqa correct (+20.50)! TW: 47.19. Let me keep advancing."
           ]
         }
       ]
@@ -1553,8 +2007,8 @@
     {
       "date": "2026-01-17",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-17.json",
-      "title": "2026-01-17: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-17: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1579,6 +2033,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1588,6 +2043,9 @@
           "representative_event_idxs": [
             1137,
             1138
+          ],
+          "model_messages": [
+            "TW: -2.06 (70 resolved, 260 active). Just barely negative. Interesting that Morocco made the AFCON final (Jan 18) but lost - Brahim Diaz missed a penalty. Let me continue advancing quickly."
           ]
         }
       ]
@@ -1595,8 +2053,8 @@
     {
       "date": "2026-01-18",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-18.json",
-      "title": "2026-01-18: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-18: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1621,6 +2079,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1630,6 +2089,9 @@
           "representative_event_idxs": [
             1140,
             1141
+          ],
+          "model_messages": [
+            "Good results! Iliana Iotova correct (+14.50), Syrian army correct (+27.50)! TW back to 32.69. Let me continue advancing."
           ]
         }
       ]
@@ -1637,8 +2099,8 @@
     {
       "date": "2026-01-19",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-19.json",
-      "title": "2026-01-19: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-19: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1663,6 +2125,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1672,6 +2135,9 @@
           "representative_event_idxs": [
             1143,
             1144
+          ],
+          "model_messages": [
+            "TW: 20.44 (75 resolved, 255 active). Let me keep going efficiently."
           ]
         }
       ]
@@ -1679,8 +2145,8 @@
     {
       "date": "2026-01-20",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-20.json",
-      "title": "2026-01-20: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-20: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1705,6 +2171,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1714,6 +2181,9 @@
           "representative_event_idxs": [
             1146,
             1147
+          ],
+          "model_messages": [
+            "TW: -11.81 (80 resolved, 250 active). All tennis opponents and specific names missed. Let me continue advancing - still 250 questions providing daily TW accumulation."
           ]
         }
       ]
@@ -1721,8 +2191,8 @@
     {
       "date": "2026-01-21",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-21.json",
-      "title": "2026-01-21: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-21: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1747,6 +2217,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1756,6 +2227,9 @@
           "representative_event_idxs": [
             1150,
             1151
+          ],
+          "model_messages": [
+            "TW: -46.31 (90 resolved). Liverpool correct (+18.25). Many tennis/film misses. Let me keep advancing - still 240 active questions."
           ]
         }
       ]
@@ -1763,8 +2237,8 @@
     {
       "date": "2026-01-22",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-22.json",
-      "title": "2026-01-22: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-22: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1789,6 +2263,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1798,6 +2273,9 @@
           "representative_event_idxs": [
             1153,
             1154
+          ],
+          "model_messages": [
+            "Italy correct (+12.75)! TW: -40.06 (92 resolved, 238 active). Let me continue advancing quickly."
           ]
         }
       ]
@@ -1805,8 +2283,8 @@
     {
       "date": "2026-01-23",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-23.json",
-      "title": "2026-01-23: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-23: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1831,6 +2309,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1840,6 +2319,9 @@
           "representative_event_idxs": [
             1156,
             1157
+          ],
+          "model_messages": [
+            "ICE Italy correct (+13.00)! TW: -46.06 (96 resolved, 234 active). Let me keep going - Abu Dhabi keeps being the answer for peace talks, I should remember that."
           ]
         }
       ]
@@ -1847,8 +2329,8 @@
     {
       "date": "2026-01-24",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-24.json",
-      "title": "2026-01-24: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-24: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1873,6 +2355,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1882,6 +2365,9 @@
           "representative_event_idxs": [
             1159,
             1160
+          ],
+          "model_messages": [
+            "Sam Darnold correct (+13.00)! TW: -46.56 (99 resolved, 231 active). Let me continue advancing efficiently."
           ]
         }
       ]
@@ -1917,8 +2403,9 @@
           "event_idx_start": 1164,
           "event_idx_end": 1218,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 13 news search(es); used 6 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 13 news search(es); used 6 workspace/tool call(s); advanced the simulation day.",
           "action_count": 26,
+          "tool_call_count": 22,
           "tools": [
             "Read",
             "Glob",
@@ -1939,6 +2426,11 @@
             1193,
             1218
           ],
+          "model_messages": [
+            "Let me research the questions resolving in the next few days before advancing.",
+            "Key finding: Tyson Fury's opponent is likely Arslanbek Makhmudov - I need to update my prediction immediately. Let me also check for more specific news.",
+            "Let me check the full question details for the ones I'm less certain about."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -1946,14 +2438,37 @@
           "representative_forecasts": [
             {
               "question_id": "465445",
-              "question_title": "2026-01-27 | Who will Tyson Fury announce as the opponent for his April 11, 2026 comeback fight by January 3",
+              "question_title": "Who will Tyson Fury announce as the opponent for his April 11, 2026 comeback fight by January 3",
               "event_idx": 1194,
+              "outcomes": {
+                "Arslanbek Makhmudov": 0.45,
+                "Anthony Joshua": 0.1,
+                "Fabio Wardley": 0.1,
+                "Daniel Dubois": 0.05
+              },
+              "previous_outcomes": {
+                "Oleksandr Usyk": 0.2,
+                "Anthony Joshua": 0.15,
+                "Daniel Dubois": 0.1
+              },
               "summary": "Top outcomes: Arslanbek Makhmudov 0.45, Anthony Joshua 0.10."
             },
             {
               "question_id": "789988",
-              "question_title": "2026-01-28 | Who will Benjamin Netanyahu say is set to visit Israel soon, by February 2026?",
+              "question_title": "Who will Benjamin Netanyahu say is set to visit Israel soon, by February 2026?",
               "event_idx": 1201,
+              "outcomes": {
+                "Donald Trump": 0.35,
+                "Mohammed bin Salman": 0.1,
+                "Emmanuel Macron": 0.05,
+                "Abdel Fattah el-Sisi": 0.1
+              },
+              "previous_outcomes": {
+                "Donald Trump": 0.2,
+                "Emmanuel Macron": 0.1,
+                "Vladimir Putin": 0.1,
+                "Mohammed bin Salman": 0.1
+              },
               "summary": "Top outcomes: Donald Trump 0.35, Mohammed bin Salman 0.10."
             }
           ]
@@ -1963,8 +2478,8 @@
     {
       "date": "2026-01-26",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-26.json",
-      "title": "2026-01-26: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-26: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 4,
         "action_count": 2,
@@ -1989,6 +2504,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1998,6 +2514,9 @@
           "representative_event_idxs": [
             1222,
             1223
+          ],
+          "model_messages": [
+            "IAEA meeting requested by Netherlands - unexpected. Let me continue advancing."
           ]
         }
       ]
@@ -2005,8 +2524,8 @@
     {
       "date": "2026-01-27",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-27.json",
-      "title": "2026-01-27: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-27: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2031,6 +2550,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2040,6 +2560,9 @@
           "representative_event_idxs": [
             1226,
             1227
+          ],
+          "model_messages": [
+            "Great day! Fury opponent correct (Makhmudov +0.67) and Owda's TikTok ban correct (+0.22). TW-Score jumped to -50.41. Let me keep advancing."
           ]
         }
       ]
@@ -2047,8 +2570,8 @@
     {
       "date": "2026-01-28",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-28.json",
-      "title": "2026-01-28: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-28: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2073,6 +2596,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2082,6 +2606,9 @@
           "representative_event_idxs": [
             1230,
             1231
+          ],
+          "model_messages": [
+            "Excellent! Jonglei correct (+24.75), Burkina Faso correct (+13.50). TW-Score now -19.80. Continuing to advance."
           ]
         }
       ]
@@ -2089,8 +2616,8 @@
     {
       "date": "2026-01-29",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-29.json",
-      "title": "2026-01-29: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-29: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2115,6 +2642,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2124,6 +2652,9 @@
           "representative_event_idxs": [
             1234,
             1235
+          ],
+          "model_messages": [
+            "TW-Score crossed into positive territory at +8.95! Lindsey Vonn crash correct (+32.75), Lutnick correct (+17.00). Champions League draws mostly missed. Let me continue."
           ]
         }
       ]
@@ -2131,8 +2662,8 @@
     {
       "date": "2026-01-30",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-30.json",
-      "title": "2026-01-30: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-01-30: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2157,6 +2688,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2172,8 +2704,8 @@
     {
       "date": "2026-01-31",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-01-31.json",
-      "title": "2026-01-31: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-01-31: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2198,6 +2730,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2207,6 +2740,9 @@
           "representative_event_idxs": [
             1241,
             1242
+          ],
+          "model_messages": [
+            "Alcaraz correct (+26.50)! TW-Score at 12.45. Continuing."
           ]
         }
       ]
@@ -2214,8 +2750,8 @@
     {
       "date": "2026-02-01",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-01.json",
-      "title": "2026-02-01: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-01: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2240,6 +2776,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2255,8 +2792,8 @@
     {
       "date": "2026-02-02",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-02.json",
-      "title": "2026-02-02: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-02: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2281,6 +2818,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2290,6 +2828,9 @@
           "representative_event_idxs": [
             1248,
             1249
+          ],
+          "model_messages": [
+            "Great day! Arsenal League Cup (+30.50) and Gaddafi killed (+26.50) correct. TW-Score now 34.20!"
           ]
         }
       ]
@@ -2297,8 +2838,8 @@
     {
       "date": "2026-02-03",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-03.json",
-      "title": "2026-02-03: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-03: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2323,6 +2864,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2338,8 +2880,8 @@
     {
       "date": "2026-02-04",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-04.json",
-      "title": "2026-02-04: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-04: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2364,6 +2906,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2379,8 +2922,8 @@
     {
       "date": "2026-02-05",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-05.json",
-      "title": "2026-02-05: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-05: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2405,6 +2948,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2420,8 +2964,8 @@
     {
       "date": "2026-02-06",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-06.json",
-      "title": "2026-02-06: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-06: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2446,6 +2990,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2461,8 +3006,8 @@
     {
       "date": "2026-02-07",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-07.json",
-      "title": "2026-02-07: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-07: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2487,6 +3032,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2502,8 +3048,8 @@
     {
       "date": "2026-02-08",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-08.json",
-      "title": "2026-02-08: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-08: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2528,6 +3074,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2571,8 +3118,9 @@
           "event_idx_start": 1268,
           "event_idx_end": 1303,
           "label": "Research and forecast updates",
-          "summary": "Submitted 4 forecast update(s); ran 7 news search(es); used 2 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 4 forecast update(s); ran 7 news search(es); used 2 workspace/tool call(s); advanced the simulation day.",
           "action_count": 18,
+          "tool_call_count": 14,
           "tools": [
             "Bash",
             "Search News",
@@ -2589,6 +3137,12 @@
             1287,
             1303
           ],
+          "model_messages": [
+            "Iran tensions correct (+11.75). Let me research upcoming questions before continuing.",
+            "Key findings: Bangladesh election - BNP frontrunner, Jamaat strong. Pakistan T20 - they play Netherlands, Namibia, USA (not NZ/Australia/England!). Let me update.",
+            "Important: The high-speed rail question is about ITALY specifically. Let me update.",
+            "Now let me continue advancing days."
+          ],
           "question_scope": {
             "count": 4,
             "mode": "forecast submissions"
@@ -2596,26 +3150,49 @@
           "representative_forecasts": [
             {
               "question_id": "304287",
-              "question_title": "2026-02-12 | string (political party) | Which party will emerge as the main opposition in Bangladesh's new parliament af",
+              "question_title": "string (political party)",
               "event_idx": 1283,
+              "outcomes": {
+                "Jamaat-e-Islami": 0.35,
+                "BNP": 0.15,
+                "Jatiya Party": 0.05,
+                "National Citizen Party": 0.05
+              },
               "summary": "Top outcomes: Jamaat-e-Islami 0.35, BNP 0.15."
             },
             {
               "question_id": "190197",
-              "question_title": "2026-02-15 | string (team) | Which team will Pakistan defeat to secure the last Super Eights berth in the 202",
+              "question_title": "string (team)",
               "event_idx": 1284,
+              "outcomes": {
+                "United States": 0.35,
+                "Namibia": 0.15,
+                "Netherlands": 0.05
+              },
               "summary": "Top outcomes: United States 0.35, Namibia 0.15."
             },
             {
               "question_id": "901381",
-              "question_title": "2026-02-13 | string (location pair) | Which two cities will be linked by the high-speed rail section that authorities",
+              "question_title": "string (location pair)",
               "event_idx": 1298,
+              "outcomes": {
+                "Milan-Bologna": 0.15,
+                "Rome-Naples": 0.15,
+                "Milan-Florence": 0.1,
+                "Turin-Milan": 0.05
+              },
               "summary": "Top outcomes: Milan-Bologna 0.15, Rome-Naples 0.15."
             },
             {
               "question_id": "778783",
-              "question_title": "2026-02-15 | string (location) | What town will be reported as the site of the drone strike on a crowded market i",
+              "question_title": "string (location)",
               "event_idx": 1299,
+              "outcomes": {
+                "El-Obeid": 0.15,
+                "Um Rawaba": 0.1,
+                "Er-Rahad": 0.1,
+                "Kadugli": 0.1
+              },
               "summary": "Top outcomes: El-Obeid 0.15, Um Rawaba 0.10."
             }
           ]
@@ -2625,8 +3202,8 @@
     {
       "date": "2026-02-10",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-10.json",
-      "title": "2026-02-10: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-10: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2651,6 +3228,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2666,8 +3244,8 @@
     {
       "date": "2026-02-11",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-11.json",
-      "title": "2026-02-11: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-11: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2692,6 +3270,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2707,8 +3286,8 @@
     {
       "date": "2026-02-12",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-12.json",
-      "title": "2026-02-12: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-12: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2733,6 +3312,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2742,6 +3322,9 @@
           "representative_event_idxs": [
             1310,
             1311
+          ],
+          "model_messages": [
+            "Jamaat-e-Islami correct (+14.34), Lyon correct (+14.75)! TW-Score now -8.46."
           ]
         }
       ]
@@ -2749,8 +3332,8 @@
     {
       "date": "2026-02-13",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-13.json",
-      "title": "2026-02-13: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-13: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2775,6 +3358,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2790,8 +3374,8 @@
     {
       "date": "2026-02-14",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-14.json",
-      "title": "2026-02-14: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-14: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2816,6 +3400,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2859,8 +3444,9 @@
           "event_idx_start": 1319,
           "event_idx_end": 1334,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 3 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 3 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 8,
+          "tool_call_count": 7,
           "tools": [
             "Bash",
             "Search News",
@@ -2877,6 +3463,9 @@
             1325,
             1334
           ],
+          "model_messages": [
+            "Misread the Pakistan bomb question - it was northwest Pakistan, not Thailand! Let me continue and research upcoming questions."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -2884,14 +3473,37 @@
           "representative_forecasts": [
             {
               "question_id": "207951",
-              "question_title": "2026-02-16 | string (organization) | Which broadcaster will confirm that it removed from its website a Winter Olympic",
+              "question_title": "string (organization)",
               "event_idx": 1330,
+              "outcomes": {
+                "Rai": 0.3,
+                "BBC": 0.1,
+                "NBC": 0.05,
+                "Eurosport": 0.05
+              },
+              "previous_outcomes": {
+                "BBC": 0.2,
+                "NBC": 0.15,
+                "Eurosport": 0.1,
+                "CBS": 0.1
+              },
               "summary": "Top outcomes: Rai 0.30, BBC 0.10."
             },
             {
               "question_id": "26859",
-              "question_title": "2026-02-20 | string (locations) | Which Afghan provinces will Afghan officials say were hit in Pakistan's border a",
+              "question_title": "string (locations)",
               "event_idx": 1331,
+              "outcomes": {
+                "Kunar and Nangarhar": 0.2,
+                "Paktia and Khost": 0.15,
+                "Helmand and Kandahar": 0.05,
+                "Nuristan and Kunar": 0.1
+              },
+              "previous_outcomes": {
+                "Kunar and Nangarhar": 0.1,
+                "Paktia and Khost": 0.1,
+                "Helmand and Kandahar": 0.1
+              },
               "summary": "Top outcomes: Kunar and Nangarhar 0.20, Paktia and Khost 0.15."
             }
           ]
@@ -2901,8 +3513,8 @@
     {
       "date": "2026-02-16",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-16.json",
-      "title": "2026-02-16: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-16: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2927,6 +3539,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2936,6 +3549,9 @@
           "representative_event_idxs": [
             1337,
             1338
+          ],
+          "model_messages": [
+            "All 7 missed today. TW-Score at -63.31. Let me continue advancing and research more aggressively for upcoming questions."
           ]
         }
       ]
@@ -2971,8 +3587,9 @@
           "event_idx_start": 1341,
           "event_idx_end": 1355,
           "label": "Research and forecast updates",
-          "summary": "Submitted 2 forecast update(s); ran 3 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 2 forecast update(s); ran 3 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 8,
+          "tool_call_count": 7,
           "tools": [
             "Bash",
             "Search News",
@@ -2989,6 +3606,9 @@
             1350,
             1355
           ],
+          "model_messages": [
+            "Let me update predictions based on Winter Olympics standings."
+          ],
           "question_scope": {
             "count": 2,
             "mode": "forecast submissions"
@@ -2996,14 +3616,38 @@
           "representative_forecasts": [
             {
               "question_id": "162065",
-              "question_title": "2026-02-21 | string (country) | Which country will finish the 2026 Winter Olympics with 30 total medals, setting",
+              "question_title": "string (country)",
               "event_idx": 1351,
+              "outcomes": {
+                "Italy": 0.25,
+                "United States": 0.15,
+                "Germany": 0.1,
+                "Norway": 0.1
+              },
+              "previous_outcomes": {
+                "United States": 0.15,
+                "Germany": 0.15,
+                "Norway": 0.1,
+                "Canada": 0.1
+              },
               "summary": "Top outcomes: Italy 0.25, United States 0.15."
             },
             {
               "question_id": "221278",
-              "question_title": "2026-02-21 | string (country) | Which country will win the men's ice hockey gold medal at the Milano Cortina Win",
+              "question_title": "string (country)",
               "event_idx": 1352,
+              "outcomes": {
+                "Canada": 0.3,
+                "United States": 0.15,
+                "Finland": 0.1,
+                "Sweden": 0.05
+              },
+              "previous_outcomes": {
+                "Canada": 0.25,
+                "United States": 0.15,
+                "Finland": 0.1,
+                "Sweden": 0.1
+              },
               "summary": "Top outcomes: Canada 0.30, United States 0.15."
             }
           ]
@@ -3013,8 +3657,8 @@
     {
       "date": "2026-02-18",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-18.json",
-      "title": "2026-02-18: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-18: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3039,6 +3683,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3054,8 +3699,8 @@
     {
       "date": "2026-02-19",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-19.json",
-      "title": "2026-02-19: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-19: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3080,6 +3725,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3089,6 +3735,9 @@
           "representative_event_idxs": [
             1361,
             1362
+          ],
+          "model_messages": [
+            "Hamas correct (+32.75)! TW-Score back to -59.81."
           ]
         }
       ]
@@ -3096,8 +3745,8 @@
     {
       "date": "2026-02-20",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-20.json",
-      "title": "2026-02-20: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-20: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3122,6 +3771,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3137,8 +3787,8 @@
     {
       "date": "2026-02-21",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-21.json",
-      "title": "2026-02-21: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-21: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3163,6 +3813,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3172,6 +3823,9 @@
           "representative_event_idxs": [
             1367,
             1368
+          ],
+          "model_messages": [
+            "Italy medals correct, India condemnation correct! TW-Score improved to -54.46."
           ]
         }
       ]
@@ -3179,8 +3833,8 @@
     {
       "date": "2026-02-22",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-22.json",
-      "title": "2026-02-22: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-02-22: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3205,6 +3859,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3220,8 +3875,8 @@
     {
       "date": "2026-02-23",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-23.json",
-      "title": "2026-02-23: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-23: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3246,6 +3901,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3255,6 +3911,9 @@
           "representative_event_idxs": [
             1373,
             1374
+          ],
+          "model_messages": [
+            "Minas Gerais correct (+14.75). Let me continue advancing."
           ]
         }
       ]
@@ -3262,8 +3921,8 @@
     {
       "date": "2026-02-24",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-24.json",
-      "title": "2026-02-24: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-24: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3288,6 +3947,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3297,6 +3957,9 @@
           "representative_event_idxs": [
             1377,
             1378
+          ],
+          "model_messages": [
+            "Manchester mosque correct (+14.75). Let me continue advancing rapidly."
           ]
         }
       ]
@@ -3304,8 +3967,8 @@
     {
       "date": "2026-02-25",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-25.json",
-      "title": "2026-02-25: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-25: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3330,6 +3993,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3339,6 +4003,9 @@
           "representative_event_idxs": [
             1381,
             1382
+          ],
+          "model_messages": [
+            "Excellent day! Columbia Univ (+24.75), Antalya (+14.75), de Jong (+15.75). TW-Score at -5.96!"
           ]
         }
       ]
@@ -3346,8 +4013,8 @@
     {
       "date": "2026-02-26",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-26.json",
-      "title": "2026-02-26: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-26: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3372,6 +4039,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3381,6 +4049,9 @@
           "representative_event_idxs": [
             1385,
             1386
+          ],
+          "model_messages": [
+            "TW-Score positive at 4.79! Newcastle vs Barcelona correct (+24.75). Continuing."
           ]
         }
       ]
@@ -3388,8 +4059,8 @@
     {
       "date": "2026-02-27",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-27.json",
-      "title": "2026-02-27: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-27: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3414,6 +4085,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3423,6 +4095,9 @@
           "representative_event_idxs": [
             1389,
             1390
+          ],
+          "model_messages": [
+            "Iran FIFA withdrawal (+32.75) and Tehran explosions (+24.75) correct! TW-Score at 29.04!"
           ]
         }
       ]
@@ -3430,8 +4105,8 @@
     {
       "date": "2026-02-28",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-02-28.json",
-      "title": "2026-02-28: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-02-28: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3456,6 +4131,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3465,6 +4141,9 @@
           "representative_event_idxs": [
             1393,
             1394
+          ],
+          "model_messages": [
+            "UAE receiving missiles correct (+32.75). TW-Score at 9.04. Let me continue."
           ]
         }
       ]
@@ -3472,8 +4151,8 @@
     {
       "date": "2026-03-01",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-01.json",
-      "title": "2026-03-01: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-01: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3498,6 +4177,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3507,6 +4187,9 @@
           "representative_event_idxs": [
             1397,
             1398
+          ],
+          "model_messages": [
+            "South Africa (+25.75), Rawalpindi (+24.75), Oman (+15.75)! TW-Score at 54.54!"
           ]
         }
       ]
@@ -3514,8 +4197,8 @@
     {
       "date": "2026-03-02",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-02.json",
-      "title": "2026-03-02: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-02: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3540,6 +4223,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3555,8 +4239,8 @@
     {
       "date": "2026-03-03",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-03.json",
-      "title": "2026-03-03: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-03: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3581,6 +4265,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3590,6 +4275,9 @@
           "representative_event_idxs": [
             1403,
             1404
+          ],
+          "model_messages": [
+            "Jensen Huang (+17.00) and Strait of Hormuz (+24.50) correct! TW-Score at 71.79!"
           ]
         }
       ]
@@ -3597,8 +4285,8 @@
     {
       "date": "2026-03-04",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-04.json",
-      "title": "2026-03-04: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-04: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3623,6 +4311,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3638,8 +4327,8 @@
     {
       "date": "2026-03-05",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-05.json",
-      "title": "2026-03-05: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-05: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3664,6 +4353,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3673,6 +4363,9 @@
           "representative_event_idxs": [
             1409,
             1410
+          ],
+          "model_messages": [
+            "Middle East correct (+25.75)! TW-Score at 78.79. Let me keep advancing."
           ]
         }
       ]
@@ -3680,8 +4373,8 @@
     {
       "date": "2026-03-06",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-06.json",
-      "title": "2026-03-06: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-06: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3706,6 +4399,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3715,6 +4409,9 @@
           "representative_event_idxs": [
             1413,
             1414
+          ],
+          "model_messages": [
+            "Tyre (+25.75) and Iran accusation (+25.75) correct! TW-Score at 123.04!"
           ]
         }
       ]
@@ -3722,8 +4419,8 @@
     {
       "date": "2026-03-07",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-07.json",
-      "title": "2026-03-07: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-07: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3748,6 +4445,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3757,6 +4455,9 @@
           "representative_event_idxs": [
             1417,
             1418
+          ],
+          "model_messages": [
+            "All 4 correct! Raouche (+17x2) and US Embassy Oslo (+25.75x2). TW-Score at 208.54!"
           ]
         }
       ]
@@ -3764,8 +4465,8 @@
     {
       "date": "2026-03-08",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-08.json",
-      "title": "2026-03-08: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-08: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3790,6 +4491,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3805,8 +4507,8 @@
     {
       "date": "2026-03-09",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-09.json",
-      "title": "2026-03-09: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-09: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3831,6 +4533,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3846,8 +4549,8 @@
     {
       "date": "2026-03-10",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-10.json",
-      "title": "2026-03-10: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-10: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3872,6 +4575,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3887,8 +4591,8 @@
     {
       "date": "2026-03-11",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-11.json",
-      "title": "2026-03-11: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-11: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3913,6 +4617,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3928,8 +4633,8 @@
     {
       "date": "2026-03-12",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-12.json",
-      "title": "2026-03-12: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-12: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3954,6 +4659,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3969,8 +4675,8 @@
     {
       "date": "2026-03-13",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-13.json",
-      "title": "2026-03-13: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-13: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -3995,6 +4701,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4010,8 +4717,8 @@
     {
       "date": "2026-03-14",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-14.json",
-      "title": "2026-03-14: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-14: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4036,6 +4743,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4045,6 +4753,9 @@
           "representative_event_idxs": [
             1432,
             1433
+          ],
+          "model_messages": [
+            "Al Jazeera correct (+9.00). TW-Score at 95.04. Let me keep advancing."
           ]
         }
       ]
@@ -4052,8 +4763,8 @@
     {
       "date": "2026-03-15",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-15.json",
-      "title": "2026-03-15: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-15: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4078,6 +4789,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4087,6 +4799,9 @@
           "representative_event_idxs": [
             1435,
             1436
+          ],
+          "model_messages": [
+            "Japan correct (+24.50). TW-Score at 115.29."
           ]
         }
       ]
@@ -4094,8 +4809,8 @@
     {
       "date": "2026-03-16",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-16.json",
-      "title": "2026-03-16: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-16: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4120,6 +4835,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4129,6 +4845,9 @@
           "representative_event_idxs": [
             1439,
             1440
+          ],
+          "model_messages": [
+            "Senegal (+14.00) and Israel Katz (+15.00) correct. TW-Score at 126.54. Continuing."
           ]
         }
       ]
@@ -4136,8 +4855,8 @@
     {
       "date": "2026-03-17",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-17.json",
-      "title": "2026-03-17: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-17: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4162,6 +4881,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4177,8 +4897,8 @@
     {
       "date": "2026-03-18",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-18.json",
-      "title": "2026-03-18: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-18: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4203,6 +4923,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4218,8 +4939,8 @@
     {
       "date": "2026-03-19",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-19.json",
-      "title": "2026-03-19: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-19: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4244,6 +4965,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4253,6 +4975,9 @@
           "representative_event_idxs": [
             1448,
             1449
+          ],
+          "model_messages": [
+            "Old City (+25.75) and Sri Lanka/US (+12.75) correct! TW-Score at 139.54!"
           ]
         }
       ]
@@ -4260,8 +4985,8 @@
     {
       "date": "2026-03-20",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-20.json",
-      "title": "2026-03-20: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-20: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4286,6 +5011,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4301,8 +5027,8 @@
     {
       "date": "2026-03-21",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-21.json",
-      "title": "2026-03-21: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-21: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4327,6 +5053,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4342,8 +5069,8 @@
     {
       "date": "2026-03-22",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-22.json",
-      "title": "2026-03-22: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-22: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4368,6 +5095,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4377,6 +5105,9 @@
           "representative_event_idxs": [
             1456,
             1457
+          ],
+          "model_messages": [
+            "Al Jazeera (+25.75) and Khiam (+17.00) correct. TW-Score at 146.04."
           ]
         }
       ]
@@ -4384,8 +5115,8 @@
     {
       "date": "2026-03-23",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-23.json",
-      "title": "2026-03-23: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-23: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4410,6 +5141,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4419,6 +5151,9 @@
           "representative_event_idxs": [
             1460,
             1461
+          ],
+          "model_messages": [
+            "Pakistan most polluted correct (+27.50)! TW-Score at 154.04."
           ]
         }
       ]
@@ -4426,8 +5161,8 @@
     {
       "date": "2026-03-24",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-24.json",
-      "title": "2026-03-24: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-24: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4452,6 +5187,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4461,6 +5197,9 @@
           "representative_event_idxs": [
             1463,
             1464
+          ],
+          "model_messages": [
+            "Ukraine drone correct (+14.50). TW-Score at 164.29."
           ]
         }
       ]
@@ -4468,8 +5207,8 @@
     {
       "date": "2026-03-25",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-25.json",
-      "title": "2026-03-25: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-25: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4494,6 +5233,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4509,8 +5249,8 @@
     {
       "date": "2026-03-26",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-26.json",
-      "title": "2026-03-26: 1 visible actions",
-      "display_summary": "GLM 5.1 recorded 1 visible action(s).",
+      "title": "2026-03-26: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4535,6 +5275,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4550,8 +5291,8 @@
     {
       "date": "2026-03-27",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-27.json",
-      "title": "2026-03-27: 2 visible actions",
-      "display_summary": "GLM 5.1 recorded 2 visible action(s).",
+      "title": "2026-03-27: 1 tool calls",
+      "display_summary": "GLM 5.1 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4576,6 +5317,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4585,6 +5327,9 @@
           "representative_event_idxs": [
             1470,
             1471
+          ],
+          "model_messages": [
+            "327 resolved, 3 remaining. Let me finish."
           ]
         }
       ]
@@ -4592,8 +5337,8 @@
     {
       "date": "2026-03-28",
       "trace_path": "runs/glm-5.1/26-05-05-17-56-54/2026-03-28.json",
-      "title": "2026-03-28: 18 visible actions",
-      "display_summary": "GLM 5.1 recorded 18 visible action(s).",
+      "title": "2026-03-28: 13 tool calls",
+      "display_summary": "GLM 5.1 made 13 tool call(s).",
       "stats": {
         "event_count_in_shard": 30,
         "action_count": 18,
@@ -4616,8 +5361,9 @@
           "event_idx_start": 1474,
           "event_idx_end": 1511,
           "label": "Save state and advance day",
-          "summary": "Used 12 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 12 workspace/tool call(s); advanced the simulation day.",
           "action_count": 18,
+          "tool_call_count": 13,
           "tools": [
             "TodoWrite",
             "Write",
@@ -4632,6 +5378,13 @@
             1474,
             1495,
             1511
+          ],
+          "model_messages": [
+            "All 330 questions resolved! Final TW-Score: **101.54** with 9.4% accuracy and 0.009 Brier Skill Score.",
+            "All 330 questions have been resolved. The forecasting simulation is complete.\n\n**Final Results:**\n- **TW-Score: 101.54** (positive! started negative, improved through research and updates)\n- **Accuracy: 9.4%** (31/330 top predictions matched ground truth)\n- **Brier Skill Score: 0.009**\n- All 330 questions resolved across 94 days (Dec 24, 2025 - Mar 28, 2026)\n\nKey highlights:\n- Biggest wins came from early strong predictions (Syria SDF +56.88) and research-driven updates (Fury/Makhmudov, Jamaica-e-Islami Bangladesh)\n- The simulation featured a major US-Israel vs Iran war scenario in Feb-Mar 2026\n- Winter Olympics, T20 World Cup, and AFCON provided sports-related questions\n- Best strategy: broad distributions + targeted research updates for near-term questions",
+            "Let me check the current state of the simulation.",
+            "The simulation is complete. All **330 questions are resolved** with **0 active questions** remaining.\n\n**Final Performance:**\n- **TW-Score: 101.54**\n- **Accuracy: 9.4%** (31/330)\n- **Brier Skill Score: 0.009**\n\nThere are no remaining questions to predict or update. The forecasting competition has concluded.",
+            "The simulation is at **2026-03-28** (the end date), all **330 questions resolved**, all **330 predictions submitted**. The simulation is complete. Let me call `next_day` to formally conclude."
           ]
         }
       ]

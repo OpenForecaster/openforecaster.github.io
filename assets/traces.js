@@ -126,7 +126,7 @@
     const days = sortedDays(run);
     fillSelect(els.day, days.map((day) => ({
       value: day.date,
-      label: `${day.date} - ${day.event_count} actions`,
+      label: `${day.date} - ${day.tool_call_count || 0} tool calls`,
     })));
     if (preferredDay && days.some((day) => day.date === preferredDay)) els.day.value = preferredDay;
     state.day = els.day.value;
@@ -226,7 +226,6 @@
       return;
     }
 
-    let actionCount = 0;
     for (const meta of days) {
       const day = state.currentDays.get(meta.date);
       const section = document.createElement('section');
@@ -245,17 +244,13 @@
 
       const resultById = day ? resultMap(day.events) : new Map();
       const visible = day ? visibleActionEvents(day.events) : [];
-      actionCount += visible.length;
       if (summaryDay) section.appendChild(renderSummaryDay(summaryDay, visible, resultById, meta));
       else if (visible.length) section.appendChild(renderRawEventList(visible, resultById));
-      else section.appendChild(el('div', 'No visible actions for this day.', 'trace-empty'));
+      else section.appendChild(el('div', 'No trace entries for this day.', 'trace-empty'));
       els.events.appendChild(section);
     }
 
-    if (state.currentSummary) {
-      actionCount = (state.currentSummary.days || []).reduce((sum, day) => sum + Number(day.stats && day.stats.action_count || 0), 0);
-    }
-    els.status.textContent = `${days.length} days loaded · ${actionCount} visible actions · ${state.currentSummary ? 'summarized view, raw actions load on demand' : 'raw view, no summary for this run yet'}`;
+    els.status.textContent = `${days.length} days loaded · ${state.currentSummary ? 'summarized view, raw trace loads on demand' : 'raw view, no summary for this run yet'}`;
     renderToolList(run);
     setActiveDay(state.day || days[0].date);
     setupDayObserver();
@@ -316,7 +311,6 @@
     overview.className = 'trace-summary-overview';
     const title = String(daySummary.title || '').replace(/^20\d{2}-\d{2}-\d{2}:\s*/, '') || 'Day summary';
     overview.appendChild(el('h3', title));
-    if (daySummary.display_summary) overview.appendChild(el('p', daySummary.display_summary));
     const stats = daySummary.stats || {};
     const benchmarkUpdates = Number(stats.benchmark_update_count || 0);
     const chips = [
@@ -331,8 +325,8 @@
     const segments = daySummary.segments || [];
     for (const segment of segments) wrap.appendChild(renderSummarySegment(segment, visibleEvents, resultById, meta));
     if (!segments.length) {
-      wrap.appendChild(renderRawDetails('Raw actions', visibleEvents, resultById, {
-        count: Number(daySummary.stats && daySummary.stats.action_count) || visibleEvents.length,
+      wrap.appendChild(renderRawDetails('Raw trace', visibleEvents, resultById, {
+        count: Number(daySummary.stats && daySummary.stats.tool_call_count) || visibleEvents.length,
         loadEvents: () => loadRawEventsForDay(meta),
       }));
     }
@@ -348,15 +342,14 @@
     const header = document.createElement('div');
     header.className = 'trace-summary-segment-head';
     header.appendChild(el('h4', segment.label || 'Trace segment'));
-    header.appendChild(el('span', `${segment.action_count || segmentEvents.length} actions`));
     card.appendChild(header);
-    if (segment.summary) card.appendChild(el('p', segment.summary, 'trace-summary-copy'));
 
     const chips = [...(segment.notable_facts || []), ...(segment.tools || []).map(prettyToolName)].slice(0, 8);
     if (chips.length) card.appendChild(renderSummaryChips(chips));
+    if ((segment.model_messages || []).length) card.appendChild(renderModelMessages(segment.model_messages));
     if ((segment.representative_forecasts || []).length) card.appendChild(renderRepresentativeForecasts(segment.representative_forecasts));
-    card.appendChild(renderRawDetails('Raw actions', segmentEvents, resultById, {
-      count: Number(segment.action_count) || segmentEvents.length,
+    card.appendChild(renderRawDetails('Raw trace', segmentEvents, resultById, {
+      count: Number(segment.tool_call_count) || segmentEvents.length,
       loadEvents: () => loadRawEventsForSegment(meta, bounds),
     }));
     return card;
@@ -395,40 +388,74 @@
     return list;
   }
 
+  function renderModelMessages(messages) {
+    const wrap = document.createElement('div');
+    wrap.className = 'trace-summary-messages';
+    for (const message of messages) wrap.appendChild(el('p', message));
+    return wrap;
+  }
+
   function renderRepresentativeForecasts(forecasts) {
     const wrap = document.createElement('div');
     wrap.className = 'trace-summary-forecasts';
-    wrap.appendChild(el('strong', 'Representative forecasts'));
-    const list = document.createElement('ul');
-    for (const forecast of forecasts.slice(0, 5)) {
-      const item = document.createElement('li');
+    for (const forecast of forecasts.slice(0, 3)) {
+      const item = document.createElement('article');
+      item.className = 'trace-summary-forecast';
       const question = forecast.question_title || `Question ${forecast.question_id || ''}`.trim();
-      item.appendChild(el('span', forecast.question_id ? `qid ${forecast.question_id}` : 'forecast', 'trace-summary-qid'));
-      item.appendChild(document.createTextNode(` ${question}`));
-      if (forecast.summary) item.appendChild(el('em', forecast.summary));
-      list.appendChild(item);
+      item.appendChild(el('h5', question || 'Forecast question'));
+      const bars = renderVerticalForecastBars(forecast.outcomes || {}, forecast.previous_outcomes || {});
+      if (bars) item.appendChild(bars);
+      else if (forecast.summary) item.appendChild(el('p', forecast.summary));
+      wrap.appendChild(item);
     }
-    wrap.appendChild(list);
     return wrap;
+  }
+
+  function renderVerticalForecastBars(outcomes, previous) {
+    const rows = Object.entries(outcomes)
+      .filter(([, value]) => Number.isFinite(Number(value)))
+      .sort((a, b) => Number(b[1]) - Number(a[1]))
+      .slice(0, 5);
+    if (!rows.length) return null;
+    const hasPrevious = Object.keys(previous || {}).length > 0;
+    const chart = document.createElement('div');
+    chart.className = 'forecast-mini-bars';
+    for (const [name, value] of rows) {
+      const prob = Number(value);
+      const prior = Number(previous[name]);
+      const bar = document.createElement('div');
+      bar.className = 'forecast-mini-bar';
+      const track = document.createElement('div');
+      track.className = 'forecast-mini-track';
+      const fill = document.createElement('i');
+      fill.style.height = `${Math.max(0, Math.min(100, prob * 100))}%`;
+      track.appendChild(fill);
+      bar.appendChild(track);
+      bar.appendChild(el('strong', formatProbability(prob)));
+      bar.appendChild(el('span', name));
+      if (Number.isFinite(prior)) bar.appendChild(el('em', formatDelta(prob - prior), prob - prior >= 0 ? 'is-up' : 'is-down'));
+      else if (hasPrevious) bar.appendChild(el('em', 'new'));
+      chart.appendChild(bar);
+    }
+    return chart;
   }
 
   function renderRawDetails(label, events, resultById, options = {}) {
     const details = document.createElement('details');
     details.className = 'trace-raw-details';
-    const count = options.count != null ? options.count : events.length;
-    details.appendChild(el('summary', `${label} (${count})`));
+    details.appendChild(el('summary', label));
     details.addEventListener('toggle', async () => {
       if (!details.open || details.dataset.loaded) return;
       details.dataset.loaded = 'true';
-      const loading = el('div', 'Loading raw actions...', 'trace-empty');
+      const loading = el('div', 'Loading raw trace...', 'trace-empty');
       details.appendChild(loading);
       try {
         const raw = options.loadEvents ? await options.loadEvents() : { events, resultById };
         loading.remove();
         if (raw.events.length) details.appendChild(renderRawEventList(raw.events, raw.resultById));
-        else details.appendChild(el('div', 'No visible raw actions in this summary range.', 'trace-empty'));
+        else details.appendChild(el('div', 'No raw trace entries in this summary range.', 'trace-empty'));
       } catch (error) {
-        loading.textContent = `Could not load raw actions (${error.message}).`;
+        loading.textContent = `Could not load raw trace (${error.message}).`;
       }
     });
     return details;
@@ -453,10 +480,8 @@
     header.appendChild(date);
     const stats = document.createElement('div');
     stats.className = 'trace-day-header-stats';
-    stats.appendChild(el('span', `${meta.event_count || 0} actions`));
     stats.appendChild(el('span', `${meta.tool_call_count || 0} tool calls`));
     stats.appendChild(el('span', `${meta.forecast_count || 0} forecasts`));
-    if (day && day.events) stats.appendChild(el('span', `${day.events.length} raw events`));
     header.appendChild(stats);
     return header;
   }
@@ -573,7 +598,7 @@
           class: 'trace-chart-hit',
           tabindex: '0',
           role: 'button',
-          'aria-label': `${runOptionLabel(series.run)}, ${point.date}, ${metricLabel(state.metric)} ${formatMetric(point.value, state.metric)}, ${dayMeta ? dayMeta.event_count : 0} actions`,
+          'aria-label': `${runOptionLabel(series.run)}, ${point.date}, ${metricLabel(state.metric)} ${formatMetric(point.value, state.metric)}, ${dayMeta ? dayMeta.tool_call_count : 0} tool calls`,
         });
         hit.addEventListener('mouseenter', () => showTooltip(tooltip, point, dayMeta, x(point.day), y(point.value), width, state.metric, series.run));
         hit.addEventListener('mousemove', () => showTooltip(tooltip, point, dayMeta, x(point.day), y(point.value), width, state.metric, series.run));
@@ -664,17 +689,15 @@
     if (!run) return;
     const days = sortedDays(run);
     const totals = days.reduce((acc, day) => {
-      acc.actions += Number(day.event_count) || 0;
       acc.toolCalls += Number(day.tool_call_count) || 0;
       acc.forecasts += Number(day.forecast_count) || 0;
       acc.compactions += Number(day.compaction_count) || 0;
       return acc;
-    }, { actions: 0, toolCalls: 0, forecasts: 0, compactions: 0 });
+    }, { toolCalls: 0, forecasts: 0, compactions: 0 });
     const pairs = [
       ['model', run.agent_name || run.agent_slug],
       ['run', runOptionLabel(run)],
       ['days', days.length],
-      ['actions', totals.actions],
       ['tool calls', totals.toolCalls],
       ['forecast submits', totals.forecasts],
       ['recorded compactions', compactionCountLabel(Number(run.compaction_count) || totals.compactions)],
@@ -695,10 +718,10 @@
       button.href = `#trace-day-${day.date}`;
       button.className = `trace-day-button${day.date === state.day ? ' is-active' : ''}`;
       button.dataset.day = day.date;
-      button.title = `${formatShortDate(day.date)}\n${day.event_count} actions\n${day.tool_call_count} tool calls\n${day.forecast_count} forecasts`;
+      button.title = `${formatShortDate(day.date)}\n${day.tool_call_count} tool calls\n${day.forecast_count} forecasts`;
       button.setAttribute('aria-pressed', String(day.date === state.day));
       button.appendChild(el('span', formatShortDate(day.date), 'trace-day-date'));
-      button.appendChild(el('span', `${day.event_count} actions`, 'trace-day-meta'));
+      button.appendChild(el('span', `${day.tool_call_count || 0} tool calls`, 'trace-day-meta'));
       button.addEventListener('click', (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -1409,13 +1432,13 @@
   }
 
   function showTooltip(tooltip, point, dayMeta, x, y, width, metric, run) {
-    const actions = dayMeta ? dayMeta.event_count : 0;
+    const toolCalls = dayMeta ? dayMeta.tool_call_count : 0;
     const forecasts = dayMeta ? dayMeta.forecast_count : 0;
     tooltip.replaceChildren();
     if (run) tooltip.appendChild(el('span', runOptionLabel(run)));
     tooltip.appendChild(el('strong', point.date));
     tooltip.appendChild(el('span', `${metricLabel(metric)}: ${formatMetric(point.value, metric)}`));
-    tooltip.appendChild(el('span', `${actions} actions`));
+    tooltip.appendChild(el('span', `${toolCalls} tool calls`));
     tooltip.appendChild(el('span', `${forecasts} forecasts`));
     tooltip.style.left = `${x / width * 100}%`;
     tooltip.style.top = `${y / 330 * 100}%`;

@@ -19,7 +19,7 @@
   "linking_contract": {
     "day_trace_path": "days[].trace_path is relative to trace_data_base",
     "segment_event_range": "segments[].event_idx_start and segments[].event_idx_end refer to day.events[].idx in the trace shard",
-    "segment_grouping": "Segments are consecutive visible action sequences, split around day transitions and roughly 60 visible actions.",
+    "segment_grouping": "Segments are consecutive trace sequences, split around day transitions and roughly 60 rendered entries.",
     "ui_behavior": "The visualizer renders each segment summary first, then expands all trace events whose idx is within the segment range."
   },
   "days": [
@@ -54,8 +54,9 @@
           "event_idx_start": 5,
           "event_idx_end": 518,
           "label": "Research and forecast updates",
-          "summary": "Submitted 6 forecast update(s); ran 17 news search(es); used 15 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 6 forecast update(s); ran 17 news search(es); used 15 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 38,
           "tools": [
             "Bash",
             "ToolSearch",
@@ -72,6 +73,25 @@
             277,
             518
           ],
+          "model_messages": [
+            "I'll start by exploring my workspace and understanding the questions I need to forecast.",
+            "The workspace files aren't in the home directory. Let me locate them.",
+            "Found the workspace. Let me set it up and explore.",
+            "Let me explore the articles structure and the market.csv to understand the simulation date and questions.",
+            "Only articles for 2025-12-24 exist, confirming the simulation date is **2025-12-24**. Let me parse the market.csv properly with Python.",
+            "These are open-ended string-answer questions. Let me examine the structure including options and market_aggregate columns.",
+            "These are 330 open-ended string-answer questions (Al Jazeera Q1 2026), all unresolved, no crowd aggregate. Let me dump them all to analyze systematically.",
+            "Let me dump all questions to a working file for systematic processing.",
+            "This is a large set of 330 open-ended forecasting questions for Q1 2026, auto-generated from real news events. Key insight: each question's described event likely occurred (they're generated from real articles), so I need to predict the specific detail. Let me set up my strategy notes and begin research on the major clusters.\n\nLet me note the critical observation: there appears to be a large cluster of ~50 questions presupposing a US-Israel-Iran war in Feb-March 2026. Let me research the trajectory as of Dec 24, 2025.",
+            "Critical findings: As of Dec 24, 2025, a new Israel-Iran war hasn't started but Netanyahu is planning to brief Trump on possible new strikes \u2014 the ~50 Iran-war questions (Feb-Mar) presuppose it happens. And I now have full AFCON 2025 groups/results. Let me save key context and research more January clusters in parallel.",
+            "Key insight refined: these questions are generated from real Q1 2026 articles, so the events occurred \u2014 my job is to infer the specific answer. Let me research more high-value January clusters in parallel.",
+            "Excellent context gathered. Let me capture findings and research the remaining Jan-1/early-Jan specific questions (Charlotte, measles, Austrian skier) plus key clusters.",
+            "Good. Now let me research the remaining high-value January/February clusters (Syria, Bangladesh, NFL/Super Bowl, awards) before mass-submitting.",
+            "Rich data gathered. Let me do two more targeted searches (Grammy Album of Year nominees, NFC playoff picture) then begin mass-submitting.",
+            "I now have strong context across major clusters. Let me record key data and begin submitting high-confidence forecasts in batches.",
+            "Now let me submit the first batch of high-confidence forecasts.",
+            "Working well. Let me continue with the next batch."
+          ],
           "question_scope": {
             "count": 6,
             "mode": "forecast submissions"
@@ -81,30 +101,60 @@
               "question_id": "93950",
               "question_title": "Which U.S. state will report that its measles outbreak has grown to 185 cases by January 2026?",
               "event_idx": 506,
+              "outcomes": {
+                "South Carolina": 0.52,
+                "Arizona": 0.3,
+                "Utah": 0.06,
+                "Texas": 0.04
+              },
               "summary": "Top outcomes: South Carolina 0.52, Arizona 0.30."
             },
             {
               "question_id": "787699",
               "question_title": "Which party will lead the National Institute of Development Administration's party-list poll released on January 30, 2026, ahead of Thailand's February 8, 2026 election?",
               "event_idx": 508,
+              "outcomes": {
+                "People's Party": 0.55,
+                "Pheu Thai": 0.18,
+                "Bhumjaithai": 0.12,
+                "Democrat Party": 0.04
+              },
               "summary": "Top outcomes: People's Party 0.55, Pheu Thai 0.18."
             },
             {
               "question_id": "934187",
               "question_title": "Who will rank first for prime minister in the National Institute of Development Administration survey released by January 30, 2026, ahead of Thailand's February 8, 2026 election?",
               "event_idx": 510,
+              "outcomes": {
+                "Natthaphong Ruengpanyawut": 0.33,
+                "Anutin Charnvirakul": 0.3,
+                "Paetongtarn Shinawatra": 0.06,
+                "Pita Limjaroenrat": 0.05
+              },
               "summary": "Top outcomes: Natthaphong Ruengpanyawut 0.33, Anutin Charnvirakul 0.30."
             },
             {
               "question_id": "304287",
               "question_title": "Which party will emerge as the main opposition in Bangladesh's new parliament after the 2026 election, based on seat results reported by February 13, 2026?",
               "event_idx": 512,
+              "outcomes": {
+                "Jamaat-e-Islami": 0.6,
+                "Bangladesh Nationalist Party": 0.16,
+                "National Citizen Party": 0.08
+              },
               "summary": "Top outcomes: Jamaat-e-Islami 0.60, Bangladesh Nationalist Party 0.16."
             },
             {
               "question_id": "876347",
               "question_title": "What film will receive the most nominations when the 98th Academy Awards nominations are announced in January 2026?",
               "event_idx": 514,
+              "outcomes": {
+                "One Battle After Another": 0.44,
+                "Sinners": 0.14,
+                "Hamnet": 0.13,
+                "Frankenstein": 0.12,
+                "Wicked: For Good": 0.05
+              },
               "summary": "Top outcomes: One Battle After Another 0.44, Sinners 0.14."
             }
           ]
@@ -114,8 +164,9 @@
           "event_idx_start": 520,
           "event_idx_end": 924,
           "label": "Research and forecast updates",
-          "summary": "Submitted 46 forecast update(s); ran 4 news search(es); used 1 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 46 forecast update(s); ran 4 news search(es); used 1 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 51,
           "tools": [
             "Submit Forecasts",
             "Search News",
@@ -130,6 +181,12 @@
             805,
             924
           ],
+          "model_messages": [
+            "Let me research a few more unclear January clusters before continuing to submit.",
+            "Good research. Let me record findings and submit the next batch.",
+            "Let me continue submitting forecasts across more January questions where I have signal.",
+            "Making good progress. Let me continue with more January/February questions where I have signal."
+          ],
           "question_scope": {
             "count": 46,
             "mode": "forecast submissions"
@@ -139,30 +196,62 @@
               "question_id": "946810",
               "question_title": "Who will win Album of the Year at the 2026 Grammy Awards by 3 February 2026?",
               "event_idx": 520,
+              "outcomes": {
+                "Bad Bunny": 0.25,
+                "Kendrick Lamar": 0.24,
+                "Lady Gaga": 0.17,
+                "Sabrina Carpenter": 0.15,
+                "Tyler, the Creator": 0.06
+              },
               "summary": "Top outcomes: Bad Bunny 0.25, Kendrick Lamar 0.24."
             },
             {
               "question_id": "180958",
               "question_title": "Which NFL team will win Super Bowl LX in February 2026?",
               "event_idx": 522,
+              "outcomes": {
+                "Los Angeles Rams": 0.15,
+                "Seattle Seahawks": 0.13,
+                "Denver Broncos": 0.13,
+                "Buffalo Bills": 0.11,
+                "Philadelphia Eagles": 0.09
+              },
               "summary": "Top outcomes: Los Angeles Rams 0.15, Seattle Seahawks 0.13."
             },
             {
               "question_id": "694686",
               "question_title": "Who will be the starting quarterback of the NFC team that reaches Super Bowl 2026 by January 26, 2026?",
               "event_idx": 524,
+              "outcomes": {
+                "Matthew Stafford": 0.23,
+                "Sam Darnold": 0.23,
+                "Jalen Hurts": 0.17,
+                "Brock Purdy": 0.09,
+                "Caleb Williams": 0.08
+              },
               "summary": "Top outcomes: Matthew Stafford 0.23, Sam Darnold 0.23."
             },
             {
               "question_id": "651727",
               "question_title": "Who will be sworn in as Venezuela\\u2019s interim president by January 2026?",
               "event_idx": 526,
+              "outcomes": {
+                "Edmundo Gonzalez Urrutia": 0.38,
+                "Maria Corina Machado": 0.28,
+                "Delcy Rodriguez": 0.06,
+                "Nicolas Maduro": 0.05
+              },
               "summary": "Top outcomes: Edmundo Gonzalez Urrutia 0.38, Maria Corina Machado 0.28."
             },
             {
               "question_id": "630728",
               "question_title": "Who will Denmark and Greenland request a meeting with by January 13, 2026, over the Greenland dispute?",
               "event_idx": 595,
+              "outcomes": {
+                "Donald Trump": 0.4,
+                "Marco Rubio": 0.2,
+                "Jeff Landry": 0.12
+              },
               "summary": "Top outcomes: Donald Trump 0.40, Marco Rubio 0.20."
             }
           ]
@@ -172,8 +261,9 @@
           "event_idx_start": 926,
           "event_idx_end": 1231,
           "label": "Forecast submissions",
-          "summary": "Submitted 46 forecast update(s); used 2 workspace/tool action(s). Representative forecasts are listed below.",
+          "summary": "Submitted 46 forecast update(s); used 2 workspace/tool call(s).",
           "action_count": 55,
+          "tool_call_count": 48,
           "tools": [
             "Submit Forecasts",
             "Bash"
@@ -186,6 +276,15 @@
             1070,
             1231
           ],
+          "model_messages": [
+            "Now the Iran-war Gulf-target cluster, using geographic/strategic logic (Al Udeid in Qatar, ADNOC in Abu Dhabi were June 2025 patterns):",
+            "Let me submit more narrowable-answer questions (Iran cities, pollution rankings, WC participation):",
+            "Let me submit the US-Iran diplomacy cluster and a few more narrowable questions.",
+            "Let me submit a final batch for today on narrowable questions.",
+            "Strong day-1 coverage (~97 questions). Let me verify my submissions and record a tracking file before advancing.",
+            "93 predictions recorded. Let me create a tracking file of done/remaining questions for efficient continuation tomorrow.",
+            "There are valuable January questions I can still narrow. Let me submit those (high time-value)."
+          ],
           "question_scope": {
             "count": 46,
             "mode": "forecast submissions"
@@ -195,30 +294,56 @@
               "question_id": "57193",
               "question_title": "Which state will the U.S. Supreme Court let keep its new congressional map by February 2026 after rejecting a Republican lawsuit?",
               "event_idx": 926,
+              "outcomes": {
+                "California": 0.5,
+                "Illinois": 0.1,
+                "Maryland": 0.06
+              },
               "summary": "Top outcomes: California 0.50, Illinois 0.10."
             },
             {
               "question_id": "214384",
               "question_title": "Which northeastern US state will be named as the target of a newly announced ICE immigration crackdown by January 22, 2026?",
               "event_idx": 928,
+              "outcomes": {
+                "Massachusetts": 0.28,
+                "New York": 0.28,
+                "New Jersey": 0.1,
+                "Pennsylvania": 0.08
+              },
               "summary": "Top outcomes: Massachusetts 0.28, New York 0.28."
             },
             {
               "question_id": "138247",
               "question_title": "What organization will Syrian intelligence sources say contributed fighters to new reinforcements near Maskana and Deir Hafer, by January 2026?",
               "event_idx": 938,
+              "outcomes": {
+                "Syrian Democratic Forces": 0.3,
+                "YPG": 0.22,
+                "PKK": 0.15
+              },
               "summary": "Top outcomes: Syrian Democratic Forces 0.30, YPG 0.22."
             },
             {
               "question_id": "756891",
               "question_title": "Which armed group will Syrian authorities say sent fighters with new reinforcements near eastern Aleppo by January 2026?",
               "event_idx": 940,
+              "outcomes": {
+                "Syrian Democratic Forces": 0.3,
+                "YPG": 0.22,
+                "PKK": 0.15
+              },
               "summary": "Top outcomes: Syrian Democratic Forces 0.30, YPG 0.22."
             },
             {
               "question_id": "551676",
               "question_title": "Which force will take full control of the al-Shaddadi base by 15th February 2026?",
               "event_idx": 942,
+              "outcomes": {
+                "Syrian government forces": 0.4,
+                "Syrian Democratic Forces": 0.2,
+                "United States": 0.08
+              },
               "summary": "Top outcomes: Syrian government forces 0.40, Syrian Democratic Forces 0.20."
             }
           ]
@@ -228,8 +353,9 @@
           "event_idx_start": 1233,
           "event_idx_end": 1313,
           "label": "Forecast submissions",
-          "summary": "Submitted 16 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 16 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 21,
+          "tool_call_count": 18,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -244,6 +370,11 @@
             1257,
             1313
           ],
+          "model_messages": [
+            "Let me submit a final few and then record progress before advancing the day.",
+            "Excellent \u2014 ~111 questions covered on day 1. Let me record my strategy and deferred-question tracking for tomorrow, then advance the day.",
+            "Day 1 is complete with ~111 well-reasoned forecasts covering nearly all tractable near-term questions. The remaining questions are mostly draw/bracket-dependent (defer until known) or too specific to forecast now. Let me advance to the next day to get fresh news and progress on tournaments."
+          ],
           "question_scope": {
             "count": 16,
             "mode": "forecast submissions"
@@ -253,30 +384,61 @@
               "question_id": "956334",
               "question_title": "Which West African country will have all political parties dissolved by the end of January 2026?",
               "event_idx": 1233,
+              "outcomes": {
+                "Guinea": 0.3,
+                "Burkina Faso": 0.25,
+                "Mali": 0.2,
+                "Niger": 0.12
+              },
               "summary": "Top outcomes: Guinea 0.30, Burkina Faso 0.25."
             },
             {
               "question_id": "267761",
               "question_title": "Which country will Donald Trump threaten with a US tariff increase from 15% to 25% by January 2026?",
               "event_idx": 1236,
+              "outcomes": {
+                "Japan": 0.22,
+                "European Union": 0.2,
+                "South Korea": 0.18,
+                "Switzerland": 0.08
+              },
               "summary": "Top outcomes: Japan 0.22, European Union 0.20."
             },
             {
               "question_id": "320820",
               "question_title": "Which country will receive 24 children evacuated from Gaza in a World Health Organization-facilitated transfer on January 26, 2026, according to WHO reporting by February 2026?",
               "event_idx": 1238,
+              "outcomes": {
+                "Italy": 0.22,
+                "United Arab Emirates": 0.18,
+                "Egypt": 0.15,
+                "Qatar": 0.12,
+                "Jordan": 0.1
+              },
               "summary": "Top outcomes: Italy 0.22, United Arab Emirates 0.18."
             },
             {
               "question_id": "1877",
               "question_title": "Question 1877",
               "event_idx": 1240,
+              "outcomes": {
+                "Lindsey Vonn": 0.25,
+                "Breezy Johnson": 0.2,
+                "Lauren Macuga": 0.15,
+                "Jacqueline Wiles": 0.1
+              },
               "summary": "Top outcomes: Lindsey Vonn 0.25, Breezy Johnson 0.20."
             },
             {
               "question_id": "391811",
               "question_title": "By 1 February 2026, which city will Ukrainian police identify as the site of a drone attack on a bus carrying miners in Ukraine\\u2019s Dnipropetrovsk region?",
               "event_idx": 1242,
+              "outcomes": {
+                "Kryvyi Rih": 0.3,
+                "Pavlohrad": 0.22,
+                "Dnipro": 0.12,
+                "Nikopol": 0.1
+              },
               "summary": "Top outcomes: Kryvyi Rih 0.30, Pavlohrad 0.22."
             }
           ]
@@ -314,8 +476,9 @@
           "event_idx_start": 1332,
           "event_idx_end": 1418,
           "label": "Research and forecast updates",
-          "summary": "Submitted 10 forecast update(s); ran 3 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 10 forecast update(s); ran 3 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 18,
+          "tool_call_count": 15,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -332,6 +495,11 @@
             1390,
             1418
           ],
+          "model_messages": [
+            "Day advanced to Dec 25. No questions resolve until Jan 1, so let me use today to refine fast-moving near-term questions with fresh news and expand coverage. Let me check key developments.",
+            "Key update: Venezuela is now an economic \"quarantine\"/blockade (slow squeeze, not quick strike) \u2014 transition by end-January is less certain. Let me lower Q7 and cover more narrowable conflict questions.",
+            "Good \u2014 ~125 questions covered. Let me note today's key update and advance."
+          ],
           "question_scope": {
             "count": 10,
             "mode": "forecast submissions"
@@ -341,30 +509,64 @@
               "question_id": "651727",
               "question_title": "Who will be sworn in as Venezuela\\u2019s interim president by January 2026?",
               "event_idx": 1382,
+              "outcomes": {
+                "Edmundo Gonzalez Urrutia": 0.3,
+                "Maria Corina Machado": 0.18,
+                "Delcy Rodriguez": 0.05
+              },
+              "previous_outcomes": {
+                "Edmundo Gonzalez Urrutia": 0.38,
+                "Maria Corina Machado": 0.28,
+                "Delcy Rodriguez": 0.06,
+                "Nicolas Maduro": 0.05
+              },
               "summary": "Top outcomes: Edmundo Gonzalez Urrutia 0.30, Maria Corina Machado 0.18."
             },
             {
               "question_id": "427993",
               "question_title": "Which country will authorities identify by March 25, 2026, as the location of a mass grave from which dozens of bodies, including children, are exhumed?",
               "event_idx": 1384,
+              "outcomes": {
+                "Sudan": 0.4,
+                "Democratic Republic of the Congo": 0.15,
+                "Libya": 0.06
+              },
               "summary": "Top outcomes: Sudan 0.40, Democratic Republic of the Congo 0.15."
             },
             {
               "question_id": "217580",
               "question_title": "Which Sudanese state will the attacked teaching hospital be reported to be in, by March 21, 2026?",
               "event_idx": 1386,
+              "outcomes": {
+                "North Darfur": 0.2,
+                "Khartoum": 0.18,
+                "North Kordofan": 0.15,
+                "Gezira": 0.1
+              },
               "summary": "Top outcomes: North Darfur 0.20, Khartoum 0.18."
             },
             {
               "question_id": "26859",
               "question_title": "Which Afghan provinces will Afghan officials say were hit in Pakistan's border air raids by February 23, 2026?",
               "event_idx": 1388,
+              "outcomes": {
+                "Paktika": 0.2,
+                "Kunar": 0.18,
+                "Khost": 0.15,
+                "Nangarhar": 0.12
+              },
               "summary": "Top outcomes: Paktika 0.20, Kunar 0.18."
             },
             {
               "question_id": "493481",
               "question_title": "Which country\\u2019s government will say it \\u201cstrongly condemns\\u201d Pakistan\\u2019s air strikes on Afghan territory by February 27, 2026?",
               "event_idx": 1390,
+              "outcomes": {
+                "Afghanistan": 0.32,
+                "Qatar": 0.12,
+                "Iran": 0.12,
+                "Saudi Arabia": 0.08
+              },
               "summary": "Top outcomes: Afghanistan 0.32, Qatar 0.12."
             }
           ]
@@ -402,8 +604,9 @@
           "event_idx_start": 1425,
           "event_idx_end": 1620,
           "label": "Forecast submissions",
-          "summary": "Submitted 25 forecast update(s); used 3 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 25 forecast update(s); used 3 workspace/tool call(s); advanced the simulation day.",
           "action_count": 33,
+          "tool_call_count": 29,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -418,6 +621,12 @@
             1581,
             1620
           ],
+          "model_messages": [
+            "Day 26. Let me regenerate my remaining-questions list and continue covering narrowable ones.",
+            "Major cross-question inference: Q903473 reveals \"Benfica vs Real Madrid on February 17, 2026\" (CL playoff round) \u2014 this resolves Q55999 (Benfica's opponent) and Q85609 (Real Madrid's opponent). Let me submit those with high confidence, plus narrowable conflict questions.",
+            "Let me continue with more narrowable questions and Iran-war cluster inferences (the Iran governing-council questions imply Khamenei was killed).",
+            "Good \u2014 ~155 covered. Let me record key cross-inferences and advance."
+          ],
           "question_scope": {
             "count": 25,
             "mode": "forecast submissions"
@@ -427,30 +636,50 @@
               "question_id": "55999",
               "question_title": "Which club will Benfica face in the first leg of its Champions League playoff on February 17, 2026?",
               "event_idx": 1517,
+              "outcomes": {
+                "Real Madrid": 0.82
+              },
               "summary": "Top outcomes: Real Madrid 0.82."
             },
             {
               "question_id": "85609",
               "question_title": "Which club will Real Madrid be drawn to face in the UEFA Champions League playoff round by January 30, 2026?",
               "event_idx": 1519,
+              "outcomes": {
+                "Benfica": 0.8
+              },
               "summary": "Top outcomes: Benfica 0.80."
             },
             {
               "question_id": "398988",
               "question_title": "Which Lebanese group will say, by February 2026, that Israel abducted one of its officials in a raid in southern Lebanon?",
               "event_idx": 1521,
+              "outcomes": {
+                "Hezbollah": 0.55,
+                "Amal Movement": 0.12
+              },
               "summary": "Top outcomes: Hezbollah 0.55, Amal Movement 0.12."
             },
             {
               "question_id": "538697",
               "question_title": "Which country's military will say by February 18, 2026 that up to 8,000 troops could be ready by the end of June for a possible Gaza mission?",
               "event_idx": 1523,
+              "outcomes": {
+                "Indonesia": 0.4,
+                "Pakistan": 0.15,
+                "Azerbaijan": 0.12,
+                "Egypt": 0.1
+              },
               "summary": "Top outcomes: Indonesia 0.40, Pakistan 0.15."
             },
             {
               "question_id": "652747",
               "question_title": "What toxin will five European governments say tissue samples conclusively found in Alexey Navalny's body, by February 2026?",
               "event_idx": 1525,
+              "outcomes": {
+                "Novichok": 0.5,
+                "Polonium": 0.06
+              },
               "summary": "Top outcomes: Novichok 0.50, Polonium 0.06."
             }
           ]
@@ -488,8 +717,9 @@
           "event_idx_start": 1671,
           "event_idx_end": 1718,
           "label": "Forecast submissions",
-          "summary": "Submitted 15 forecast update(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 15 forecast update(s); advanced the simulation day.",
           "action_count": 18,
+          "tool_call_count": 16,
           "tools": [
             "Submit Forecasts",
             "Next Day"
@@ -503,6 +733,10 @@
             1688,
             1718
           ],
+          "model_messages": [
+            "Dec 27. Let me continue covering the Iran-war and regional conflict clusters with geographically-narrowed spreads, plus the Somalia questions.",
+            "~170 questions covered. Let me advance and continue building coverage over the coming days, with key focus dates ahead (Jan 1 first resolutions, Jan 8 AO draw)."
+          ],
           "question_scope": {
             "count": 15,
             "mode": "forecast submissions"
@@ -512,30 +746,57 @@
               "question_id": "666021",
               "question_title": "Which country will Somalia say it has severed all agreements with by January 2026?",
               "event_idx": 1672,
+              "outcomes": {
+                "Ethiopia": 0.45,
+                "United Arab Emirates": 0.15,
+                "Egypt": 0.05
+              },
               "summary": "Top outcomes: Ethiopia 0.45, United Arab Emirates 0.15."
             },
             {
               "question_id": "783773",
               "question_title": "Which foreign country will Somalia's Minister of State for Foreign Affairs say gave support to separatist regions, in remarks reported by Al Jazeera by January 20, 2026?",
               "event_idx": 1674,
+              "outcomes": {
+                "United Arab Emirates": 0.38,
+                "Ethiopia": 0.3,
+                "Egypt": 0.06
+              },
               "summary": "Top outcomes: United Arab Emirates 0.38, Ethiopia 0.30."
             },
             {
               "question_id": "828811",
               "question_title": "Which organisation will Israeli media say was using the apartment hit in central Beirut by March 11, 2026?",
               "event_idx": 1676,
+              "outcomes": {
+                "Hezbollah": 0.5,
+                "Hamas": 0.15,
+                "Palestinian Islamic Jihad": 0.08
+              },
               "summary": "Top outcomes: Hezbollah 0.50, Hamas 0.15."
             },
             {
               "question_id": "774274",
               "question_title": "What northern Israeli community will Hezbollah say it targeted with rockets in a strike that kills at least one person on March 22, 2026?",
               "event_idx": 1678,
+              "outcomes": {
+                "Kiryat Shmona": 0.22,
+                "Metula": 0.15,
+                "Nahariya": 0.12,
+                "Shlomi": 0.08
+              },
               "summary": "Top outcomes: Kiryat Shmona 0.22, Metula 0.15."
             },
             {
               "question_id": "434027",
               "question_title": "Which city in Iran will public reporting by March 2026 identify as the site of a missile strike next to a boys' school?",
               "event_idx": 1680,
+              "outcomes": {
+                "Tehran": 0.32,
+                "Isfahan": 0.12,
+                "Karaj": 0.1,
+                "Tabriz": 0.08
+              },
               "summary": "Top outcomes: Tehran 0.32, Isfahan 0.12."
             }
           ]
@@ -573,8 +834,9 @@
           "event_idx_start": 1752,
           "event_idx_end": 1794,
           "label": "Forecast submissions",
-          "summary": "Submitted 15 forecast update(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 15 forecast update(s); advanced the simulation day.",
           "action_count": 18,
+          "tool_call_count": 16,
           "tools": [
             "Submit Forecasts",
             "Next Day"
@@ -588,6 +850,10 @@
             1769,
             1794
           ],
+          "model_messages": [
+            "Dec 28. Let me continue covering narrowable conflict/war questions and a few others.",
+            "~185 covered. Let me advance and continue."
+          ],
           "question_scope": {
             "count": 15,
             "mode": "forecast submissions"
@@ -597,30 +863,58 @@
               "question_id": "58660",
               "question_title": "Which city will be reported as hearing multiple explosions during the strikes by February 28, 2026?",
               "event_idx": 1753,
+              "outcomes": {
+                "Tehran": 0.4,
+                "Isfahan": 0.1,
+                "Natanz": 0.08
+              },
               "summary": "Top outcomes: Tehran 0.40, Isfahan 0.10."
             },
             {
               "question_id": "443306",
               "question_title": "Where will Donald Trump say the final talks before the joint US-Israeli strikes had collapsed by the end of March 2026?",
               "event_idx": 1755,
+              "outcomes": {
+                "Geneva": 0.18,
+                "Muscat": 0.16,
+                "Rome": 0.12,
+                "Oman": 0.1
+              },
               "summary": "Top outcomes: Geneva 0.18, Muscat 0.16."
             },
             {
               "question_id": "240291",
               "question_title": "What country will Latvian officials say a drone that crashes after entering from Russian airspace may be linked to by March 31, 2026?",
               "event_idx": 1757,
+              "outcomes": {
+                "Russia": 0.5,
+                "Belarus": 0.2
+              },
               "summary": "Top outcomes: Russia 0.50, Belarus 0.20."
             },
             {
               "question_id": "871156",
               "question_title": "What U.S. state outside Oklahoma will report four tornado deaths from the central U.S. storms by March 8, 2026?",
               "event_idx": 1759,
+              "outcomes": {
+                "Texas": 0.18,
+                "Arkansas": 0.15,
+                "Missouri": 0.13,
+                "Mississippi": 0.12,
+                "Kansas": 0.1
+              },
               "summary": "Top outcomes: Texas 0.18, Arkansas 0.15."
             },
             {
               "question_id": "309487",
               "question_title": "Which Ukrainian region will a Ukrainian major-general say has been almost entirely retaken during a counteroffensive by March 11, 2026?",
               "event_idx": 1761,
+              "outcomes": {
+                "Sumy": 0.22,
+                "Kharkiv": 0.18,
+                "Zaporizhzhia": 0.12,
+                "Kherson": 0.1
+              },
               "summary": "Top outcomes: Sumy 0.22, Kharkiv 0.18."
             }
           ]
@@ -658,8 +952,9 @@
           "event_idx_start": 1826,
           "event_idx_end": 1865,
           "label": "Forecast submissions",
-          "summary": "Submitted 10 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 10 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 15,
+          "tool_call_count": 12,
           "tools": [
             "Submit Forecasts",
             "Bash",
@@ -674,6 +969,11 @@
             1839,
             1865
           ],
+          "model_messages": [
+            "Dec 29. Let me cover the remaining Lebanon/regional conflict cluster with narrowed spreads.",
+            "~195 covered. Let me update my memory and advance, planning to check resolutions at Jan 1 and do the Australian Open draw batch around Jan 8.",
+            "186 unique questions covered. Let me advance toward Jan 1 (first resolutions)."
+          ],
           "question_scope": {
             "count": 10,
             "mode": "forecast submissions"
@@ -683,30 +983,57 @@
               "question_id": "325000",
               "question_title": "Which armed group will the Israeli army say operated the command centre struck in Lebanon by 20 February 2026?",
               "event_idx": 1827,
+              "outcomes": {
+                "Hezbollah": 0.65,
+                "Hamas": 0.1
+              },
               "summary": "Top outcomes: Hezbollah 0.65, Hamas 0.10."
             },
             {
               "question_id": "681301",
               "question_title": "Which district in southern Lebanon will be reported as the site of a building heavily damaged in an Israeli air strike, by March 10, 2026?",
               "event_idx": 1829,
+              "outcomes": {
+                "Nabatieh": 0.2,
+                "Tyre": 0.15,
+                "Bint Jbeil": 0.12,
+                "Marjayoun": 0.1
+              },
               "summary": "Top outcomes: Nabatieh 0.20, Tyre 0.15."
             },
             {
               "question_id": "578870",
               "question_title": "Which Beirut district will an Israeli strike on an apartment that kills at least four people hit by March 8, 2026?",
               "event_idx": 1831,
+              "outcomes": {
+                "Haret Hreik": 0.15,
+                "Ras Beirut": 0.12,
+                "Dahiyeh": 0.12,
+                "Hamra": 0.1
+              },
               "summary": "Top outcomes: Haret Hreik 0.15, Ras Beirut 0.12."
             },
             {
               "question_id": "994042",
               "question_title": "What broadcaster\\u2019s headquarters will Israel say it struck and dismantled by 3 March 2026?",
               "event_idx": 1833,
+              "outcomes": {
+                "Al-Manar": 0.3,
+                "IRIB": 0.25,
+                "Al Jazeera": 0.08
+              },
               "summary": "Top outcomes: Al-Manar 0.30, IRIB 0.25."
             },
             {
               "question_id": "177801",
               "question_title": "Which armed group will say it launched attacks in the area hours before a missile strike on a southern Israeli city on March 28, 2026?",
               "event_idx": 1835,
+              "outcomes": {
+                "Houthis": 0.3,
+                "Hamas": 0.18,
+                "Hezbollah": 0.12,
+                "Palestinian Islamic Jihad": 0.1
+              },
               "summary": "Top outcomes: Houthis 0.30, Hamas 0.18."
             }
           ]
@@ -744,8 +1071,9 @@
           "event_idx_start": 1893,
           "event_idx_end": 1917,
           "label": "Forecast submissions",
-          "summary": "Submitted 10 forecast update(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 10 forecast update(s); advanced the simulation day.",
           "action_count": 13,
+          "tool_call_count": 11,
           "tools": [
             "Submit Forecasts",
             "Next Day"
@@ -759,6 +1087,10 @@
             1904,
             1917
           ],
+          "model_messages": [
+            "Dec 30. Let me cover more narrowable questions (migrant routes, sports injuries, Brazil floods).",
+            "Good coverage progress (~195). Let me advance toward the new year."
+          ],
           "question_scope": {
             "count": 10,
             "mode": "forecast submissions"
@@ -768,30 +1100,62 @@
               "question_id": "811321",
               "question_title": "What Turkish province will be identified by 15 March 2026 as the site of a deadly collision between a migrant boat and a coastguard vessel?",
               "event_idx": 1894,
+              "outcomes": {
+                "Izmir": 0.22,
+                "Mugla": 0.18,
+                "Canakkale": 0.15,
+                "Aydin": 0.1
+              },
               "summary": "Top outcomes: Izmir 0.22, Mugla 0.18."
             },
             {
               "question_id": "59953",
               "question_title": "Off the coast of which Greek island will authorities report that a migrant boat capsized by 22 February 2026?",
               "event_idx": 1896,
+              "outcomes": {
+                "Crete": 0.18,
+                "Gavdos": 0.15,
+                "Lesbos": 0.15,
+                "Samos": 0.1,
+                "Chios": 0.08
+              },
               "summary": "Top outcomes: Crete 0.18, Gavdos 0.15."
             },
             {
               "question_id": "726747",
               "question_title": "In which UK city will police report arresting a man after he allegedly enters a mosque with an axe and other weapons during evening tarawih prayers, by February 2026?",
               "event_idx": 1898,
+              "outcomes": {
+                "London": 0.25,
+                "Birmingham": 0.18,
+                "Manchester": 0.12,
+                "Bradford": 0.1
+              },
               "summary": "Top outcomes: London 0.25, Birmingham 0.18."
             },
             {
               "question_id": "812182",
               "question_title": "Which Barcelona midfielder will be ruled out for up to six weeks with a hamstring injury by February 27, 2026?",
               "event_idx": 1900,
+              "outcomes": {
+                "Pedri": 0.25,
+                "Frenkie de Jong": 0.15,
+                "Gavi": 0.12,
+                "Dani Olmo": 0.12,
+                "Fermin Lopez": 0.08
+              },
               "summary": "Top outcomes: Pedri 0.25, Frenkie de Jong 0.15."
             },
             {
               "question_id": "434350",
               "question_title": "Who will captain South Africa's squad for its five-match men's T20 tour of New Zealand in March 2026?",
               "event_idx": 1902,
+              "outcomes": {
+                "Aiden Markram": 0.35,
+                "Rassie van der Dussen": 0.12,
+                "Temba Bavuma": 0.1,
+                "Heinrich Klaasen": 0.1
+              },
               "summary": "Top outcomes: Aiden Markram 0.35, Rassie van der Dussen 0.12."
             }
           ]
@@ -829,8 +1193,9 @@
           "event_idx_start": 1923,
           "event_idx_end": 1951,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 2 news search(es); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 4,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -846,6 +1211,11 @@
             1946,
             1951
           ],
+          "model_messages": [
+            "Dec 31 \u2014 AFCON group stage concludes today. Let me check standings to refine AFCON knockout questions, and scan for major developments.",
+            "Key AFCON update: DR Congo finished 2nd in Group D and faces **Algeria** in the Round of 16. Let me update Q14 (DR Congo's eliminator) accordingly. Venezuela still pre-transition (Maduro under pressure but in power).",
+            "Let me advance to January 1 to check the first resolutions and calibrate my approach."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -855,6 +1225,20 @@
               "question_id": "703511",
               "question_title": "Which team will knock DR Congo out of AFCON 2025 in January 2026?",
               "event_idx": 1947,
+              "outcomes": {
+                "Algeria": 0.5,
+                "Morocco": 0.1,
+                "Egypt": 0.07,
+                "Nigeria": 0.05,
+                "Ivory Coast": 0.05
+              },
+              "previous_outcomes": {
+                "Morocco": 0.18,
+                "Egypt": 0.13,
+                "Senegal": 0.12,
+                "Nigeria": 0.1,
+                "Ivory Coast": 0.1
+              },
               "summary": "Top outcomes: Algeria 0.50, Morocco 0.10."
             }
           ]
@@ -892,8 +1276,9 @@
           "event_idx_start": 1992,
           "event_idx_end": 2024,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Search News",
@@ -910,6 +1295,10 @@
             2019,
             2024
           ],
+          "model_messages": [
+            "Excellent feedback! Key results: **Measles \u2192 South Carolina (I had 0.52) = +67 TW!** Ukraine defence min \u2192 Fedorov (I had 0.10, +15.8 TW). Cumulative TW-score: **79.69**. \n\nCritical lessons: (1) questions resolve with real answers even when premise seemed shaky (Chelsea\u2192Rosenior, which I skipped=0), (2) including the correct answer even at low prob pays off, (3) predict early & hold. Let me record this and refine AFCON now that the bracket is set.",
+            "Now I have the full AFCON bracket. Morocco's SF opponent (Q28) would come from QF3 = [Algeria/DRC] vs [Nigeria/Mozambique]. Let me update Q28, then advance toward the Jan 8 AO draw."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -919,6 +1308,19 @@
               "question_id": "459037",
               "question_title": "Which country will face host Morocco in the AFCON 2025 semifinal in Rabat on 14 January 2026?",
               "event_idx": 2020,
+              "outcomes": {
+                "Nigeria": 0.33,
+                "Algeria": 0.3,
+                "DR Congo": 0.16,
+                "Mozambique": 0.05
+              },
+              "previous_outcomes": {
+                "Egypt": 0.16,
+                "Senegal": 0.14,
+                "Nigeria": 0.12,
+                "Algeria": 0.12,
+                "Ivory Coast": 0.1
+              },
               "summary": "Top outcomes: Nigeria 0.33, Algeria 0.30."
             }
           ]
@@ -928,8 +1330,8 @@
     {
       "date": "2026-01-02",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-02.json",
-      "title": "2026-01-02: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-02: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -954,6 +1356,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -963,6 +1366,9 @@
           "representative_event_idxs": [
             2048,
             2049
+          ],
+          "model_messages": [
+            "More wins: **Bangladesh ICC \u2192 Sri Lanka (0.55) = +74.7 TW!** Venezuela \u2192 Delcy Rodr\u00edguez (the VP/constitutional successor, I had her at only 0.05) \u2014 lesson: weight constitutional successors higher for \"interim/acting\" questions. Cumulative TW: **150.93**. Let me advance toward the Jan 8 AO draw, checking resolutions daily."
           ]
         }
       ]
@@ -970,8 +1376,8 @@
     {
       "date": "2026-01-03",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-03.json",
-      "title": "2026-01-03: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-03: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -996,6 +1402,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1005,6 +1412,9 @@
           "representative_event_idxs": [
             2072,
             2073
+          ],
+          "model_messages": [
+            "Lessons noted: blind person/obscure-name spreads are missing (small losses -3 to -7), while high-confidence country/team calls win big (+67, +75). Going forward: only go high-probability when genuinely confident; cap uncertain guesses ~0.15-0.20 to limit downside. The big wins dominate. Let me advance toward the AO draw."
           ]
         }
       ]
@@ -1012,8 +1422,8 @@
     {
       "date": "2026-01-04",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-04.json",
-      "title": "2026-01-04: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-04: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1038,6 +1448,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1047,6 +1458,9 @@
           "representative_event_idxs": [
             2084,
             2085
+          ],
+          "model_messages": [
+            "Chrystia Freeland \u2192 Ukraine economic adviser (skipped, very hard). TW holds at 140.50. Let me continue advancing; the AO main draw comes ~Jan 15, so I'll batch tennis then. Advancing through the AFCON knockouts."
           ]
         }
       ]
@@ -1054,8 +1468,8 @@
     {
       "date": "2026-01-05",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-05.json",
-      "title": "2026-01-05: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-05: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1080,6 +1494,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1089,6 +1504,9 @@
           "representative_event_idxs": [
             2116,
             2117
+          ],
+          "model_messages": [
+            "Big day: **Syria\u2192SDF (0.35)=+50.9**, Iran complex\u2192Parchin (0.20)=+26.8, Greenland\u2192Rubio (0.20)=+18.6, DRC\u2192Algeria (0.50)=+25.5, Minnesota immigration (0.16)=+18.9. Cumulative TW: **281.21**! Including the right answer even at 0.15-0.20 pays off, and semantic matching works (SDF=Syrian Democratic Forces). Let me keep advancing."
           ]
         }
       ]
@@ -1096,8 +1514,8 @@
     {
       "date": "2026-01-06",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-06.json",
-      "title": "2026-01-06: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-06: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1122,6 +1540,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1131,6 +1550,9 @@
           "representative_event_idxs": [
             2130,
             2131
+          ],
+          "model_messages": [
+            "Two more big wins: **Minneapolis\u2192ICE (0.42)=+48.7**, **Qatar peace body\u2192Board of Peace (0.70)=+91.0!** Cumulative TW: **420.93**. Confidence calibration confirmed \u2014 when genuinely confident, higher probability yields much more. Let me continue advancing toward the AO draw (~Jan 15)."
           ]
         }
       ]
@@ -1138,8 +1560,8 @@
     {
       "date": "2026-01-07",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-07.json",
-      "title": "2026-01-07: 3 visible actions",
-      "display_summary": "Opus 4.8 recorded 3 visible action(s).",
+      "title": "2026-01-07: 2 tool calls",
+      "display_summary": "Opus 4.8 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -1162,8 +1584,9 @@
           "event_idx_start": 2148,
           "event_idx_end": 2151,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -1175,6 +1598,9 @@
             2148,
             2149,
             2151
+          ],
+          "model_messages": [
+            "Painful lesson: Greenland talks \u2192 \"White House\" not \"Washington\" (I bet 0.45 on Washington) = -22.8. The resolver matches abbreviations (SDF) but NOT hypernyms (Washington\u2260White House). For \"where\" questions, I must hedge granularity and not over-bet one form. Carney\u2192Qatar also missed. TW: 387.13 (still strong). Let me record this and continue."
           ]
         }
       ]
@@ -1182,8 +1608,8 @@
     {
       "date": "2026-01-08",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-08.json",
-      "title": "2026-01-08: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-08: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1208,6 +1634,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1217,6 +1644,9 @@
           "representative_event_idxs": [
             2165,
             2166
+          ],
+          "model_messages": [
+            "Thailand party poll \u2192 People's Party (0.55) = **+74.9!** Losses: carrier\u2192Abraham Lincoln (I excluded it thinking it was already deployed) -16; Oreshnik\u2192Lviv (over-bet Dnipro 0.35) -19.5. TW: **426.46**. Lesson reinforced: cap uncertain single guesses lower. Let me advance toward the tennis draws."
           ]
         }
       ]
@@ -1224,8 +1654,8 @@
     {
       "date": "2026-01-09",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-09.json",
-      "title": "2026-01-09: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-09: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1250,6 +1680,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1259,6 +1690,9 @@
           "representative_event_idxs": [
             2183,
             2184
+          ],
+          "model_messages": [
+            "Morocco SF\u2192Nigeria (0.33)=+29.5; US trade deficit\u2192Taiwan (0.24)=+33.9! TW: **489.79**. (Missed Grok\u2192Indonesia and Sabalenka-Brisbane\u2192Kostyuk by not submitting \u2014 lesson: act on deferred Qs before they resolve.) Let me advance; AO draw comes ~Jan 15."
           ]
         }
       ]
@@ -1266,8 +1700,8 @@
     {
       "date": "2026-01-10",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-10.json",
-      "title": "2026-01-10: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-10: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1292,6 +1726,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1301,6 +1736,9 @@
           "representative_event_idxs": [
             2206,
             2207
+          ],
+          "model_messages": [
+            "Nipah\u2192West Bengal (I overbet Kerala 0.70!) = -35.7; Iran province\u2192Isfahan (overbet Baluchestan 0.40) = -20.6; but Thailand PM\u2192Natthaphong (0.33)=+45.5. TW: **478.95**. \n\nKey recalibration: reserve high confidence (0.6+) for STRUCTURALLY dominant answers (Board of Peace); use 0.35-0.50 for \"likely but event could be elsewhere\" (Nipah/Oreshnik/Iran province). Let me advance toward the AO draw."
           ]
         }
       ]
@@ -1308,7 +1746,7 @@
     {
       "date": "2026-01-11",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-11.json",
-      "title": "2026-01-11: 7 visible actions",
+      "title": "2026-01-11: 4 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 11,
@@ -1332,8 +1770,9 @@
           "event_idx_start": 2220,
           "event_idx_end": 2247,
           "label": "News research",
-          "summary": "Ran 2 news search(es); used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Ran 2 news search(es); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 7,
+          "tool_call_count": 4,
           "tools": [
             "Bash",
             "Search News",
@@ -1347,6 +1786,11 @@
             2220,
             2232,
             2247
+          ],
+          "model_messages": [
+            "Huge day! Man Utd derby\u2192Carrick (0.38)=+38.5; Somalia separatists\u2192UAE (0.38)=+43.5; funding bill\u2192DHS (0.20)=+22.1; plus Iran/PKK/UAE spreads all caught. **TW: 626.61** (+148!). The spread strategy (3-5 calibrated options, semantic matching) is paying off consistently. Let me check what uncovered questions resolve soon and cover narrowable ones.",
+            "Most uncovered near-term are AO draws (need the draw) and blinds. Let me check if the AO 2026 draw is out yet and find Atletico's Copa del Rey opponent (resolves tomorrow).",
+            "AO draw is **Thursday Jan 15** (tournament Jan 18-Feb 1), so AO questions resolve Jan 18+. I have the seed lists. Let me advance to Jan 15 to do the tennis batch, reacting to resolutions en route."
           ]
         }
       ]
@@ -1354,8 +1798,8 @@
     {
       "date": "2026-01-12",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-12.json",
-      "title": "2026-01-12: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-12: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1380,6 +1824,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1389,6 +1834,9 @@
           "representative_event_idxs": [
             2260,
             2261
+          ],
+          "model_messages": [
+            "Tymoshenko caught at 0.12 (+7.8); but \"Betar\" \u2260 \"Betar US\" in matching (-8.4) \u2014 lesson: resolver matches standard abbreviations (SDF, UAE, PKK) but NOT partial names; include exact forms. TW: **625.99**. Let me advance to the AO draw (Jan 15)."
           ]
         }
       ]
@@ -1396,8 +1844,8 @@
     {
       "date": "2026-01-13",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-13.json",
-      "title": "2026-01-13: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-13: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1422,6 +1870,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1431,6 +1880,9 @@
           "representative_event_idxs": [
             2272,
             2273
+          ],
+          "model_messages": [
+            "SE Asia visa pause\u2192Thailand (0.40)=+43.8! Offset Maine ICE (-17) and Venezuela oil\u2192Qatar (-8.7, Qatar recurring again). TW: **643.73**. Let me advance to Jan 15 for the AO draw, then do the tennis batch with the actual matchups."
           ]
         }
       ]
@@ -1438,8 +1890,8 @@
     {
       "date": "2026-01-14",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-14.json",
-      "title": "2026-01-14: 3 visible actions",
-      "display_summary": "Opus 4.8 recorded 3 visible action(s).",
+      "title": "2026-01-14: 2 tool calls",
+      "display_summary": "Opus 4.8 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -1462,8 +1914,9 @@
           "event_idx_start": 2310,
           "event_idx_end": 2313,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -1475,6 +1928,9 @@
             2310,
             2311,
             2313
+          ],
+          "model_messages": [
+            "Costly overconfidence: \"big armada\"\u2192Middle East (I bet Caribbean 0.50)=-26.7; food aid\u2192Somalia (missed)=-12.7. TW: **604.31**. \n\nCritical realization: questions resolve ON their resolution_date using the TRUE answer (Venus R1 already resolved Jan 14 \u2014 I missed it by deferring). I must predict deferred questions BEFORE their date. The AO draw is Jan 15 \u2014 let me advance and do the tennis batch immediately."
           ]
         }
       ]
@@ -1510,8 +1966,9 @@
           "event_idx_start": 2332,
           "event_idx_end": 2438,
           "label": "Research and forecast updates",
-          "summary": "Submitted 5 forecast update(s); ran 2 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 5 forecast update(s); ran 2 news search(es); advanced the simulation day.",
           "action_count": 11,
+          "tool_call_count": 8,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -1527,6 +1984,11 @@
             2411,
             2438
           ],
+          "model_messages": [
+            "Brutal day from overconfidence: Syria holiday\u2192Newroz (bet Christmas 0.50; my \"Nowruz\" 0.18 didn't even match \"Newroz\" spelling)=-28.6; Ukraine planes\u2192Czech Rep (bet Sweden 0.55)=-33.1; Guehi\u2192Man City (missed)=-22.8. But Walz (0.25)=+30.4, Syria language\u2192Kurdish (0.30)=+20.8. TW: **570.91**.\n\nDECISIVE lesson: my 0.50+ \"educated guesses\" keep losing; cap uncertain bets \u22640.40. Now the AO draw is out (Jan 15) \u2014 these ARE structurally knowable. Let me get the draw.",
+            "AO draw is out. Key projections from coverage: Sabalenka R3\u2192Raducanu (\"in line to face\"), Alcaraz R4\u2192Tommy Paul (projected), Osaka R3\u2192Swiatek (Swiatek's path includes Osaka), Keys R4\u2192Pegula. Let me submit these at moderate confidence (seeds don't always hold), skipping the unseeded-R2 blinds.",
+            "AO batch submitted. Let me advance and continue monitoring resolutions (AFCON final Jan 18, more AO rounds, CL playoff draw late Jan)."
+          ],
           "question_scope": {
             "count": 5,
             "mode": "forecast submissions"
@@ -1536,30 +1998,53 @@
               "question_id": "679570",
               "question_title": "Who will Naomi Osaka face in the Australian Open women's singles third round, according to the official draw by 22 January 2026?",
               "event_idx": 2409,
+              "outcomes": {
+                "Iga Swiatek": 0.48,
+                "Elena Rybakina": 0.08
+              },
               "summary": "Top outcomes: Iga Swiatek 0.48, Elena Rybakina 0.08."
             },
             {
               "question_id": "464874",
               "question_title": "Who will be Aryna Sabalenka\\u2019s next opponent (third round) at the Australian Open by 21 January 2026?",
               "event_idx": 2411,
+              "outcomes": {
+                "Emma Raducanu": 0.38,
+                "Marta Kostyuk": 0.07
+              },
               "summary": "Top outcomes: Emma Raducanu 0.38, Marta Kostyuk 0.07."
             },
             {
               "question_id": "789844",
               "question_title": "Who will Carlos Alcaraz face in the Australian Open men's singles fourth round by January 23, 2026?",
               "event_idx": 2413,
+              "outcomes": {
+                "Tommy Paul": 0.35,
+                "Learner Tien": 0.07
+              },
               "summary": "Top outcomes: Tommy Paul 0.35, Learner Tien 0.07."
             },
             {
               "question_id": "287417",
               "question_title": "Who will Aryna Sabalenka face in the Australian Open women\\u2019s singles quarterfinals by January 25, 2026?",
               "event_idx": 2415,
+              "outcomes": {
+                "Elena Rybakina": 0.16,
+                "Mirra Andreeva": 0.14,
+                "Jasmine Paolini": 0.12,
+                "Belinda Bencic": 0.08
+              },
               "summary": "Top outcomes: Elena Rybakina 0.16, Mirra Andreeva 0.14."
             },
             {
               "question_id": "286957",
               "question_title": "Who will eliminate defending women\\u2019s champion Madison Keys from the 2026 Australian Open by January 26, 2026?",
               "event_idx": 2417,
+              "outcomes": {
+                "Jessica Pegula": 0.24,
+                "Amanda Anisimova": 0.16,
+                "Coco Gauff": 0.06
+              },
               "summary": "Top outcomes: Jessica Pegula 0.24, Amanda Anisimova 0.16."
             }
           ]
@@ -1569,8 +2054,8 @@
     {
       "date": "2026-01-16",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-16.json",
-      "title": "2026-01-16: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-16: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1595,6 +2080,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1604,6 +2090,9 @@
           "representative_event_idxs": [
             2449,
             2450
+          ],
+          "model_messages": [
+            "SDF assault\u2192Raqqa caught at 0.10 = +9.3 (spreads work!). TW: **580.23**. Skipped blinds (NJ primary, Indonesia plane, Karachi mall) = 0, unguessable. Let me advance."
           ]
         }
       ]
@@ -1639,8 +2128,9 @@
           "event_idx_start": 2462,
           "event_idx_end": 2620,
           "label": "Forecast submissions",
-          "summary": "Submitted 25 forecast update(s); used 1 workspace/tool action(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 25 forecast update(s); used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 30,
+          "tool_call_count": 27,
           "tools": [
             "Bash",
             "Submit Forecasts",
@@ -1655,6 +2145,11 @@
             2573,
             2620
           ],
+          "model_messages": [
+            "Strong day: Bangladesh party\u2192NCP (0.28)=+41.9, Portugal runoff\u2192Seguro (0.36)=+45.4, Morocco penalty\u2192Brahim D\u00edaz caught at 0.10=+12.2! TW: **667.17**. Research-backed picks and spreads both paying off. Let me check remaining uncovered questions for more narrowable ones to cover.",
+            "Spreads are consistently profitable, and there are ~28 more narrowable uncovered questions. Let me cover them with calibrated, confidence-capped spreads (lesson: \u22640.40 on uncertain). Batch 1:",
+            "Covered ~28 more questions with calibrated spreads (now ~218 unique). Let me advance and continue monitoring resolutions and remaining deferred draws."
+          ],
           "question_scope": {
             "count": 25,
             "mode": "forecast submissions"
@@ -1664,30 +2159,53 @@
               "question_id": "830793",
               "question_title": "Which country's embassy will Norwegian police say may have been deliberately targeted in a blast in Oslo by March 8, 2026?",
               "event_idx": 2542,
+              "outcomes": {
+                "Israel": 0.42,
+                "United States": 0.12
+              },
               "summary": "Top outcomes: Israel 0.42, United States 0.12."
             },
             {
               "question_id": "338215",
               "question_title": "What embassy in Oslo will Norwegian police say was targeted in a bombing by March 2026?",
               "event_idx": 2544,
+              "outcomes": {
+                "Israeli Embassy": 0.4,
+                "United States Embassy": 0.12
+              },
               "summary": "Top outcomes: Israeli Embassy 0.40, United States Embassy 0.12."
             },
             {
               "question_id": "573851",
               "question_title": "Which country will say it will appeal the 2025 AFCON title ruling to the Court of Arbitration for Sport by March 2026?",
               "event_idx": 2546,
+              "outcomes": {
+                "Morocco": 0.4,
+                "Egypt": 0.12,
+                "Ivory Coast": 0.08
+              },
               "summary": "Top outcomes: Morocco 0.40, Egypt 0.12."
             },
             {
               "question_id": "354370",
               "question_title": "What missile will the United States first launch from HIMARS against Iranian targets by 31 March 2026?",
               "event_idx": 2548,
+              "outcomes": {
+                "ATACMS": 0.38,
+                "PrSM": 0.18,
+                "GMLRS": 0.1
+              },
               "summary": "Top outcomes: ATACMS 0.38, PrSM 0.18."
             },
             {
               "question_id": "68828",
               "question_title": "Which chief executive will publicly say by March 2026 that his company is set to invest another $30bn in OpenAI and that this might be its last investment until OpenAI goes public?",
               "event_idx": 2550,
+              "outcomes": {
+                "Masayoshi Son": 0.38,
+                "Satya Nadella": 0.12,
+                "Larry Ellison": 0.1
+              },
               "summary": "Top outcomes: Masayoshi Son 0.38, Satya Nadella 0.12."
             }
           ]
@@ -1697,8 +2215,8 @@
     {
       "date": "2026-01-18",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-18.json",
-      "title": "2026-01-18: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-18: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1723,6 +2241,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1732,6 +2251,9 @@
           "representative_event_idxs": [
             2632,
             2633
+          ],
+          "model_messages": [
+            "Bulgaria\u2192Iotova (0.25, constitutional successor)=+42.3; al-Shaddadi base\u2192\"Syrian army\" (my \"Syrian government forces\" 0.40 matched)=+59.4! TW: **754.16**. (Lesson: cross-link related questions \u2014 al-Shaddadi was also the answer to Q73.) Let me advance, handling CL playoff draw (~late Jan) and tournaments as they come."
           ]
         }
       ]
@@ -1739,8 +2261,8 @@
     {
       "date": "2026-01-19",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-19.json",
-      "title": "2026-01-19: 3 visible actions",
-      "display_summary": "Opus 4.8 recorded 3 visible action(s).",
+      "title": "2026-01-19: 2 tool calls",
+      "display_summary": "Opus 4.8 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -1763,8 +2285,9 @@
           "event_idx_start": 2652,
           "event_idx_end": 2655,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -1776,6 +2299,9 @@
             2652,
             2653,
             2655
+          ],
+          "model_messages": [
+            "WC boycott FA \u2192 KNVB/Netherlands (I overbet Norway 0.45) = -22.4. Another 0.45 \"educated guess\" loss \u2014 the pattern is now undeniable. TW: **731.78**. I'll cap non-structural guesses at 0.30-0.35 strictly. Let me note this firmly and advance."
           ]
         }
       ]
@@ -1783,8 +2309,8 @@
     {
       "date": "2026-01-20",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-20.json",
-      "title": "2026-01-20: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-20: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1809,6 +2335,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1818,6 +2345,9 @@
           "representative_event_idxs": [
             2675,
             2676
+          ],
+          "model_messages": [
+            "Board of Peace S.Asian\u2192Pakistan (0.68, Day-1 prediction, full weight)=**+88.8!** Key insight: TW averages over ALL active days, so EARLY predictions get full weight while late ones (Sabalenka R3 only -2.8 despite wrong) are diluted. Losses: oldest paintings\u2192Muna (overbet Sulawesi 0.45), Greenland framework\u2192Rutte. TW: **781.79**. Let me advance."
           ]
         }
       ]
@@ -1825,8 +2355,8 @@
     {
       "date": "2026-01-21",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-21.json",
-      "title": "2026-01-21: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-21: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1851,6 +2381,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1860,6 +2391,9 @@
           "representative_event_idxs": [
             2691,
             2692
+          ],
+          "model_messages": [
+            "Ukraine talks\u2192Abu Dhabi (0.24)=+32.7 & mediator\u2192UAE (0.25)=+33.5! But Money League\u2192Liverpool not Man City (I had 0.68) = -36.7 \u2014 lesson: verify CURRENT data (Liverpool won 2024-25 PL\u2192top revenue). Oscars\u2192Sinners (caught at 0.14). TW: **805.06**. Let me advance toward the CL playoff draw (~Jan 28)."
           ]
         }
       ]
@@ -1867,8 +2401,8 @@
     {
       "date": "2026-01-22",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-22.json",
-      "title": "2026-01-22: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-22: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1893,6 +2427,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1902,6 +2437,9 @@
           "representative_event_idxs": [
             2697,
             2698
+          ],
+          "model_messages": [
+            "Alcaraz R4\u2192Tommy Paul (0.35) correct = +13.8 (diluted by late entry). TW: **818.88**. Let me continue advancing toward the CL playoff draw."
           ]
         }
       ]
@@ -1909,8 +2447,8 @@
     {
       "date": "2026-01-23",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-23.json",
-      "title": "2026-01-23: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-23: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -1935,6 +2473,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -1944,6 +2483,9 @@
           "representative_event_idxs": [
             2705,
             2706
+          ],
+          "model_messages": [
+            "Ukraine 2nd-round talks\u2192Abu Dhabi (0.22)=+30.8; Milan Olympics agency\u2192ICE (0.30)=+44.7! TW: **886.39**. Let me advance toward the CL playoff draw (~Jan 28) to cover the Juventus/Newcastle questions."
           ]
         }
       ]
@@ -1979,8 +2521,9 @@
           "event_idx_start": 2736,
           "event_idx_end": 2742,
           "label": "Forecast submissions",
-          "summary": "Submitted 1 forecast update(s); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 2,
           "tools": [
             "Submit Forecasts",
             "Next Day"
@@ -1994,6 +2537,10 @@
             2741,
             2742
           ],
+          "model_messages": [
+            "NFC SB QB\u2192Sam Darnold (0.23)=+31.1 \u2014 this tells me **Seattle is the NFC Super Bowl team**. Keys\u2192Pegula (0.24) also hit. TW: **926.97**. Let me update Q139 (Super Bowl winner) now that I know Seattle is a finalist \u2014 much better than my old 0.13.",
+            "Let me advance to Jan 25 \u2014 the conference championship results will be in the news, letting me pin the AFC finalist for Q139."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -2003,6 +2550,20 @@
               "question_id": "180958",
               "question_title": "Which NFL team will win Super Bowl LX in February 2026?",
               "event_idx": 2737,
+              "outcomes": {
+                "Seattle Seahawks": 0.47,
+                "Denver Broncos": 0.18,
+                "New England Patriots": 0.13,
+                "Buffalo Bills": 0.08,
+                "Los Angeles Chargers": 0.06
+              },
+              "previous_outcomes": {
+                "Los Angeles Rams": 0.15,
+                "Seattle Seahawks": 0.13,
+                "Denver Broncos": 0.13,
+                "Buffalo Bills": 0.11,
+                "Philadelphia Eagles": 0.09
+              },
               "summary": "Top outcomes: Seattle Seahawks 0.47, Denver Broncos 0.18."
             }
           ]
@@ -2040,8 +2601,9 @@
           "event_idx_start": 2748,
           "event_idx_end": 2778,
           "label": "Research and forecast updates",
-          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); advanced the simulation day. Representative forecasts are listed below.",
+          "summary": "Submitted 1 forecast update(s); ran 1 news search(es); advanced the simulation day.",
           "action_count": 6,
+          "tool_call_count": 3,
           "tools": [
             "Search News",
             "Submit Forecasts",
@@ -2057,6 +2619,11 @@
             2771,
             2778
           ],
+          "model_messages": [
+            "Spreads keep winning: Sudan\u2192South Kordofan (0.22)=+30.5; tariff\u2192South Korea (0.18)=+23.3; Gaza kids\u2192Jordan (0.10)=+7.2. TW: **987.96** (near 1000!). Let me get the AFC championship result to refine Q139.",
+            "Super Bowl LX = **Seattle Seahawks vs New England Patriots** (NE beat Denver 10-7; Seattle beat Rams). Let me concentrate Q139 on the two actual finalists \u2014 clearly better than spreading on eliminated teams.",
+            "Q139 updated to the two finalists. Let me advance toward the CL playoff draw and Carabao Cup semifinals (late Jan)."
+          ],
           "question_scope": {
             "count": 1,
             "mode": "forecast submissions"
@@ -2066,6 +2633,17 @@
               "question_id": "180958",
               "question_title": "Which NFL team will win Super Bowl LX in February 2026?",
               "event_idx": 2771,
+              "outcomes": {
+                "Seattle Seahawks": 0.52,
+                "New England Patriots": 0.48
+              },
+              "previous_outcomes": {
+                "Seattle Seahawks": 0.47,
+                "Denver Broncos": 0.18,
+                "New England Patriots": 0.13,
+                "Buffalo Bills": 0.08,
+                "Los Angeles Chargers": 0.06
+              },
               "summary": "Top outcomes: Seattle Seahawks 0.52, New England Patriots 0.48."
             }
           ]
@@ -2075,8 +2653,8 @@
     {
       "date": "2026-01-26",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-26.json",
-      "title": "2026-01-26: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-26: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2101,6 +2679,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2110,6 +2689,9 @@
           "representative_event_idxs": [
             2794,
             2795
+          ],
+          "model_messages": [
+            "UN nuclear meeting\u2192Netherlands (I overbet Russia 0.45) = -31.1 \u2014 yet another 0.45 educated-guess loss (the pattern persists, but most such bets have now resolved). TW: **956.82**. Remaining high-confidence bets are structural (Hezbollah, Real Madrid/Benfica cross-inference). Let me advance toward the CL playoff draw."
           ]
         }
       ]
@@ -2117,8 +2699,8 @@
     {
       "date": "2026-01-27",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-27.json",
-      "title": "2026-01-27: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-27: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2143,6 +2725,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2152,6 +2735,9 @@
           "representative_event_idxs": [
             2805,
             2806
+          ],
+          "model_messages": [
+            "Fury\u2192Makhmudov (overbet AJ 0.42)=-21; but spreads on Herzog/TikTok stayed ~neutral. TW: **936.93**. Let me advance to Jan 28 for the CL playoff draw."
           ]
         }
       ]
@@ -2159,7 +2745,7 @@
     {
       "date": "2026-01-28",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-28.json",
-      "title": "2026-01-28: 5 visible actions",
+      "title": "2026-01-28: 3 tool calls",
       "display_summary": "Ran 2 news search(es).",
       "stats": {
         "event_count_in_shard": 8,
@@ -2185,6 +2771,7 @@
           "label": "News research",
           "summary": "Ran 2 news search(es); advanced the simulation day.",
           "action_count": 5,
+          "tool_call_count": 3,
           "tools": [
             "Search News",
             "Next Day"
@@ -2197,6 +2784,10 @@
             2812,
             2814,
             2859
+          ],
+          "model_messages": [
+            "South Sudan\u2192Jonglei (0.12)=+8.9; W.Africa parties\u2192Burkina Faso (0.25)=+29.3! TW: **956.36**. Let me check the CL playoff draw and Carabao semifinals to cover those deferred questions.",
+            "CL playoff draw structure confirms my Day-1 cross-inference: **Real Madrid (9th) vs Benfica (24th)** \u2014 those Q55999/Q85609 bets at 0.80/0.82 have full time-weighting and will pay off big. Late deferred questions (Newcastle/Juventus, resolve Jan 29) are heavily TW-diluted, so not worth much effort. Let me advance."
           ]
         }
       ]
@@ -2204,8 +2795,8 @@
     {
       "date": "2026-01-29",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-29.json",
-      "title": "2026-01-29: 3 visible actions",
-      "display_summary": "Opus 4.8 recorded 3 visible action(s).",
+      "title": "2026-01-29: 2 tool calls",
+      "display_summary": "Opus 4.8 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 3,
@@ -2228,8 +2819,9 @@
           "event_idx_start": 2872,
           "event_idx_end": 2875,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 3,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -2241,6 +2833,9 @@
             2872,
             2873,
             2875
+          ],
+          "model_messages": [
+            "MASSIVE day: **Benfica\u2194Real Madrid cross-inference (0.82/0.80, Day-1) = +91.4 & +90.7!** Plus Lutnick (0.34)=+47.4, Vonn (0.25)=+36.5. **TW: 1222.35** (+266!). The cross-question inference strategy was the single best play. Let me record and continue."
           ]
         }
       ]
@@ -2248,8 +2843,8 @@
     {
       "date": "2026-01-30",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-30.json",
-      "title": "2026-01-30: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-30: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2274,6 +2869,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2283,6 +2879,9 @@
           "representative_event_idxs": [
             2885,
             2886
+          ],
+          "model_messages": [
+            "Pat Cummins replacement\u2192Dwarshuis (missed, -5.3). TW: **1217.02**. The bulk of high-value predictions are locked in early. Let me keep advancing efficiently, reacting to resolutions."
           ]
         }
       ]
@@ -2290,8 +2889,8 @@
     {
       "date": "2026-01-31",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-01-31.json",
-      "title": "2026-01-31: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-01-31: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2316,6 +2915,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2325,6 +2925,9 @@
           "representative_event_idxs": [
             2892,
             2893
+          ],
+          "model_messages": [
+            "Grammy AOTY\u2192Bad Bunny (0.25, Day-1)=+32.5; AO men\u2192Alcaraz (0.36)=+42.2! TW: **1275.44**. Day-1 predictions paying off with full weight. Let me continue advancing."
           ]
         }
       ]
@@ -2332,8 +2935,8 @@
     {
       "date": "2026-02-01",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-01.json",
-      "title": "2026-02-01: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-01: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2358,6 +2961,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2367,6 +2971,9 @@
           "representative_event_idxs": [
             2902,
             2903
+          ],
+          "model_messages": [
+            "Norwegian PM\u2192Jagland (overbet Solberg 0.45) = -22.8, another 0.45 educated-guess loss (Day-1, full weight). TW: **1252.69**. Remaining high-confidence bets are structural. Let me advance."
           ]
         }
       ]
@@ -2374,8 +2981,8 @@
     {
       "date": "2026-02-02",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-02.json",
-      "title": "2026-02-02: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-02: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2400,6 +3007,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2409,6 +3017,9 @@
           "representative_event_idxs": [
             2914,
             2915
+          ],
+          "model_messages": [
+            "Several skipped blinds resolved (Man City final\u2192Arsenal, Saif Gaddafi killed, market fire\u2192Tehran). Brazil crash\u2192Alagoas (missed, -11). TW: **1241.36**. Note: Saif Gaddafi killed confirms my Q426743 (burial\u2192Sirte) premise. Let me advance."
           ]
         }
       ]
@@ -2416,8 +3027,8 @@
     {
       "date": "2026-02-03",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-03.json",
-      "title": "2026-02-03: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-03: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2442,6 +3053,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2451,6 +3063,9 @@
           "representative_event_idxs": [
             2922,
             2923
+          ],
+          "model_messages": [
+            "SCOTUS map\u2192California (0.50, Day-1 structural)=+73.6! Saif Gaddafi burial\u2192Bani Walid caught at 0.12 (+9.2). TW: **1315.33**. Let me continue toward the Super Bowl (Feb 8) and Winter Olympics."
           ]
         }
       ]
@@ -2458,8 +3073,8 @@
     {
       "date": "2026-02-04",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-04.json",
-      "title": "2026-02-04: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-04: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2484,6 +3099,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2493,6 +3109,9 @@
           "representative_event_idxs": [
             2927,
             2928
+          ],
+          "model_messages": [
+            "No resolutions today. Let me continue advancing."
           ]
         }
       ]
@@ -2500,8 +3119,8 @@
     {
       "date": "2026-02-05",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-05.json",
-      "title": "2026-02-05: 1 visible actions",
-      "display_summary": "Opus 4.8 recorded 1 visible action(s).",
+      "title": "2026-02-05: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2526,6 +3145,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2541,8 +3161,8 @@
     {
       "date": "2026-02-06",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-06.json",
-      "title": "2026-02-06: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-06: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2567,6 +3187,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2576,6 +3197,9 @@
           "representative_event_idxs": [
             2940,
             2941
+          ],
+          "model_messages": [
+            "Both resolved questions were unguessable blinds I skipped (Khosf, D'Onofrio). TW: **1315.33**. Let me advance toward the Super Bowl (Feb 8)."
           ]
         }
       ]
@@ -2583,8 +3207,8 @@
     {
       "date": "2026-02-07",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-07.json",
-      "title": "2026-02-07: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-07: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2609,6 +3233,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2618,6 +3243,9 @@
           "representative_event_idxs": [
             2948,
             2949
+          ],
+          "model_messages": [
+            "Super Bowl\u2192Seattle Seahawks (0.52)=+29.7! Downhill silver\u2192Germany (missed, -15.6). TW: **1329.43**. Let me continue advancing through the Olympics period."
           ]
         }
       ]
@@ -2625,8 +3253,8 @@
     {
       "date": "2026-02-08",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-08.json",
-      "title": "2026-02-08: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-08: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2651,6 +3279,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2660,6 +3289,9 @@
           "representative_event_idxs": [
             2958,
             2959
+          ],
+          "model_messages": [
+            "Indonesia Gaza troops (0.40)=+56.7! Colombia\u2192Gulf Clan caught at 0.15 (semantic match, +12.7); Tripoli (0.20)=+13.2. But Lebanese group\u2192al-Jamaa al-Islamiya (overbet Hezbollah 0.55)=-30. TW: **1381.81**. Let me advance."
           ]
         }
       ]
@@ -2667,8 +3299,8 @@
     {
       "date": "2026-02-09",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-09.json",
-      "title": "2026-02-09: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-09: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2693,6 +3325,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2702,6 +3335,9 @@
           "representative_event_idxs": [
             2967,
             2968
+          ],
+          "model_messages": [
+            "Two big 0.45 wins (well-grounded this time): school shooting\u2192Canada (cross-linked from Q148)=+60.8; US address tensions\u2192Iran=+64.0! TW: **1491.98** (+110!). Nuance confirmed: 0.45 is fine WITH real signal; the losses were ungrounded guesses. Let me continue."
           ]
         }
       ]
@@ -2709,8 +3345,8 @@
     {
       "date": "2026-02-10",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-10.json",
-      "title": "2026-02-10: 1 visible actions",
-      "display_summary": "Opus 4.8 recorded 1 visible action(s).",
+      "title": "2026-02-10: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2735,6 +3371,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2750,8 +3387,8 @@
     {
       "date": "2026-02-11",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-11.json",
-      "title": "2026-02-11: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-11: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2776,6 +3413,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2785,6 +3423,9 @@
           "representative_event_idxs": [
             2978,
             2979
+          ],
+          "model_messages": [
+            "Let me continue advancing (Bangladesh election Feb 12, Olympics ongoing, T20 World Cup mid-Feb)."
           ]
         }
       ]
@@ -2792,8 +3433,8 @@
     {
       "date": "2026-02-12",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-12.json",
-      "title": "2026-02-12: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-12: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2818,6 +3459,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2827,6 +3469,9 @@
           "representative_event_idxs": [
             2986,
             2987
+          ],
+          "model_messages": [
+            "Bangladesh main opposition\u2192Jamaat-e-Islami (0.60, Day-1)=+80.8! Carrier\u2192USS Gerald R. Ford (0.28)=+39.6! TW: **1612.36** (+120!). Day-1 structural calls dominating. Let me advance."
           ]
         }
       ]
@@ -2834,8 +3479,8 @@
     {
       "date": "2026-02-13",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-13.json",
-      "title": "2026-02-13: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-13: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2860,6 +3505,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2869,6 +3515,9 @@
           "representative_event_idxs": [
             2997,
             2998
+          ],
+          "model_messages": [
+            "Navalny toxin\u2192epibatidine (exotic!) \u2014 overbet Novichok 0.50 = -24.4. The benchmark favors surprising answers; \"obvious\" 0.50 calls keep missing. TW: **1587.99**. Remaining high bets (Abu Dhabi oil, Iran WC) are genuinely structural. Let me advance."
           ]
         }
       ]
@@ -2876,8 +3525,8 @@
     {
       "date": "2026-02-14",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-14.json",
-      "title": "2026-02-14: 1 visible actions",
-      "display_summary": "Opus 4.8 recorded 1 visible action(s).",
+      "title": "2026-02-14: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -2902,6 +3551,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2917,8 +3567,8 @@
     {
       "date": "2026-02-15",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-15.json",
-      "title": "2026-02-15: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-15: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2943,6 +3593,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2952,6 +3603,9 @@
           "representative_event_idxs": [
             3007,
             3008
+          ],
+          "model_messages": [
+            "NW Pakistan bomb\u2192Bannu caught at 0.08 (+10.3). TW: **1598.26**. Spreads keep paying. Let me advance."
           ]
         }
       ]
@@ -2959,8 +3613,8 @@
     {
       "date": "2026-02-16",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-16.json",
-      "title": "2026-02-16: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-16: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -2985,6 +3639,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -2994,6 +3649,9 @@
           "representative_event_idxs": [
             3017,
             3018
+          ],
+          "model_messages": [
+            "Halfway point (165/330 resolved), TW: **1584.50**. Mixed day \u2014 Australia T20 caught at 0.08, but several blinds/spreads missed. Let me advance; the Iran-war cluster resolves late Feb-March."
           ]
         }
       ]
@@ -3001,8 +3659,8 @@
     {
       "date": "2026-02-17",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-17.json",
-      "title": "2026-02-17: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-17: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3027,6 +3685,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3036,6 +3695,9 @@
           "representative_event_idxs": [
             3026,
             3027
+          ],
+          "model_messages": [
+            "Iranian frigate\u2192\"IRIS Dena\" \u2014 my \"Dena\" (0.12) didn't match the \"IRIS\" prefix (-4, diluted). Lesson reaffirmed: exact forms. TW: **1580.51**. Let me advance toward Olympics medal events (~Feb 21-22)."
           ]
         }
       ]
@@ -3043,8 +3705,8 @@
     {
       "date": "2026-02-18",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-18.json",
-      "title": "2026-02-18: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-18: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3069,6 +3731,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3078,6 +3741,9 @@
           "representative_event_idxs": [
             3032,
             3033
+          ],
+          "model_messages": [
+            "AI tool\u2192Grok (0.22)=+21.2! TW: **1589.80**. Let me advance toward the Olympics medal/hockey finals (~Feb 21-22)."
           ]
         }
       ]
@@ -3085,8 +3751,8 @@
     {
       "date": "2026-02-19",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-19.json",
-      "title": "2026-02-19: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-19: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3111,6 +3777,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3120,6 +3787,9 @@
           "representative_event_idxs": [
             3041,
             3042
+          ],
+          "model_messages": [
+            "Lebanon command center\u2192Hamas (overbet Hezbollah 0.65)=-21; SA captain\u2192Maharaj=-14. TW: **1554.55**. The benchmark favors non-obvious answers even on \"structural\" calls. Wins still dominate overall. Let me advance toward Olympics finals."
           ]
         }
       ]
@@ -3127,8 +3797,8 @@
     {
       "date": "2026-02-20",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-20.json",
-      "title": "2026-02-20: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-20: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3153,6 +3823,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3162,6 +3833,9 @@
           "representative_event_idxs": [
             3047,
             3048
+          ],
+          "model_messages": [
+            "Greek island\u2192Crete (0.18)=+23.9! Afghan provinces was a pair \"Nangarhar and Paktika\" (format mismatch, -11). TW: **1567.68**. Let me advance to the Olympics finals."
           ]
         }
       ]
@@ -3169,8 +3843,8 @@
     {
       "date": "2026-02-21",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-21.json",
-      "title": "2026-02-21: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-21: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3195,6 +3869,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3204,6 +3879,9 @@
           "representative_event_idxs": [
             3058,
             3059
+          ],
+          "model_messages": [
+            "Olympics: Italy 30 medals (0.38, Day-1)=+58.5; hockey\u2192USA (0.30)=+33.6! France ambassador\u2192\"Charles Kushner\" (I had \"US ambassador\" descriptor \u2014 right entity, wrong format, -19). TW: **1627.16**. Let me advance into the Iran-war resolution period."
           ]
         }
       ]
@@ -3211,8 +3889,8 @@
     {
       "date": "2026-02-22",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-22.json",
-      "title": "2026-02-22: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-22: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3237,6 +3915,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3246,6 +3925,9 @@
           "representative_event_idxs": [
             3063,
             3064
+          ],
+          "model_messages": [
+            "Let me continue advancing into the late-Feb/March resolution period."
           ]
         }
       ]
@@ -3253,8 +3935,8 @@
     {
       "date": "2026-02-23",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-23.json",
-      "title": "2026-02-23: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-23: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3279,6 +3961,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3288,6 +3971,9 @@
           "representative_event_idxs": [
             3069,
             3070
+          ],
+          "model_messages": [
+            "Brazil flooding\u2192Minas Gerais (0.20)=+21.2! TW: **1639.30**. Let me advance."
           ]
         }
       ]
@@ -3295,8 +3981,8 @@
     {
       "date": "2026-02-24",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-24.json",
-      "title": "2026-02-24: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-24: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3321,6 +4007,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3330,6 +4017,9 @@
           "representative_event_idxs": [
             3075,
             3076
+          ],
+          "model_messages": [
+            "UK mosque\u2192Manchester caught at 0.12 (+10.9). TW: **1636.78**. Let me advance."
           ]
         }
       ]
@@ -3337,8 +4027,8 @@
     {
       "date": "2026-02-25",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-25.json",
-      "title": "2026-02-25: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-25: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3363,6 +4053,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3372,6 +4063,9 @@
           "representative_event_idxs": [
             3084,
             3085
+          ],
+          "model_messages": [
+            "US-Iran talks moved to Vienna/Austria (I bet Oman both times, -22.7 & -16.1) \u2014 over-relied on the historical venue. Frenkie de Jong caught (0.15, +16.3). TW: **1603.99**. Let me advance through the Iran-cluster resolutions."
           ]
         }
       ]
@@ -3379,8 +4073,8 @@
     {
       "date": "2026-02-26",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-26.json",
-      "title": "2026-02-26: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-26: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3405,6 +4099,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3414,6 +4109,9 @@
           "representative_event_idxs": [
             3090,
             3091
+          ],
+          "model_messages": [
+            "Senator prediction-markets\u2192Chris Murphy (0.22)=+33.8! TW: **1637.82**. Let me advance."
           ]
         }
       ]
@@ -3421,8 +4119,8 @@
     {
       "date": "2026-02-27",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-27.json",
-      "title": "2026-02-27: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-27: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3447,6 +4145,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3456,6 +4155,9 @@
           "representative_event_idxs": [
             3100,
             3101
+          ],
+          "model_messages": [
+            "The Iran war confirmed! City explosions\u2192Tehran (0.40)=+58.5; Iran can't play WC\u2192Iran (0.55, Day-1)=+78.8; Trump talks\u2192Geneva (0.18)=+26.1! (Specific Iranian school-strike cities like Qazvin/Minab missed.) TW: **1752.21** (+114!). Let me advance through the rest of the cluster."
           ]
         }
       ]
@@ -3463,8 +4165,8 @@
     {
       "date": "2026-02-28",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-02-28.json",
-      "title": "2026-02-28: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-02-28: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3489,6 +4191,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3498,6 +4201,9 @@
           "representative_event_idxs": [
             3115,
             3116
+          ],
+          "model_messages": [
+            "Iran cluster resolving: HIMARS\u2192PrSM (0.18)=+11; Gulf missiles\u2192UAE (0.20)=+16. Key confirmation: **Khamenei was killed** (Hezbollah avenging him) \u2014 validates my Q864964 (Khamenei 0.35, still active). Several specific-city/framing misses. TW: **1737.46**. Let me advance into March."
           ]
         }
       ]
@@ -3505,8 +4211,8 @@
     {
       "date": "2026-03-01",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-01.json",
-      "title": "2026-03-01: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-01: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3531,6 +4237,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3540,6 +4247,9 @@
           "representative_event_idxs": [
             3124,
             3125
+          ],
+          "model_messages": [
+            "Huge day: fruit exporters\u2192S.Africa (0.20)=+29; AWS\u2192Bahrain (0.32)=+42; Taliban\u2192Rawalpindi (0.20)=+30; broadcaster\u2192IRIB (0.25)=+32! TW: **1858.23** (+121!). Spreads catching tops consistently. Let me advance."
           ]
         }
       ]
@@ -3547,8 +4257,8 @@
     {
       "date": "2026-03-02",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-02.json",
-      "title": "2026-03-02: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-02: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3573,6 +4283,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3582,6 +4293,9 @@
           "representative_event_idxs": [
             3134,
             3135
+          ],
+          "model_messages": [
+            "UAE oil facility\u2192Fujairah (overbet Abu Dhabi 0.55) = -18, another 0.55 structural miss. Pakistan talks\u2192US caught (0.15, +17). TW: **1835.71**. Remaining bets are mostly lower-variance spreads now. Let me advance."
           ]
         }
       ]
@@ -3589,8 +4303,8 @@
     {
       "date": "2026-03-03",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-03.json",
-      "title": "2026-03-03: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-03: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3615,6 +4329,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3624,6 +4339,9 @@
           "representative_event_idxs": [
             3141,
             3142
+          ],
+          "model_messages": [
+            "House Oversight Epstein\u2192Pam Bondi (0.20)=+31.2; waterway\u2192Strait of Hormuz (0.18)=+13.8! TW: **1857.86**. Let me advance."
           ]
         }
       ]
@@ -3631,8 +4349,8 @@
     {
       "date": "2026-03-04",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-04.json",
-      "title": "2026-03-04: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-04: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3657,6 +4375,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3666,6 +4385,9 @@
           "representative_event_idxs": [
             3152,
             3153
+          ],
+          "model_messages": [
+            "DoD school strike\u2192US military (0.20)=+16.3; Bahrain refinery caught (0.12, +4.4). Specific Iran/Gulf cities (Doha, Al-Kharj, Parand) missed \u2014 expected for hyper-specific locations. TW: **1836.13**. Let me advance."
           ]
         }
       ]
@@ -3673,8 +4395,8 @@
     {
       "date": "2026-03-05",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-05.json",
-      "title": "2026-03-05: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-05: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3699,6 +4421,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3708,6 +4431,9 @@
           "representative_event_idxs": [
             3158,
             3159
+          ],
+          "model_messages": [
+            "Trump region\u2192Middle East (0.30)=+45.1! TW: **1872.11**. Let me advance."
           ]
         }
       ]
@@ -3715,8 +4441,8 @@
     {
       "date": "2026-03-06",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-06.json",
-      "title": "2026-03-06: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-06: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3741,6 +4467,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3750,6 +4477,9 @@
           "representative_event_idxs": [
             3165,
             3166
+          ],
+          "model_messages": [
+            "Tyre district (0.15)=+19.8; Nepal PM\u2192Balendra Shah caught (0.12)=+16.1; US accused\u2192Iran (0.25)=+23.2! TW: **1931.18** (+59). Let me advance."
           ]
         }
       ]
@@ -3757,8 +4487,8 @@
     {
       "date": "2026-03-07",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-07.json",
-      "title": "2026-03-07: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-07: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3783,6 +4513,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3792,6 +4523,9 @@
           "representative_event_idxs": [
             3172,
             3173
+          ],
+          "model_messages": [
+            "Oslo embassy\u2192US (I had it 2nd at 0.12, small +) \u2014 overbet Israeli. TW: **1933.17**. Let me advance."
           ]
         }
       ]
@@ -3799,8 +4533,8 @@
     {
       "date": "2026-03-08",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-08.json",
-      "title": "2026-03-08: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-08: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3825,6 +4559,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3834,6 +4569,9 @@
           "representative_event_idxs": [
             3180,
             3181
+          ],
+          "model_messages": [
+            "Rough day \u2014 all four missed (Australia missiles\u2192UAE overbet Ukraine 0.38; others). TW: **1893.51**. The early structural calls built a strong lead. Let me advance."
           ]
         }
       ]
@@ -3841,8 +4579,8 @@
     {
       "date": "2026-03-09",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-09.json",
-      "title": "2026-03-09: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-09: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3867,6 +4605,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3876,6 +4615,9 @@
           "representative_event_idxs": [
             3186,
             3187
+          ],
+          "model_messages": [
+            "Iran WC move\u2192Mexico caught (0.18)=+20.1! TW: **1900.63**. Let me advance."
           ]
         }
       ]
@@ -3883,8 +4625,8 @@
     {
       "date": "2026-03-10",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-10.json",
-      "title": "2026-03-10: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-10: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3909,6 +4651,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3918,6 +4661,9 @@
           "representative_event_idxs": [
             3195,
             3196
+          ],
+          "model_messages": [
+            "Central Beirut org\u2192al-Jamaa al-Islamiya (overbet Hezbollah 0.50, 3rd time this group beat my Hezbollah bet) = -26.8. TW: **1863.54**. Lead remains strong from early calls. Let me advance."
           ]
         }
       ]
@@ -3925,8 +4671,8 @@
     {
       "date": "2026-03-11",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-11.json",
-      "title": "2026-03-11: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-11: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3951,6 +4697,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -3960,6 +4707,9 @@
           "representative_event_idxs": [
             3201,
             3202
+          ],
+          "model_messages": [
+            "ODU caught at 0.08 (+3.7). TW: **1858.05**. Let me advance."
           ]
         }
       ]
@@ -3967,8 +4717,8 @@
     {
       "date": "2026-03-12",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-12.json",
-      "title": "2026-03-12: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-12: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -3993,6 +4743,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4002,6 +4753,9 @@
           "representative_event_idxs": [
             3208,
             3209
+          ],
+          "model_messages": [
+            "KC-135 base\u2192Saudi (I had it 3rd but overbet Qatar); Kharg island missed. TW: **1845.92**. Hard specifics dominating the tail. Let me advance."
           ]
         }
       ]
@@ -4009,8 +4763,8 @@
     {
       "date": "2026-03-13",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-13.json",
-      "title": "2026-03-13: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-13: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4035,6 +4789,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4044,6 +4799,9 @@
           "representative_event_idxs": [
             3213,
             3214
+          ],
+          "model_messages": [
+            "Iran launch area\u2192UAE caught (0.12)=+12.4. TW: **1858.31**. Let me advance."
           ]
         }
       ]
@@ -4051,8 +4809,8 @@
     {
       "date": "2026-03-14",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-14.json",
-      "title": "2026-03-14: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-14: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4077,6 +4835,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4086,6 +4845,9 @@
           "representative_event_idxs": [
             3219,
             3220
+          ],
+          "model_messages": [
+            "Strait of Hormuz refuse\u2192Germany (0.20)=+30.5! TW: **1880.32**. Let me advance."
           ]
         }
       ]
@@ -4093,8 +4855,8 @@
     {
       "date": "2026-03-15",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-15.json",
-      "title": "2026-03-15: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-15: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4119,6 +4881,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4128,6 +4891,9 @@
           "representative_event_idxs": [
             3225,
             3226
+          ],
+          "model_messages": [
+            "AFC Women's\u2192Japan (0.30)=+32.6! TW: **1903.66**. Let me advance."
           ]
         }
       ]
@@ -4135,8 +4901,8 @@
     {
       "date": "2026-03-16",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-16.json",
-      "title": "2026-03-16: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-16: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4161,6 +4927,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4170,6 +4937,9 @@
           "representative_event_idxs": [
             3234,
             3235
+          ],
+          "model_messages": [
+            "Israeli official\u2192Katz (0.18)=+22.6; central Israel\u2192Ramat Gan (0.15)=+12.1! (AFCON CAS\u2192Senegal not Morocco; Mexico refinery name mismatch Dos Bocas/Olmeca.) TW: **1908.52**. Let me advance."
           ]
         }
       ]
@@ -4177,8 +4947,8 @@
     {
       "date": "2026-03-17",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-17.json",
-      "title": "2026-03-17: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-17: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4203,6 +4973,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4212,6 +4983,9 @@
           "representative_event_idxs": [
             3241,
             3242
+          ],
+          "model_messages": [
+            "Iran avenging\u2192Ali Larijani not Khamenei (-12.6); MN protest\u2192Bernie Sanders (-11.7). TW: **1884.22**. Let me advance."
           ]
         }
       ]
@@ -4219,8 +4993,8 @@
     {
       "date": "2026-03-18",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-18.json",
-      "title": "2026-03-18: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-18: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4245,6 +5019,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4254,6 +5029,9 @@
           "representative_event_idxs": [
             3249,
             3250
+          ],
+          "model_messages": [
+            "$8.4bn arms\u2192UAE caught (0.12)=+9.8; but Chuck Norris\u2192Hawaii (overbet Texas 0.55)=-31.9, another 0.55 home-state guess wrong. TW: **1862.10**. Let me advance."
           ]
         }
       ]
@@ -4261,8 +5039,8 @@
     {
       "date": "2026-03-19",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-19.json",
-      "title": "2026-03-19: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-19: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4287,6 +5065,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4296,6 +5075,9 @@
           "representative_event_idxs": [
             3259,
             3260
+          ],
+          "model_messages": [
+            "Rough tail day \u2014 all specific-name/location misses (Costa Rica, Bank of America, US Sri Lanka, Iranian Red Crescent). TW: **1822.25**. The early structural calls/cross-inferences built a durable lead. Let me advance through the final stretch."
           ]
         }
       ]
@@ -4303,8 +5085,8 @@
     {
       "date": "2026-03-20",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-20.json",
-      "title": "2026-03-20: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-20: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4329,6 +5111,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4338,6 +5121,9 @@
           "representative_event_idxs": [
             3265,
             3266
+          ],
+          "model_messages": [
+            "Tail misses continue (mass grave\u2192Kenya, Eritrea host\u2192Meknes neutral venue). TW: **1786.74**. Let me advance through the final week."
           ]
         }
       ]
@@ -4345,8 +5131,8 @@
     {
       "date": "2026-03-21",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-21.json",
-      "title": "2026-03-21: 1 visible actions",
-      "display_summary": "Opus 4.8 recorded 1 visible action(s).",
+      "title": "2026-03-21: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 2,
         "action_count": 1,
@@ -4371,6 +5157,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 1,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4386,8 +5173,8 @@
     {
       "date": "2026-03-22",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-22.json",
-      "title": "2026-03-22: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-22: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4412,6 +5199,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4421,6 +5209,9 @@
           "representative_event_idxs": [
             3275,
             3276
+          ],
+          "model_messages": [
+            "TW: **1752.51**. Tail continues (Trump plan\u2192Pakistan, London arson\u2192Al Jazeera). Let me advance."
           ]
         }
       ]
@@ -4428,8 +5219,8 @@
     {
       "date": "2026-03-23",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-23.json",
-      "title": "2026-03-23: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-23: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4454,6 +5245,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4463,6 +5255,9 @@
           "representative_event_idxs": [
             3283,
             3284
+          ],
+          "model_messages": [
+            "Dennis Coyle\u2192UAE caught (0.15, +6.9); IQAir country\u2192Pakistan (0.18, +13.3)! Lukashenko\u2192North Korea (overbet Russia 0.45, -22.5). TW: **1732.65**. Let me advance."
           ]
         }
       ]
@@ -4470,8 +5265,8 @@
     {
       "date": "2026-03-24",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-24.json",
-      "title": "2026-03-24: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-24: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4496,6 +5291,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4505,6 +5301,9 @@
           "representative_event_idxs": [
             3289,
             3290
+          ],
+          "model_messages": [
+            "Australia visitor ban\u2192Iran (0.28)=+43.4! Latvia drone\u2192Ukraine not Russia (overbet 0.50, -27.7). TW: **1748.36**. Let me advance."
           ]
         }
       ]
@@ -4512,8 +5311,8 @@
     {
       "date": "2026-03-25",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-25.json",
-      "title": "2026-03-25: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-25: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4538,6 +5337,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4547,6 +5347,9 @@
           "representative_event_idxs": [
             3298,
             3299
+          ],
+          "model_messages": [
+            "Aid boats\u2192Mexico navy (0.25)=+34.9! (\"Iran\" vs \"Iran's government\" format near-miss, -12.) TW: **1771.48**. Let me advance through the final days."
           ]
         }
       ]
@@ -4554,8 +5357,8 @@
     {
       "date": "2026-03-26",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-26.json",
-      "title": "2026-03-26: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-26: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4580,6 +5383,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4589,6 +5393,9 @@
           "representative_event_idxs": [
             3303,
             3304
+          ],
+          "model_messages": [
+            "TW: **1760.91**. 7 questions left. Let me advance."
           ]
         }
       ]
@@ -4596,8 +5403,8 @@
     {
       "date": "2026-03-27",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-27.json",
-      "title": "2026-03-27: 2 visible actions",
-      "display_summary": "Opus 4.8 recorded 2 visible action(s).",
+      "title": "2026-03-27: 1 tool calls",
+      "display_summary": "Opus 4.8 made 1 tool call(s).",
       "stats": {
         "event_count_in_shard": 3,
         "action_count": 2,
@@ -4622,6 +5429,7 @@
           "label": "Save state and advance day",
           "summary": "Advanced the simulation day.",
           "action_count": 2,
+          "tool_call_count": 1,
           "tools": [
             "Next Day"
           ],
@@ -4631,6 +5439,9 @@
           "representative_event_idxs": [
             3309,
             3310
+          ],
+          "model_messages": [
+            "Armed group\u2192Houthis (0.30)=+42.9! EGA caught at 0.06. TW: **1791.12**. 3 questions left. Let me advance to the final day."
           ]
         }
       ]
@@ -4638,8 +5449,8 @@
     {
       "date": "2026-03-28",
       "trace_path": "runs/opus-4.8/26-06-05-11-17-13/2026-03-28.json",
-      "title": "2026-03-28: 4 visible actions",
-      "display_summary": "Opus 4.8 recorded 4 visible action(s).",
+      "title": "2026-03-28: 2 tool calls",
+      "display_summary": "Opus 4.8 made 2 tool call(s).",
       "stats": {
         "event_count_in_shard": 5,
         "action_count": 4,
@@ -4662,8 +5473,9 @@
           "event_idx_start": 3324,
           "event_idx_end": 3329,
           "label": "Save state and advance day",
-          "summary": "Used 1 workspace/tool action(s); advanced the simulation day.",
+          "summary": "Used 1 workspace/tool call(s); advanced the simulation day.",
           "action_count": 4,
+          "tool_call_count": 2,
           "tools": [
             "Bash",
             "Next Day"
@@ -4675,6 +5487,10 @@
             3324,
             3328,
             3329
+          ],
+          "model_messages": [
+            "**All 330 questions resolved! Final TW-score: 1781.29** (Brier skill 0.060 avg over all questions, 15.5% accuracy including 105 skipped blinds). Let me record the final summary and check if the simulation is complete.",
+            "All questions are resolved. Let me check if the simulation advances further or is complete."
           ]
         }
       ]
