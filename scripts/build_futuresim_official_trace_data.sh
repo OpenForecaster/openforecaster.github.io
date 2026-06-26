@@ -7,15 +7,25 @@ out="$repo/futuresim/traces/data"
 
 args=()
 
+find_source() {
+  local run_dir="$1" source_name="$2"
+  find "$run_dir/agents" -type f -name "$source_name" | head -1
+}
+
 add_run() {
   local agent="$1" slug="$2" model="$3" harness="$4" seed="$5" run_dir="$6" source_name="$7"
   local source
-  source=$(find "$run_dir/agents" -type f -name "$source_name" | head -1)
+  source=$(find_source "$run_dir" "$source_name")
   if [[ -z "$source" ]]; then
     echo "missing $source_name in $run_dir" >&2
     exit 1
   fi
   args+=(--run "$agent|$slug|$model|$harness|$seed|$source")
+}
+
+add_stitched_run() {
+  local agent="$1" slug="$2" model="$3" harness="$4" seed="$5" spec="$6"
+  args+=(--run "$agent|$slug|$model|$harness|$seed|$spec")
 }
 
 require_handholding_v3() {
@@ -44,13 +54,18 @@ add_run "GLM 5.1" glm-5.1 glm-51 "Claude Code" r00 "$official_runs/glm-5.1/26-05
 add_run "GLM 5.1" glm-5.1 glm-51 "Claude Code" r01 "$official_runs/glm-5.1/26-05-05-17-56-54" claude_code_stdout.jsonl
 add_run "GLM 5.1" glm-5.1 glm-51 "Claude Code" r02 "$official_runs/glm-5.1/26-05-04-18-41-13" claude_code_stdout.jsonl
 
-add_run "GPT 5.5" gpt-5.5 gpt-55 Codex r00 "$official_runs/gpt-5.5/26-04-29-02-49-22" codex_stdout.jsonl
-add_run "GPT 5.5" gpt-5.5 gpt-55 Codex r01 "$official_runs/gpt-5.5/26-04-29-21-43-12" codex_stdout.jsonl
-add_run "GPT 5.5" gpt-5.5 gpt-55 Codex r02 "$official_runs/gpt-5.5/26-05-04-02-00-26" codex_stdout.jsonl
+add_run "GPT 5.5" gpt-5.5 gpt-55 Codex r00 "$official_runs/gpt-5.5/26-05-04-02-00-26" codex_stdout.jsonl
+add_run "GPT 5.5" gpt-5.5 gpt-55 Codex r01 "$official_runs/gpt-5.5/26-06-01-14-27-01" codex_stdout.jsonl
 
-add_run "Opus 4.6" opus-4.6 claude-opus-4-6 "Claude Code" r00 "$official_runs/opus-4.6/26-04-29-14-40-20" claude_code_stdout.jsonl
-add_run "Opus 4.6" opus-4.6 claude-opus-4-6 "Claude Code" r01 "$official_runs/opus-4.6/26-04-29-21-40-15" claude_code_stdout.jsonl
-add_run "Opus 4.6" opus-4.6 claude-opus-4-6 "Claude Code" r02 "$official_runs/opus-4.6/26-05-03-16-45-45" claude_code_stdout.jsonl
+add_run "Opus 4.6" opus-4.6 claude-opus-4-6 "Claude Code" r00 "$official_runs/opus-4.6/26-05-03-16-45-45" claude_code_stdout.jsonl
+opus46_stitched=$(
+  printf "%s@2025-12-24;%s@2026-02-06;%s@2026-03-06;%s@2026-03-28" \
+    "$(find_source "$official_runs/opus-4.6/26-05-12-15-42-37" claude_code_stdout.jsonl)" \
+    "$(find_source "$official_runs/opus-4.6/26-05-13-12-58-20" claude_code_stdout.jsonl)" \
+    "$(find_source "$official_runs/opus-4.6/26-05-13-17-50-45" claude_code_stdout.jsonl)" \
+    "$(find_source "$official_runs/opus-4.6/26-05-13-19-45-35" claude_code_stdout.jsonl)"
+)
+add_stitched_run "Opus 4.6" opus-4.6 claude-opus-4-6 "Claude Code" r01 "$opus46_stitched"
 
 add_run "Opus 4.7" opus-4.7 claude-opus-4-7 "Claude Code" r00 "$official_runs/opus-4.7/26-05-17-23-14-12" claude_code_stdout.jsonl
 add_run "Opus 4.7" opus-4.7 claude-opus-4-7 "Claude Code" r01 "$official_runs/opus-4.7/26-05-18-14-59-05" claude_code_stdout.jsonl

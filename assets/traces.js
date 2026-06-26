@@ -1,8 +1,9 @@
 (function () {
   const dataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
-  const state = { manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), workspaceFile: '', loadedRunKey: '' };
+  const state = { manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
   const chartColors = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#047857', '#4f46e5', '#a16207'];
   const workspaceCache = new Map();
+  const summaryCache = new Map();
   let dayObserver = null;
 
   const els = {
@@ -22,6 +23,7 @@
     workspaceStatus: document.getElementById('trace-workspace-status'),
     workspaceFiles: document.getElementById('trace-workspace-files'),
     workspaceContent: document.getElementById('trace-workspace-content'),
+    topButton: document.getElementById('trace-top-button'),
     status: document.getElementById('trace-status'),
     events: document.getElementById('trace-events'),
   };
@@ -31,6 +33,7 @@
       const response = await fetch(dataBase + 'manifest.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.manifest = await response.json();
+      state.summaryRuns = await loadSummaryIndex();
       if (els.rawLink && window.FSIM_RAW_TRACE_URL) els.rawLink.href = window.FSIM_RAW_TRACE_URL;
       populateAgents();
       wireControls();
@@ -46,6 +49,7 @@
       state.agent = els.agent.value;
       state.workspaceFile = '';
       state.currentDays = new Map();
+      state.currentSummary = null;
       state.loadedRunKey = '';
       populateRuns();
       loadSelection();
@@ -54,6 +58,7 @@
       state.runId = els.run.value;
       state.workspaceFile = '';
       state.currentDays = new Map();
+      state.currentSummary = null;
       state.loadedRunKey = '';
       populateDays();
       renderTrajectory();
@@ -64,7 +69,22 @@
       state.workspaceFile = '';
       scrollToDay(state.day);
     });
+    if (els.dayList) {
+      els.dayList.addEventListener('click', (event) => {
+        const button = event.target.closest('.trace-day-button');
+        if (!button || !els.dayList.contains(button)) return;
+        event.preventDefault();
+        selectDay(button.dataset.day);
+      });
+    }
     els.expandEnv.addEventListener('change', renderCurrentRun);
+    if (els.topButton) {
+      els.topButton.addEventListener('click', () => {
+        instantScrollTo(0);
+        requestAnimationFrame(() => instantScrollTo(0));
+        setTimeout(() => instantScrollTo(0), 120);
+      });
+    }
     for (const button of els.metricButtons) {
       button.addEventListener('click', () => {
         state.metric = button.dataset.traceMetric;
@@ -80,7 +100,9 @@
       const run = state.manifest.runs.find((item) => item.agent_slug === slug);
       return { value: slug, label: run.agent_name || slug };
     }));
-    state.agent = els.agent.value;
+    const preferredRun = state.manifest.runs.find(hasSummary) || state.manifest.runs[0];
+    state.agent = preferredRun ? preferredRun.agent_slug : els.agent.value;
+    els.agent.value = state.agent;
     populateRuns();
     const build = state.manifest.created_at_utc ? new Date(state.manifest.created_at_utc).toLocaleDateString() : '';
     els.buildMeta.textContent = `${state.manifest.runs.length} runs${build ? ` - built ${build}` : ''}`;
@@ -90,9 +112,11 @@
     const runs = filteredRuns();
     fillSelect(els.run, runs.map((run) => ({
       value: run.run_id,
-      label: runOptionLabel(run),
+      label: `${runOptionLabel(run)}${hasSummary(run) ? ' · summary' : ''}`,
     })));
-    state.runId = els.run.value;
+    const preferredRun = runs.find((run) => run.run_id === state.runId) || runs.find(hasSummary) || runs[0];
+    state.runId = preferredRun ? preferredRun.run_id : els.run.value;
+    els.run.value = state.runId;
     populateDays();
     renderTrajectory();
   }
@@ -136,6 +160,7 @@
     const days = sortedDays(run);
     if (!run || !days.length) {
       state.currentDays = new Map();
+      state.currentSummary = null;
       state.loadedRunKey = '';
       state.workspaceFile = '';
       renderCurrentRun();
@@ -144,24 +169,34 @@
     const runKey = `${run.agent_slug}/${run.run_id}`;
     state.loadedRunKey = runKey;
     state.currentDays = new Map();
+    state.currentSummary = null;
     renderRunStats(run);
     renderToolList(run);
     renderDayRail();
     renderWorkspace(run);
-    els.status.textContent = `Loading ${days.length} day shards...`;
+    els.status.textContent = `Loading ${days.length} day summaries...`;
     els.events.replaceChildren();
-    const loaded = await Promise.all(days.map(async (day) => {
-      const response = await fetch(dataBase + day.path, { cache: 'no-store' });
-      if (!response.ok) return { meta: day, error: `HTTP ${response.status}` };
-      return { meta: day, payload: await response.json() };
-    }));
+    const summary = await loadRunSummary(run);
     if (state.loadedRunKey !== runKey) return;
-    for (const item of loaded) {
-      if (item.payload) state.currentDays.set(item.meta.date, item.payload);
+    state.currentSummary = summary;
+
+    let loaded = [];
+    if (!summary) {
+      els.status.textContent = `Loading ${days.length} day shards...`;
+      loaded = await Promise.all(days.map(async (day) => {
+        const response = await fetch(dataBase + day.path, { cache: 'no-store' });
+        if (!response.ok) return { meta: day, error: `HTTP ${response.status}` };
+        return { meta: day, payload: await response.json() };
+      }));
+      if (state.loadedRunKey !== runKey) return;
+      for (const item of loaded) {
+        if (item.payload) state.currentDays.set(item.meta.date, item.payload);
+      }
     }
+
     renderCurrentRun();
     const targetDay = options.scrollTo || state.day || (days[0] && days[0].date);
-    if (targetDay) requestAnimationFrame(() => scrollToDay(targetDay, { instant: !options.scrollTo }));
+    if (targetDay) requestAnimationFrame(() => scrollToDay(targetDay, { instant: options.instant || !options.scrollTo }));
     const failures = loaded.filter((item) => item.error);
     if (failures.length) {
       els.status.textContent = `Loaded ${state.currentDays.size}/${days.length} days. ${failures.length} day shard${failures.length === 1 ? '' : 's'} failed.`;
@@ -186,7 +221,7 @@
       els.tools.replaceChildren();
       return;
     }
-    if (!state.currentDays.size) {
+    if (!state.currentDays.size && !state.currentSummary) {
       els.status.textContent = 'Loading run trace...';
       return;
     }
@@ -201,24 +236,202 @@
       if (meta.date === state.day) section.classList.add('is-active');
       section.appendChild(renderDayHeader(meta, day));
 
-      if (!day) {
+      const summaryDay = state.currentSummary && state.currentSummary.dayMap.get(meta.date);
+      if (!day && !summaryDay) {
         section.appendChild(el('div', `Could not load ${meta.path}.`, 'trace-empty'));
         els.events.appendChild(section);
         continue;
       }
 
-      const resultById = resultMap(day.events);
-      const visible = visibleActionEvents(day.events);
+      const resultById = day ? resultMap(day.events) : new Map();
+      const visible = day ? visibleActionEvents(day.events) : [];
       actionCount += visible.length;
-      if (visible.length) section.appendChild(renderRawEventList(visible, resultById));
+      if (summaryDay) section.appendChild(renderSummaryDay(summaryDay, visible, resultById, meta));
+      else if (visible.length) section.appendChild(renderRawEventList(visible, resultById));
       else section.appendChild(el('div', 'No visible actions for this day.', 'trace-empty'));
       els.events.appendChild(section);
     }
 
-    els.status.textContent = `${days.length} days loaded · ${actionCount} visible actions`;
+    if (state.currentSummary) {
+      actionCount = (state.currentSummary.days || []).reduce((sum, day) => sum + Number(day.stats && day.stats.action_count || 0), 0);
+    }
+    els.status.textContent = `${days.length} days loaded · ${actionCount} visible actions · ${state.currentSummary ? 'summarized view, raw actions load on demand' : 'raw view, no summary for this run yet'}`;
     renderToolList(run);
     setActiveDay(state.day || days[0].date);
     setupDayObserver();
+  }
+
+  async function loadRunSummary(run) {
+    const key = runKey(run);
+    if (summaryCache.has(key)) return summaryCache.get(key);
+    try {
+      const response = await fetch(dataBase + `summaries/${run.agent_slug}__${run.run_id}.json`, { cache: 'no-store' });
+      if (!response.ok) {
+        summaryCache.set(key, null);
+        return null;
+      }
+      const summary = await response.json();
+      summary.dayMap = new Map((summary.days || []).map((day) => [day.date, day]));
+      summaryCache.set(key, summary);
+      return summary;
+    } catch (_) {
+      summaryCache.set(key, null);
+      return null;
+    }
+  }
+
+  async function loadSummaryIndex() {
+    try {
+      const response = await fetch(dataBase + 'summaries/index.json', { cache: 'no-store' });
+      if (!response.ok) return new Set();
+      const payload = await response.json();
+      return new Set((payload.runs || []).map((run) => `${run.agent_slug}/${run.run_id}`));
+    } catch (_) {
+      return new Set();
+    }
+  }
+
+  function runKey(run) {
+    return `${run.agent_slug}/${run.run_id}`;
+  }
+
+  function hasSummary(run) {
+    return state.summaryRuns.has(runKey(run));
+  }
+
+  async function loadDayTrace(meta) {
+    if (state.currentDays.has(meta.date)) return state.currentDays.get(meta.date);
+    const response = await fetch(dataBase + meta.path, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const payload = await response.json();
+    state.currentDays.set(meta.date, payload);
+    return payload;
+  }
+
+  function renderSummaryDay(daySummary, visibleEvents, resultById, meta) {
+    const wrap = document.createElement('div');
+    wrap.className = 'trace-summary-day';
+
+    const overview = document.createElement('article');
+    overview.className = 'trace-summary-overview';
+    const title = String(daySummary.title || '').replace(/^20\d{2}-\d{2}-\d{2}:\s*/, '') || 'Day summary';
+    overview.appendChild(el('h3', title));
+    if (daySummary.display_summary) overview.appendChild(el('p', daySummary.display_summary));
+    const stats = daySummary.stats || {};
+    const benchmarkUpdates = Number(stats.benchmark_update_count || 0);
+    const chips = [
+      benchmarkUpdates ? `${benchmarkUpdates} scored qids` : '',
+      benchmarkUpdates && hasMetricValue(stats.brier_update_delta) ? `Brier update ${formatSignedMetric(stats.brier_update_delta, 3)}` : '',
+      benchmarkUpdates && hasMetricValue(stats.top1_update_delta) ? `Top 1 update ${formatSignedMetric(stats.top1_update_delta, 1)} pp` : '',
+      stats.truncated ? 'summary truncated' : '',
+    ].filter(Boolean);
+    if (chips.length) overview.appendChild(renderSummaryChips(chips));
+    wrap.appendChild(overview);
+
+    const segments = daySummary.segments || [];
+    for (const segment of segments) wrap.appendChild(renderSummarySegment(segment, visibleEvents, resultById, meta));
+    if (!segments.length) {
+      wrap.appendChild(renderRawDetails('Raw actions', visibleEvents, resultById, {
+        count: Number(daySummary.stats && daySummary.stats.action_count) || visibleEvents.length,
+        loadEvents: () => loadRawEventsForDay(meta),
+      }));
+    }
+    return wrap;
+  }
+
+  function renderSummarySegment(segment, visibleEvents, resultById, meta) {
+    const bounds = segmentEventBounds(segment);
+    const segmentEvents = visibleEvents.filter((event) => event.idx >= bounds.start && event.idx <= bounds.end);
+    const card = document.createElement('article');
+    card.className = 'trace-summary-segment';
+
+    const header = document.createElement('div');
+    header.className = 'trace-summary-segment-head';
+    header.appendChild(el('h4', segment.label || 'Trace segment'));
+    header.appendChild(el('span', `${segment.action_count || segmentEvents.length} actions`));
+    card.appendChild(header);
+    if (segment.summary) card.appendChild(el('p', segment.summary, 'trace-summary-copy'));
+
+    const chips = [...(segment.notable_facts || []), ...(segment.tools || []).map(prettyToolName)].slice(0, 8);
+    if (chips.length) card.appendChild(renderSummaryChips(chips));
+    if ((segment.representative_forecasts || []).length) card.appendChild(renderRepresentativeForecasts(segment.representative_forecasts));
+    card.appendChild(renderRawDetails('Raw actions', segmentEvents, resultById, {
+      count: Number(segment.action_count) || segmentEvents.length,
+      loadEvents: () => loadRawEventsForSegment(meta, bounds),
+    }));
+    return card;
+  }
+
+  async function loadRawEventsForDay(meta) {
+    const day = await loadDayTrace(meta);
+    return {
+      events: visibleActionEvents(day.events),
+      resultById: resultMap(day.events),
+    };
+  }
+
+  async function loadRawEventsForSegment(meta, bounds) {
+    const raw = await loadRawEventsForDay(meta);
+    return {
+      events: raw.events.filter((event) => event.idx >= bounds.start && event.idx <= bounds.end),
+      resultById: raw.resultById,
+    };
+  }
+
+  function segmentEventBounds(segment) {
+    const range = segment.event_range || {};
+    const start = segment.event_idx_start != null ? segment.event_idx_start : (range.start_idx != null ? range.start_idx : range.start);
+    const end = segment.event_idx_end != null ? segment.event_idx_end : (range.end_idx != null ? range.end_idx : range.end);
+    return {
+      start: start == null ? 0 : Number(start),
+      end: end == null ? Infinity : Number(end),
+    };
+  }
+
+  function renderSummaryChips(values) {
+    const list = document.createElement('div');
+    list.className = 'trace-summary-chips';
+    for (const value of values) list.appendChild(el('span', value));
+    return list;
+  }
+
+  function renderRepresentativeForecasts(forecasts) {
+    const wrap = document.createElement('div');
+    wrap.className = 'trace-summary-forecasts';
+    wrap.appendChild(el('strong', 'Representative forecasts'));
+    const list = document.createElement('ul');
+    for (const forecast of forecasts.slice(0, 5)) {
+      const item = document.createElement('li');
+      const question = forecast.question_title || `Question ${forecast.question_id || ''}`.trim();
+      item.appendChild(el('span', forecast.question_id ? `qid ${forecast.question_id}` : 'forecast', 'trace-summary-qid'));
+      item.appendChild(document.createTextNode(` ${question}`));
+      if (forecast.summary) item.appendChild(el('em', forecast.summary));
+      list.appendChild(item);
+    }
+    wrap.appendChild(list);
+    return wrap;
+  }
+
+  function renderRawDetails(label, events, resultById, options = {}) {
+    const details = document.createElement('details');
+    details.className = 'trace-raw-details';
+    const count = options.count != null ? options.count : events.length;
+    details.appendChild(el('summary', `${label} (${count})`));
+    details.addEventListener('toggle', async () => {
+      if (!details.open || details.dataset.loaded) return;
+      details.dataset.loaded = 'true';
+      const loading = el('div', 'Loading raw actions...', 'trace-empty');
+      details.appendChild(loading);
+      try {
+        const raw = options.loadEvents ? await options.loadEvents() : { events, resultById };
+        loading.remove();
+        if (raw.events.length) details.appendChild(renderRawEventList(raw.events, raw.resultById));
+        else details.appendChild(el('div', 'No visible raw actions in this summary range.', 'trace-empty'));
+      } catch (error) {
+        loading.textContent = `Could not load raw actions (${error.message}).`;
+      }
+    });
+    return details;
   }
 
   function resultMap(events) {
@@ -454,8 +667,9 @@
       acc.actions += Number(day.event_count) || 0;
       acc.toolCalls += Number(day.tool_call_count) || 0;
       acc.forecasts += Number(day.forecast_count) || 0;
+      acc.compactions += Number(day.compaction_count) || 0;
       return acc;
-    }, { actions: 0, toolCalls: 0, forecasts: 0 });
+    }, { actions: 0, toolCalls: 0, forecasts: 0, compactions: 0 });
     const pairs = [
       ['model', run.agent_name || run.agent_slug],
       ['run', runOptionLabel(run)],
@@ -463,6 +677,7 @@
       ['actions', totals.actions],
       ['tool calls', totals.toolCalls],
       ['forecast submits', totals.forecasts],
+      ['recorded compactions', compactionCountLabel(Number(run.compaction_count) || totals.compactions)],
     ];
     for (const [label, value] of pairs) {
       els.stats.appendChild(el('dt', label));
@@ -476,21 +691,27 @@
     const days = sortedDays(run);
     els.dayList.replaceChildren();
     for (const day of days) {
-      const button = document.createElement('button');
-      button.type = 'button';
+      const button = document.createElement('a');
+      button.href = `#trace-day-${day.date}`;
       button.className = `trace-day-button${day.date === state.day ? ' is-active' : ''}`;
       button.dataset.day = day.date;
       button.title = `${formatShortDate(day.date)}\n${day.event_count} actions\n${day.tool_call_count} tool calls\n${day.forecast_count} forecasts`;
       button.setAttribute('aria-pressed', String(day.date === state.day));
       button.appendChild(el('span', formatShortDate(day.date), 'trace-day-date'));
       button.appendChild(el('span', `${day.event_count} actions`, 'trace-day-meta'));
-      button.addEventListener('click', () => selectDay(day.date));
+      button.addEventListener('click', (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        selectDay(day.date);
+      });
       els.dayList.appendChild(button);
     }
   }
 
   function renderToolList(run) {
     const counts = new Map(Object.entries((run && run.tool_counts) || {}));
+    const compactions = Number(run && run.compaction_count) || 0;
+    if (compactions) counts.set('__compactions__', compactions);
     els.tools.replaceChildren();
     for (const [name, count] of [...counts.entries()].sort((a, b) => b[1] - a[1])) {
       const row = document.createElement('div');
@@ -499,7 +720,18 @@
       row.appendChild(el('strong', String(count)));
       els.tools.appendChild(row);
     }
-    if (!counts.size) els.tools.appendChild(el('div', 'No tool calls in this run.'));
+    if (!compactions && run) {
+      const row = document.createElement('div');
+      row.className = 'trace-tool-row';
+      row.appendChild(el('span', 'Context compactions'));
+      row.appendChild(el('strong', 'not recorded'));
+      els.tools.appendChild(row);
+    }
+    if (!counts.size && !run) els.tools.appendChild(el('div', 'No tool calls in this run.'));
+  }
+
+  function compactionCountLabel(count) {
+    return count > 0 ? String(count) : 'not recorded';
   }
 
   function renderWorkspace(run) {
@@ -654,6 +886,7 @@
     if (isSubmitForecastTool(block.name)) return renderForecastTool(block, result);
     if (isBashTool(block.name)) return renderBashTool(block, result);
     if (isSearchNewsTool(block.name)) return renderSearchTool(block, result);
+    if (isNextDayTool(block.name)) return renderNextDayTool(block, result);
 
     const wrap = document.createElement('section');
     wrap.className = `tool-call${result && result.is_error ? ' trace-error' : ''}`;
@@ -727,13 +960,20 @@
   function renderBashTool(block, result) {
     const wrap = document.createElement('section');
     wrap.className = `tool-call tool-call-bash${result && result.is_error ? ' trace-error' : ''}`;
-    wrap.appendChild(el('div', 'Bash', 'tool-terminal-label'));
     const command = bashCommand(block);
+    const details = document.createElement('details');
+    details.className = 'tool-bash-details';
+    details.open = Boolean(result && result.is_error);
+    const summary = document.createElement('summary');
+    summary.appendChild(el('strong', 'Bash'));
+    summary.appendChild(el('code', command ? `$ ${command}` : '$'));
+    details.appendChild(summary);
     const terminal = document.createElement('pre');
     terminal.className = 'tool-terminal';
     terminal.textContent = command ? `$ ${command}` : '$';
-    wrap.appendChild(terminal);
-    appendToolOutput(wrap, result);
+    details.appendChild(terminal);
+    appendToolOutput(details, result);
+    wrap.appendChild(details);
     return wrap;
   }
 
@@ -778,6 +1018,21 @@
     return wrap;
   }
 
+  function renderNextDayTool(block, result) {
+    const wrap = document.createElement('section');
+    wrap.className = `tool-call tool-call-next-day${result && result.is_error ? ' trace-error' : ''}`;
+    const header = document.createElement('div');
+    header.className = 'tool-call-header';
+    const title = document.createElement('div');
+    title.className = 'tool-call-title';
+    title.appendChild(el('strong', 'Next Day'));
+    header.appendChild(title);
+    header.appendChild(el('span', 'advance', 'tool-pill'));
+    wrap.appendChild(header);
+    appendToolOutput(wrap, result);
+    return wrap;
+  }
+
   function appendToolOutput(wrap, result) {
     if (!result) return;
     const details = document.createElement('details');
@@ -791,16 +1046,19 @@
 
   function renderEnvironmentOutput(content) {
     const text = outputText(content);
+    const nextDay = parseNextDayOutput(text);
+    if (nextDay) return renderNextDayOutput(nextDay);
     const chunks = parseNewsChunks(text);
-    if (!chunks.length) return pre(content);
+    if (!chunks.length) return pre(text);
     const list = document.createElement('div');
     list.className = 'news-results';
     for (const chunk of chunks) {
       const item = document.createElement('article');
       item.className = 'news-chunk';
       const header = document.createElement('header');
-      header.appendChild(el('strong', chunk.headline || `Article ${chunk.index}`));
-      const meta = [chunk.source, chunk.published].filter(Boolean).join(' - ');
+      const title = chunk.articleChunk ? `${chunk.headline || 'Article'} (chunk ${chunk.articleChunk})` : chunk.headline || `Article ${chunk.index}`;
+      header.appendChild(el('strong', title));
+      const meta = [chunk.source, chunk.published, chunk.duplicateCount > 1 ? `${chunk.duplicateCount} duplicate hits` : ''].filter(Boolean).join(' - ');
       if (meta) header.appendChild(el('span', meta));
       if (chunk.url) {
         const link = document.createElement('a');
@@ -813,7 +1071,7 @@
       item.appendChild(header);
       const body = document.createElement('details');
       body.className = 'news-body';
-      body.appendChild(el('summary', 'Article chunk'));
+      body.appendChild(el('summary', chunk.articleChunk ? `Article chunk ${chunk.articleChunk}` : `Article result ${chunk.index}`));
       body.appendChild(el('p', chunk.body));
       item.appendChild(body);
       list.appendChild(item);
@@ -823,11 +1081,83 @@
 
   function outputText(content) {
     if (typeof content !== 'string') return preText(content);
+    let text = content;
+    const output = text.match(/(?:^|\n)Output:\s*([\s\S]*)$/);
+    if (output) text = output[1].trim();
     try {
-      const parsed = JSON.parse(content);
+      const parsed = JSON.parse(text);
       if (parsed && typeof parsed.result === 'string') return parsed.result;
     } catch (_) {}
-    return content;
+    return text;
+  }
+
+  function parseNextDayOutput(text) {
+    if (!/^Day advanced to 20\d{2}-\d{2}-\d{2}\./.test(text)) return null;
+    const lines = text.split('\n');
+    const advanced = (lines[0].match(/Day advanced to (20\d{2}-\d{2}-\d{2})/) || [])[1] || '';
+    const articles = (text.match(/([\d,]+) new articles/) || [])[1] || '';
+    const active = (text.match(/(\d+) question\(s\) are still active\./) || [])[1] || '';
+    const important = lines.find((line) => line.startsWith('**IMPORTANT**')) || '';
+    const results = text.match(/## RESULTS SINCE YOUR LAST SESSION[^\n]*\n\n([\s\S]*?)(?=\n## YOUR CUMULATIVE PERFORMANCE|\n## |$)/);
+    const performance = text.match(/## YOUR CUMULATIVE PERFORMANCE[^\n]*\n([\s\S]*)$/);
+    return {
+      advanced,
+      articles,
+      active,
+      important: important.replace(/\*\*/g, ''),
+      results: results ? parseResultBullets(results[1]) : [],
+      performance: performance ? performance[1].trim() : '',
+    };
+  }
+
+  function parseResultBullets(text) {
+    return text.trim().split(/\n(?=- ")/).map((entry) => {
+      const lines = entry.replace(/^- /, '').split('\n').map((line) => line.trim()).filter(Boolean);
+      const question = (lines[0] || '').replace(/^"|"$/g, '');
+      const distribution = (lines.find((line) => line.startsWith('Your prediction distribution:')) || '').replace('Your prediction distribution:', '').trim();
+      const score = lines.find((line) => line.startsWith('Brier:')) || '';
+      return { question, distribution, score };
+    }).filter((item) => item.question);
+  }
+
+  function renderNextDayOutput(data) {
+    const wrap = document.createElement('div');
+    wrap.className = 'next-day-output';
+
+    const summary = document.createElement('div');
+    summary.className = 'next-day-summary';
+    if (data.advanced) summary.appendChild(el('span', `Advanced to ${formatShortDate(data.advanced)}`));
+    if (data.articles) summary.appendChild(el('span', `${data.articles} new articles`));
+    if (data.active) summary.appendChild(el('span', `${data.active} active questions`));
+    wrap.appendChild(summary);
+
+    if (data.important) wrap.appendChild(el('div', data.important, 'next-day-warning'));
+
+    if (data.results.length) {
+      const section = document.createElement('section');
+      section.className = 'next-day-section';
+      section.appendChild(el('strong', 'Resolved since last session'));
+      const list = document.createElement('div');
+      list.className = 'next-day-results';
+      for (const result of data.results) {
+        const item = document.createElement('article');
+        item.appendChild(el('p', result.question));
+        if (result.distribution) item.appendChild(el('span', result.distribution));
+        if (result.score) item.appendChild(el('em', result.score));
+        list.appendChild(item);
+      }
+      section.appendChild(list);
+      wrap.appendChild(section);
+    }
+
+    if (data.performance) {
+      const details = document.createElement('details');
+      details.className = 'next-day-performance';
+      details.appendChild(el('summary', 'Cumulative performance'));
+      details.appendChild(el('pre', data.performance));
+      wrap.appendChild(details);
+    }
+    return wrap;
   }
 
   function parseNewsChunks(text) {
@@ -849,7 +1179,43 @@
         .trim();
       chunks.push({ index, headline, source, published, url, body });
     }
-    return chunks;
+    const unique = [];
+    const duplicates = new Map();
+    const seen = new Map();
+    for (const chunk of chunks) {
+      const key = [normaliseArticleUrl(chunk.url), chunk.headline, chunk.body].join('\n');
+      duplicates.set(key, (duplicates.get(key) || 0) + 1);
+      if (!seen.has(key)) {
+        seen.set(key, chunk);
+        unique.push(chunk);
+      }
+    }
+
+    const articleCounts = new Map();
+    for (const chunk of unique) {
+      const key = articleKey(chunk);
+      articleCounts.set(key, (articleCounts.get(key) || 0) + 1);
+    }
+    const articleSeen = new Map();
+    for (const chunk of unique) {
+      const duplicateKey = [normaliseArticleUrl(chunk.url), chunk.headline, chunk.body].join('\n');
+      chunk.duplicateCount = duplicates.get(duplicateKey) || 1;
+      const key = articleKey(chunk);
+      if (articleCounts.get(key) > 1) {
+        const count = (articleSeen.get(key) || 0) + 1;
+        articleSeen.set(key, count);
+        chunk.articleChunk = count;
+      }
+    }
+    return unique;
+  }
+
+  function normaliseArticleUrl(url) {
+    return String(url || '').split(/[?#]/)[0].replace(/\/$/, '');
+  }
+
+  function articleKey(chunk) {
+    return normaliseArticleUrl(chunk.url) || [chunk.source, chunk.headline].join('\n');
   }
 
   function lineValue(text, key) {
@@ -887,6 +1253,10 @@
     return value.includes('search_news') || prettyToolName(value) === 'Search News';
   }
 
+  function isNextDayTool(name) {
+    return String(name || '').includes('next_day');
+  }
+
   function bashCommand(block) {
     return block.input && (block.input.command || block.input.cmd) ? String(block.input.command || block.input.cmd) : preText(block.input);
   }
@@ -898,6 +1268,7 @@
   }
 
   function prettyToolName(name) {
+    if (name === '__compactions__') return 'Context compactions';
     return String(name || 'tool')
       .replace(/^mcp__forecast__/, '')
       .replace(/_/g, ' ')
@@ -925,10 +1296,11 @@
   }
 
   function selectDay(date) {
-    selectRunDay(state.runId, date);
+    selectRunDay(state.runId, date, { instant: true });
+    jumpToLoadedDay(date);
   }
 
-  function selectRunDay(runId, date) {
+  function selectRunDay(runId, date, options = {}) {
     const targetRun = filteredRuns().find((item) => item.run_id === runId);
     if (!targetRun || !targetRun.days.some((day) => day.date === date)) return;
     const sameRun = targetRun.run_id === state.runId;
@@ -936,19 +1308,61 @@
     els.run.value = state.runId;
     renderTrajectory();
     if (sameRun && state.loadedRunKey === `${state.agent}/${state.runId}` && state.currentDays.size) {
-      scrollToDay(date);
+      scrollToDay(date, options);
       return;
     }
     state.day = date;
     state.workspaceFile = '';
     populateDays(date);
-    loadSelection({ scrollTo: date });
+    loadSelection({ scrollTo: date, instant: options.instant });
   }
 
   function scrollToDay(date, options = {}) {
-    setActiveDay(date, { scrollRail: true });
+    if (options.instant && dayObserver) dayObserver.disconnect();
+    setActiveDay(date, { scrollRail: true, instant: options.instant });
     const section = document.getElementById(`trace-day-${date}`);
-    if (section) section.scrollIntoView({ behavior: options.instant ? 'auto' : 'smooth', block: 'start' });
+    if (section) {
+      if (options.instant) {
+        jumpToSection(section);
+        requestAnimationFrame(() => jumpToSection(section));
+        setTimeout(() => jumpToSection(section), 120);
+        setTimeout(() => {
+          jumpToSection(section);
+          setActiveDay(date, { scrollRail: true, instant: true });
+          setupDayObserver();
+        }, 500);
+      } else {
+        const top = section.getBoundingClientRect().top + window.pageYOffset - 10;
+        window.scrollTo({ top, behavior: 'smooth' });
+      }
+    }
+  }
+
+  function jumpToLoadedDay(date) {
+    const section = document.getElementById(`trace-day-${date}`);
+    if (!section) return;
+    if (dayObserver) dayObserver.disconnect();
+    setActiveDay(date, { scrollRail: true, instant: true });
+    jumpToSection(section);
+    requestAnimationFrame(() => jumpToSection(section));
+    setTimeout(() => jumpToSection(section), 120);
+    setTimeout(() => {
+      jumpToSection(section);
+      setActiveDay(date, { scrollRail: true, instant: true });
+      setupDayObserver();
+    }, 500);
+  }
+
+  function jumpToSection(section) {
+    const top = section.getBoundingClientRect().top + window.pageYOffset - 10;
+    instantScrollTo(top);
+  }
+
+  function instantScrollTo(top) {
+    const previous = document.documentElement.style.scrollBehavior;
+    document.documentElement.style.scrollBehavior = 'auto';
+    window.scrollTo(0, top);
+    document.documentElement.style.scrollBehavior = previous;
   }
 
   function setupDayObserver() {
@@ -976,12 +1390,22 @@
       const active = button.dataset.day === date;
       button.classList.toggle('is-active', active);
       button.setAttribute('aria-pressed', String(active));
-      if (active && options.scrollRail) button.scrollIntoView({ block: 'nearest' });
+      if (active && options.scrollRail) {
+        scrollDayRailToButton(button, options.instant);
+      }
     }
     for (const section of els.events.querySelectorAll('.trace-day-section')) {
       section.classList.toggle('is-active', section.dataset.day === date);
     }
     if (changed) renderWorkspace(selectedRun());
+  }
+
+  function scrollDayRailToButton(button, instant) {
+    const rail = els.dayList.parentElement;
+    if (!rail) return;
+    const left = button.offsetLeft - (rail.clientWidth - button.offsetWidth) / 2;
+    const top = button.offsetTop - (rail.clientHeight - button.offsetHeight) / 2;
+    rail.scrollTo({ left: Math.max(0, left), top: Math.max(0, top), behavior: instant ? 'auto' : 'smooth' });
   }
 
   function showTooltip(tooltip, point, dayMeta, x, y, width, metric, run) {
@@ -1023,6 +1447,16 @@
     const points = value * 100;
     const sign = points > 0 ? '+' : '';
     return `${sign}${points.toFixed(Math.abs(points) >= 10 ? 0 : 1)}pp`;
+  }
+
+  function formatSignedMetric(value, digits) {
+    const number = Number(value);
+    const sign = number > 0 ? '+' : '';
+    return `${sign}${number.toFixed(digits)}`;
+  }
+
+  function hasMetricValue(value) {
+    return value !== null && value !== '' && Number.isFinite(Number(value));
   }
 
   function dayIndex(date) {

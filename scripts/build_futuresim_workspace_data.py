@@ -176,11 +176,10 @@ def tool_file_path(block: dict[str, Any], workspace: Path) -> Path | None:
         try:
             rel = path.relative_to(workspace)
         except ValueError:
-            marker = "/workspace/"
             value = str(path)
-            if marker not in value:
+            rel = virtual_workspace_path(value)
+            if rel is None:
                 return None
-            rel = Path(value.split(marker, 1)[1])
     else:
         rel = path
     if rel.is_absolute() or ".." in rel.parts:
@@ -188,6 +187,15 @@ def tool_file_path(block: dict[str, Any], workspace: Path) -> Path | None:
     if not workspace_file_allowed(rel):
         return None
     return rel
+
+
+def virtual_workspace_path(path: str) -> Path | None:
+    for marker in ["/workspace/", "/home/user/"]:
+        if marker in path:
+            rel = Path(path.split(marker, 1)[1])
+            if workspace_file_allowed(rel):
+                return rel
+    return None
 
 
 def workspace_file_allowed(path: Path) -> bool:

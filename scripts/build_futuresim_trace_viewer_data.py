@@ -58,53 +58,64 @@ def main() -> None:
 
 def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, max_source_events: int = 0) -> dict[str, Any]:
     agent_name, agent_slug, model, harness, seed_label, source = parse_run_spec(spec)
-    source_path = Path(source)
-    if not source_path.exists():
-        raise SystemExit(f"Missing stdout JSONL: {source_path}")
+    source_segments = parse_source_segments(source)
+    final_source_path = source_segments[-1][0]
 
-    run_id = source_path.parents[2].name
+    run_id = final_source_path.parents[2].name
     run_label = run_id
-    harness_name = harness_condition(harness, source_path.parents[2] / "config.json")
+    harness_name = harness_condition(harness, final_source_path.parents[2] / "config.json")
     harness_slug = slugify(harness_name)
     run_dir = output / "runs" / agent_slug / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
 
     days = defaultdict(list)
-    current_day = START_SIM_DATE
-    pending_next_day = False
     turn = 0
+    event_idx = 0
     forecast_history: dict[str, dict[str, float]] = {}
 
-    with source_path.open(encoding="utf-8") as handle:
-        for idx, line in enumerate(handle):
-            if max_source_events and idx >= max_source_events:
-                break
-            if not line.strip():
-                continue
-            raw = json.loads(line)
-            event = normalize_event(raw, idx, current_day.isoformat(), turn)
-            annotate_forecast_history(event, forecast_history)
-            if any(block.get("type") == "tool_use" and "next_day" in block.get("name", "") for block in event["blocks"]):
-                pending_next_day = True
+    for segment_index, (source_path, segment_start) in enumerate(source_segments):
+        segment_end = (
+            source_segments[segment_index + 1][1]
+            if segment_index + 1 < len(source_segments)
+            else None
+        )
+        current_day = segment_start
+        pending_next_day = False
+        with source_path.open(encoding="utf-8") as handle:
+            for line in handle:
+                if segment_end and current_day >= segment_end:
+                    break
+                if max_source_events and event_idx >= max_source_events:
+                    break
+                if not line.strip():
+                    continue
+                raw = json.loads(line)
+                event = normalize_event(raw, event_idx, current_day.isoformat(), turn)
+                event_idx += 1
+                annotate_forecast_history(event, forecast_history)
+                if any(block.get("type") == "tool_use" and "next_day" in block.get("name", "") for block in event["blocks"]):
+                    pending_next_day = True
 
-            if should_keep_event(event):
-                if event["kind"] == "assistant":
-                    turn += 1
-                    event["turn"] = turn
-                days[current_day.isoformat()].append(event)
+                if should_keep_event(event):
+                    if event["kind"] == "assistant":
+                        turn += 1
+                        event["turn"] = turn
+                    days[current_day.isoformat()].append(event)
 
-            advanced = DAY_ADVANCED_RE.search(line)
-            if advanced:
-                current_day = date.fromisoformat(advanced.group(1))
-                pending_next_day = False
-            elif pending_next_day and event_has_tool_result(event):
-                if "When your memory updates are complete" not in line:
-                    current_day += timedelta(days=1)
+                advanced = DAY_ADVANCED_RE.search(line)
+                if advanced:
+                    current_day = date.fromisoformat(advanced.group(1))
                     pending_next_day = False
-            if max_days and len(days) > max_days:
-                break
+                elif pending_next_day and event_has_tool_result(event):
+                    if "When your memory updates are complete" not in line:
+                        current_day += timedelta(days=1)
+                        pending_next_day = False
+                if max_days and len(days) > max_days:
+                    break
+        if max_days and len(days) > max_days:
+            break
 
-    metrics = read_metrics(source_path.parents[2] / "daily_metrics.csv")
+    metrics = read_metrics(final_source_path.parents[2] / "daily_metrics.csv")
     if metrics:
         final_metric_date = max(
             (date.fromisoformat(row["date"]) for row in metrics if row.get("date")),
@@ -140,12 +151,14 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         write_json(shard_path, shard)
         for name, count in tool_counts(events).items():
             run_tool_counts[name] += count
+        compactions = count_compactions(events)
         day_items.append({
             "date": day_key,
             "path": str(shard_path.relative_to(output)),
             "event_count": count_actions(events),
             "tool_call_count": count_tool_calls(events),
             "forecast_count": count_forecasts(events),
+            "compaction_count": compactions,
             "truncated": truncated,
         })
 
@@ -169,8 +182,9 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         "seed_label": seed_label,
         "run_id": run_id,
         "run_label": run_label,
-        "source_filename": source_path.name,
+        "source_filename": final_source_path.name,
         "tool_counts": dict(sorted(run_tool_counts.items(), key=lambda item: (-item[1], item[0]))),
+        "compaction_count": sum(day["compaction_count"] for day in day_items),
         "metrics": metrics,
         "days": day_items,
     }
@@ -181,6 +195,23 @@ def parse_run_spec(spec: str) -> tuple[str, str, str, str, str, str]:
     if len(parts) != 6:
         raise SystemExit("--run must have 6 pipe-separated fields: AGENT|SLUG|MODEL|HARNESS|SEED|PATH")
     return tuple(part.strip() for part in parts)  # type: ignore[return-value]
+
+
+def parse_source_segments(spec: str) -> list[tuple[Path, date]]:
+    segments = []
+    for raw_segment in spec.split(";"):
+        segment = raw_segment.strip()
+        if not segment:
+            continue
+        path_text, _, start_text = segment.partition("@")
+        source_path = Path(path_text)
+        if not source_path.exists():
+            raise SystemExit(f"Missing stdout JSONL: {source_path}")
+        start_day = date.fromisoformat(start_text) if start_text else START_SIM_DATE
+        segments.append((source_path, start_day))
+    if not segments:
+        raise SystemExit("Run source path is empty.")
+    return segments
 
 
 def read_metrics(path: Path) -> list[dict[str, Any]]:
@@ -563,6 +594,10 @@ def count_forecasts(events: list[dict[str, Any]]) -> int:
         for block in event["blocks"]
         if block.get("type") == "tool_use" and "submit_forecasts" in block.get("name", "")
     )
+
+
+def count_compactions(events: list[dict[str, Any]]) -> int:
+    return sum(1 for event in events if event["kind"] == "compaction")
 
 
 def tool_counts(events: list[dict[str, Any]]) -> dict[str, int]:
