@@ -24,6 +24,7 @@ MAX_STRING_CHARS = 20000
 
 
 def main() -> None:
+    global MAX_STRING_CHARS
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
@@ -36,7 +37,9 @@ def main() -> None:
     parser.add_argument("--max-days", type=int, default=0, help="Optional sample-data limit.")
     parser.add_argument("--max-events-per-day", type=int, default=0, help="Optional sample-data limit.")
     parser.add_argument("--max-source-events", type=int, default=0, help="Optional per-run parse limit for local previews.")
+    parser.add_argument("--max-string-chars", type=int, default=MAX_STRING_CHARS, help="Maximum stored length for one raw text field.")
     args = parser.parse_args()
+    MAX_STRING_CHARS = args.max_string_chars
 
     if not args.run:
         raise SystemExit("Pass at least one --run spec.")
@@ -467,8 +470,8 @@ def normalize_opencode_part(kind: str, part: dict[str, Any]) -> tuple[str, list[
 def tool_result_text(part: dict[str, Any]) -> str:
     content = part.get("content", "")
     if isinstance(content, str):
-        return content
-    return compact_text(content, limit=20000)
+        return clean_string(content)
+    return clean_string(compact_text(content, limit=MAX_STRING_CHARS))
 
 
 def annotate_forecast_history(event: dict[str, Any], history: dict[str, dict[str, float]]) -> None:

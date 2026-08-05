@@ -1,0 +1,12 @@
+# World State (as of 2026-03-25)
+- US-Israel war on Iran began Feb 28, 2026 ("Operation Epic Fury"). Trump claims talks underway; Iran FM (Abbas Araghchi) rejects talks; Iran reviewing US 15-point proposal, calls it maximalist.
+- Iran blocked Strait of Hormuz; ~3,200 vessels stranded; 22 ships struck; Iran allows "non-hostile" ships w/ coordination; limited Indian shipping allowed (Mar 14); India says no permission needed (Mar 14).
+- US F-15E Strike Eagles shot down over Kuwait Mar 1 (friendly fire; 6 crew survived). Iran claims downed US jet (F/A-18 claim rejected by CENTCOM, KC-135 crash in Iraq).
+- Iran attacks: missiles/drones at Israel (12 killed south Tehran Mar 25), Erbil high-rise fire, Kuwait airport fuel tank drone strike, Gulf states tell UN sovereignty violated.
+- Energy crisis: Philippines declared national emergency; fuel price rises Pakistan to Egypt; India cooking-gas queues; Japan/others seek oil stockpile releases.
+- Lebanon: Israeli ground ops + Hezbollah fighting; Spain PM: Israel will destroy Lebanon like Gaza; Canada warns Israel on Lebanon sovereignty; Hezbollah chief no talks.
+- Hungary: April election; Tisza (Peter Magyar) leads polls over Orban's Fidesz; Vance visits Budapest Apr 7-8.
+- Denmark PM resigned after no majority. Belarus Lukashenko visited N. Korea. Djibouti election Apr 10 (Guelleh 6th term). 
+- Egypt qualified for 2026 World Cup. Bangladesh removed from T20 WC (boycott) → Scotland replaced. BCB president: Aminul Islam "Bulbul".
+- Miami Open: Rybakina beat Pegula; Sinner in QF; Nadal/Alcaraz talk. Tiger Woods TGL loss, doubts Masters.
+- Iran new security boss: Mohammad Zolghadr. Lukashenko in Pyongyang. Trump-Xi summit Beijing May 14-15.

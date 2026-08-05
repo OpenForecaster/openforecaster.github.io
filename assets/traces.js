@@ -1,12 +1,15 @@
 (function () {
-  const dataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
-  const state = { manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
+  const rootDataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
+  const periodPaths = { '2026-q2': 'q2/', '2026-q1': '' };
+  let dataBase = rootDataBase + periodPaths['2026-q2'];
+  const state = { period: '2026-q2', manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
   const chartColors = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#047857', '#4f46e5', '#a16207'];
   const workspaceCache = new Map();
   const summaryCache = new Map();
   let dayObserver = null;
 
   const els = {
+    period: document.getElementById('trace-period'),
     agent: document.getElementById('trace-agent'),
     run: document.getElementById('trace-run'),
     day: document.getElementById('trace-day'),
@@ -29,14 +32,28 @@
   };
 
   async function init() {
+    if (els.rawLink && window.FSIM_RAW_TRACE_URL) els.rawLink.href = window.FSIM_RAW_TRACE_URL;
+    wireControls();
+    await loadPeriod(state.period);
+  }
+
+  async function loadPeriod(period) {
+    state.period = period;
+    dataBase = rootDataBase + periodPaths[period];
+    state.agent = '';
+    state.runId = '';
+    state.day = '';
+    state.workspaceFile = '';
+    state.currentDays = new Map();
+    state.currentSummary = null;
+    state.loadedRunKey = '';
+    els.status.textContent = `Loading ${els.period.options[els.period.selectedIndex].text} traces...`;
     try {
       const response = await fetch(dataBase + 'manifest.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.manifest = await response.json();
       state.summaryRuns = await loadSummaryIndex();
-      if (els.rawLink && window.FSIM_RAW_TRACE_URL) els.rawLink.href = window.FSIM_RAW_TRACE_URL;
       populateAgents();
-      wireControls();
       await loadSelection();
     } catch (error) {
       els.buildMeta.textContent = 'Trace index unavailable';
@@ -45,6 +62,7 @@
   }
 
   function wireControls() {
+    els.period.addEventListener('change', () => loadPeriod(els.period.value));
     els.agent.addEventListener('change', () => {
       state.agent = els.agent.value;
       state.workspaceFile = '';
@@ -105,7 +123,8 @@
     els.agent.value = state.agent;
     populateRuns();
     const build = state.manifest.created_at_utc ? new Date(state.manifest.created_at_utc).toLocaleDateString() : '';
-    els.buildMeta.textContent = `${state.manifest.runs.length} runs${build ? ` - built ${build}` : ''}`;
+    const period = els.period.options[els.period.selectedIndex].text;
+    els.buildMeta.textContent = `${period} · ${state.manifest.runs.length} runs${build ? ` - built ${build}` : ''}`;
   }
 
   function populateRuns() {
@@ -166,7 +185,7 @@
       renderCurrentRun();
       return;
     }
-    const runKey = `${run.agent_slug}/${run.run_id}`;
+    const runKey = `${state.period}:${run.agent_slug}/${run.run_id}`;
     state.loadedRunKey = runKey;
     state.currentDays = new Map();
     state.currentSummary = null;
@@ -257,7 +276,7 @@
   }
 
   async function loadRunSummary(run) {
-    const key = runKey(run);
+    const key = `${state.period}:${runKey(run)}`;
     if (summaryCache.has(key)) return summaryCache.get(key);
     try {
       const response = await fetch(dataBase + `summaries/${run.agent_slug}__${run.run_id}.json`, { cache: 'no-store' });
@@ -344,7 +363,8 @@
     header.appendChild(el('h4', segment.label || 'Trace segment'));
     card.appendChild(header);
 
-    const chips = [...(segment.notable_facts || []), ...(segment.tools || []).map(prettyToolName)].slice(0, 8);
+    const facts = [...new Set((segment.notable_facts || []).map(summaryFactChip).filter(Boolean))];
+    const chips = [...facts, ...(segment.tools || []).map(prettyToolName)].slice(0, 8);
     if (chips.length) card.appendChild(renderSummaryChips(chips));
     if ((segment.model_messages || []).length) card.appendChild(renderModelMessages(segment.model_messages));
     if ((segment.representative_forecasts || []).length) card.appendChild(renderRepresentativeForecasts(segment.representative_forecasts));
@@ -386,6 +406,17 @@
     list.className = 'trace-summary-chips';
     for (const value of values) list.appendChild(el('span', value));
     return list;
+  }
+
+  function summaryFactChip(value) {
+    const fact = String(value || '').trim();
+    let match = fact.match(/^(\d[\d,]*)\s+(?:dated |targeted )?news search(?:es)?\b/i);
+    if (match) return `${match[1]} news searches`;
+    match = fact.match(/^(\d[\d,]*)\s+forecast submission(?:s)?\b/i);
+    if (match) return `${match[1]} forecast submissions`;
+    match = fact.match(/^(\d[\d,]*)\s+day advance call(?:s)?\b/i);
+    if (match) return `${match[1]} day advance calls`;
+    return '';
   }
 
   function renderModelMessages(messages) {
@@ -488,7 +519,7 @@
 
   async function loadWorkspace(run) {
     if (!run || !run.workspace || !run.workspace.manifest_path) return null;
-    const cacheKey = `${run.agent_slug}/${run.run_id}`;
+    const cacheKey = `${state.period}:${run.agent_slug}/${run.run_id}`;
     if (workspaceCache.has(cacheKey)) return workspaceCache.get(cacheKey);
     try {
       const response = await fetch(dataBase + run.workspace.manifest_path, { cache: 'no-store' });

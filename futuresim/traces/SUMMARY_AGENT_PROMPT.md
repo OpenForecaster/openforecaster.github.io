@@ -138,6 +138,9 @@ Optional segment fields:
 
 - Summarize the agent's observed actions and beliefs, not external truth.
 - Do not invent evidence, outcomes, or question text not present in trace/tool/workspace data.
+- Never copy a trace event's shortened `preview` into `model_messages`, `notable_facts`, or another summary field. When preserving a model message, read and store the complete `blocks[].text` value from the raw event.
+- Do not emit mid-sentence or mid-word fragments. Either preserve the complete source message, write a complete concise paraphrase, or omit the field.
+- `model_messages` must contain exact, complete raw model text for the linked segment. Keep model-message excerpts out of `notable_facts`; the UI renders full model messages separately.
 - Use absolute simulation dates.
 - Keep summaries factual and concise.
 - Preserve uncertainty when the trace was uncertain.

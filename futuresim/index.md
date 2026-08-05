@@ -43,29 +43,50 @@ nav: futuresim
       </a>
     </div>
 
-    <div class="futuresim-hero-media">
-      <figure class="futuresim-hero-video">
-        <video autoplay loop muted playsinline webkit-playsinline preload="auto" poster="{{ '/futuresim/figures/results/futuresim_combined_poster_v2.jpg' | relative_url }}" data-desktop-controls aria-label="FutureSim combined agent trajectory and benchmark animation">
-          <source src="{{ '/futuresim/figures/results/futuresim_combined_v2.mp4' | relative_url }}" type="video/mp4">
-        </video>
+    <section id="leaderboard" class="futuresim-q2-results" data-futuresim-q2-results aria-labelledby="futuresim-q2-title">
+      <div class="futuresim-q2-heading">
+        <h2 id="futuresim-q2-title">2026 Q2 Results</h2>
+        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Q2 result metric">
+          <button type="button" data-futuresim-metric="top1" aria-pressed="true">Top 1</button>
+          <button type="button" data-futuresim-metric="brier" aria-pressed="false">Brier</button>
+        </div>
+      </div>
+      <figure class="futuresim-q2-plot" data-futuresim-plot="top1">
+        <img src="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for six agents evaluated on FutureSim 2026 Q2.">
       </figure>
+      <figure class="futuresim-q2-plot" data-futuresim-plot="brier" hidden>
+        <img src="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for six agents evaluated on FutureSim 2026 Q2.">
+      </figure>
+      <div class="futuresim-q2-writeup">
+        <details class="futuresim-q2-disclosure">
+          <summary><strong>Update: We replayed events from April to June 2026 to test newer frontier models. <a href="{{ '/futuresim/traces/' | relative_url }}">Explore the trajectories.</a></strong></summary>
+          <div class="futuresim-q2-disclosure-content">
+            <ol>
+              <li>OpenAI models (in the Codex harness) continue to show really strong improvements with test-time adaptation, this time GPT 5.6 Sol performs 15k tool calls in one run and is slightly better than 5.5. This indicates they are better at both seeking new information, and learning from events they observe at test-time than Anthropic models, or even open-weight models, which all show a flat curve.</li>
+              <li>Claude has much better calibration than GPT, and starts at a much higher peformance. But claude doesn't really improve much at test-time. GPT 5.6 overtakes Claude in accuracy by the middle of the simulation, and catches up in brier skill score by the end.</li>
+              <li>Both DeepSeek and GLM lag significantly behind, unlike coding evals. DeepSeek has surprisingly poor (negative brier score) calibration. The new V4 Flash does not show the strong test-time adaptation properties of the previous best model from DeepSeek (v4 Pro).</li>
+            </ol>
+          </div>
+        </details>
+        <details class="futuresim-q2-disclosure">
+          <summary><strong>Update: Fixing cross-task leakage, a novel pitfall</strong></summary>
+          <div class="futuresim-q2-disclosure-content">
+            <p>We also made an important correction in our methodology for the Q2 runs. Notably, being the only environment that back-tests forecasting agents in open-ended simulations where they choose which questions to predict on, we found a new form of leakage we had to fix -- cross-task leakage. For example, the US-Iran war was a major theme in 2026 Q1, and thus many questions were about events related to it. This is generally good, correlation within questions allows testing "continual learning", can models learn from resolutions of related questions to update their predictions / reasoning on related active questions? We found the newest models started trying to infer the answers to some questions by looking at the question text of related questions, perhaps related to their increased propensity to reward hack. This is a novel pitfall, which happens only when we move beyond independent question-answering evaluations. We thank users of FutureSim for also bringing this issue to our notice, especially Eternis AI. We now fix it in the released dataset for Q2 by performing a cross-question leakage filtering step. Specifically, for every question, we task frontier agents with predicting the answer with and without access to the other questions. If the prediction is much better with access to other questions, we filter such questions as potentially having cross-task leakage. We hope this observation informs creators of open-ended multi-task evaluations in the future.</p>
+          </div>
+        </details>
+      </div>
+    </section>
 
-      <section class="futuresim-leaderboard" data-futuresim-leaderboard aria-label="Current leaderboard">
-        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Leaderboard metric">
-          <button type="button" data-futuresim-metric="brier_skill_score" aria-pressed="true">Brier</button>
-          <button type="button" data-futuresim-metric="top1_accuracy" aria-pressed="false">Top 1</button>
-        </div>
-        <div class="futuresim-leaderboard-chart" data-futuresim-leaderboard-chart>
-          Loading official run metrics...
-        </div>
-      </section>
-    </div>
+    <hr class="futuresim-section-divider">
+    <h2 class="futuresim-what-title">What is FutureSim?</h2>
+    <figure class="futuresim-hero-video">
+      <video autoplay loop muted playsinline webkit-playsinline preload="auto" poster="{{ '/futuresim/figures/results/futuresim_combined_poster_v2.jpg' | relative_url }}" data-desktop-controls aria-label="FutureSim combined agent trajectory and benchmark animation">
+        <source src="{{ '/futuresim/figures/results/futuresim_combined_v2.mp4' | relative_url }}" type="video/mp4">
+      </video>
+    </figure>
   </div>
 </section>
 
-<script>
-  window.FSIM_TRACE_DATA_BASE = "{{ '/futuresim/traces/data/' | relative_url }}";
-</script>
 <script src="{{ '/assets/futuresim-leaderboard.js' | relative_url }}"></script>
 
 <article class="blog-content" markdown="1">

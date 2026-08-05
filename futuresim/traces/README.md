@@ -2,11 +2,27 @@
 
 Static viewer for official FutureSim leaderboard traces.
 
-The deployed page currently loads `manifest.json`, then a single
-`{agent}/{run}/{simulation_day}.json` shard from the static files checked into
-`futuresim/traces/data/`. Those files are generated from
-`/fast/sgoel/forecasting/current_sim/official_runs_complete` by
-`scripts/build_futuresim_official_trace_data.sh`.
+The deployed page defaults to 2026 Q2 and can switch between two static data
+roots:
+
+- 2026 Q2: `futuresim/traces/data/q2/`
+- 2026 Q1: `futuresim/traces/data/`
+
+Each root contains a manifest, per-day raw trace shards, workspace history, and
+summary overlays. Q1 is generated from `official_runs_complete` with
+`scripts/build_futuresim_official_trace_data.sh`. Q2 is generated from the 19
+selected `Q2results` runs with:
+
+```bash
+scripts/build_futuresim_q2_trace_data.sh
+```
+
+Q2 starts on `2026-03-25`; keep that explicit start date when regenerating
+Codex shards because those stdout records do not carry reliable day-transition
+dates. Q2 raw text fields are capped at 10,000 characters so the published site
+stays below GitHub Pages' 1 GB limit. After generating new summary overlays, place them in
+`data/q2/summaries/`, align their dates and `trace_path` values with the Q2
+manifest, and refresh `data/q2/summaries/index.json`.
 
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.
