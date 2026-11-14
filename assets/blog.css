@@ -251,17 +251,14 @@
   scroll-margin-top: 84px;
 }
 
+/* Period switch on the left, metric switch on the right. */
 .futuresim-q2-heading {
-  position: relative;
-  min-height: 34px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
   margin-bottom: 10px;
-}
-
-.futuresim-q2-heading h2 {
-  margin: 0;
-  padding-right: 150px;
-  font-size: 34px;
-  letter-spacing: 0;
 }
 
 .futuresim-q2-plot {
@@ -277,6 +274,471 @@
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* Interactive FutureSim Q2 chart (assets/futuresim-leaderboard.js) */
+.futuresim-chart {
+  --fsim-ink: rgba(0, 0, 0, 0.88);
+  --fsim-ink-2: rgba(0, 0, 0, 0.6);
+  --fsim-grid: rgba(0, 0, 0, 0.08);
+  --fsim-axis: rgba(0, 0, 0, 0.3);
+  position: relative;
+  min-height: 620px;
+  padding: 16px 18px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: #fff;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: left;
+}
+
+.futuresim-chart.is-ready {
+  min-height: 0;
+}
+
+.futuresim-chart.is-fallback {
+  min-height: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+}
+
+.futuresim-chart img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.fsim-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 10px;
+}
+
+.fsim-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fsim-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 11px 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.fsim-legend button:hover {
+  background: var(--bg-elev);
+  border-color: rgba(0, 0, 0, 0.2);
+}
+
+.fsim-legend button:focus-visible,
+.fsim-plot:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent2), transparent 25%);
+  outline-offset: 2px;
+}
+
+.fsim-legend button[aria-pressed="false"] {
+  color: var(--muted2);
+  text-decoration: line-through;
+}
+
+.fsim-legend button[aria-pressed="false"] .fsim-key {
+  opacity: 0.3;
+}
+
+.fsim-key {
+  display: inline-block;
+  flex: none;
+  width: 16px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--series);
+}
+
+.fsim-band-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 2px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.fsim-band-toggle input {
+  width: 14px;
+  height: 14px;
+  margin: 0;
+  accent-color: var(--accent);
+}
+
+.fsim-plot {
+  position: relative;
+  border-radius: 8px;
+}
+
+.fsim-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  cursor: crosshair;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.fsim-tick {
+  fill: var(--fsim-ink-2);
+  font-size: 20px;
+}
+
+.futuresim-chart.is-compact .fsim-tick {
+  font-size: 15px;
+}
+
+.fsim-axis-title {
+  fill: var(--fsim-ink);
+  font-size: 21px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+}
+
+.futuresim-chart.is-compact .fsim-axis-title {
+  font-size: 15px;
+}
+
+.fsim-tick-y {
+  text-anchor: end;
+  dominant-baseline: central;
+}
+
+.fsim-tick-x {
+  text-anchor: middle;
+}
+
+.fsim-grid line {
+  stroke: var(--fsim-grid);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fsim-grid line.fsim-zero {
+  stroke: rgba(0, 0, 0, 0.4);
+}
+
+.fsim-grid line.fsim-baseline,
+.fsim-grid line.fsim-tickmark {
+  stroke: var(--fsim-axis);
+}
+
+.fsim-bands path {
+  fill-opacity: 0.1;
+  stroke: none;
+  transition: fill-opacity 120ms ease;
+}
+
+.fsim-bands path.is-dimmed {
+  fill-opacity: 0.03;
+}
+
+.fsim-bands path.is-emphasized {
+  fill-opacity: 0.2;
+}
+
+.fsim-lines path {
+  fill: none;
+  stroke-width: 4.25;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  transition: opacity 120ms ease;
+}
+
+.fsim-lines path.is-dimmed {
+  opacity: 0.2;
+}
+
+.fsim-lines path.is-emphasized {
+  stroke-width: 5.5;
+}
+
+.futuresim-chart.is-compact .fsim-lines path {
+  stroke-width: 3.25;
+}
+
+.futuresim-chart.is-compact .fsim-lines path.is-emphasized {
+  stroke-width: 4.25;
+}
+
+.fsim-end {
+  transition: opacity 120ms ease;
+}
+
+.fsim-end.is-dimmed {
+  opacity: 0.3;
+}
+
+.fsim-leader {
+  fill: none;
+  stroke-width: 1.25;
+  opacity: 0.55;
+}
+
+.fsim-badge {
+  fill: #fff;
+  stroke-width: 2;
+}
+
+/* The final value takes its model's colour, set as the fill attribute by the script. */
+.fsim-end-value {
+  font-size: 20px;
+  font-weight: 650;
+  dominant-baseline: central;
+}
+
+.futuresim-chart.is-compact .fsim-end-value {
+  font-size: 14.5px;
+}
+
+.fsim-hover {
+  pointer-events: none;
+}
+
+.fsim-crosshair {
+  stroke: rgba(0, 0, 0, 0.38);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fsim-hover circle {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.fsim-hover circle.is-dimmed {
+  opacity: 0.25;
+}
+
+.fsim-tooltip {
+  position: absolute;
+  z-index: 3;
+  min-width: 250px;
+  padding: 11px 14px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  color: var(--text);
+  font-size: 16.5px;
+  line-height: 1.35;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.fsim-tooltip[hidden] {
+  display: none;
+}
+
+.fsim-tooltip-head {
+  margin-bottom: 6px;
+}
+
+.fsim-tooltip-date {
+  font-weight: 650;
+}
+
+.fsim-tooltip-metric {
+  color: var(--muted2);
+  font-size: 14.5px;
+}
+
+/* Narrow screens: the readout sits under the plot instead of over it. */
+.futuresim-chart.is-compact .fsim-tooltip {
+  position: static;
+  min-width: 0;
+  margin-top: 6px;
+  padding: 8px 10px 9px;
+  background: color-mix(in srgb, var(--bg), #fff 40%);
+  box-shadow: none;
+  font-size: 14.5px;
+}
+
+.futuresim-chart.is-compact .fsim-tooltip-metric,
+.futuresim-chart.is-compact .fsim-tooltip-spread {
+  font-size: 13px;
+}
+
+.futuresim-chart.is-compact .fsim-tooltip-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0 10px;
+}
+
+.futuresim-chart.is-compact .fsim-tooltip-rows {
+  column-gap: 6px;
+}
+
+.fsim-tooltip-rows {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 4px 9px;
+}
+
+.fsim-tooltip-row {
+  display: contents;
+}
+
+.fsim-tooltip-name {
+  overflow: hidden;
+  color: var(--muted);
+  text-overflow: ellipsis;
+}
+
+.fsim-tooltip-value {
+  padding-left: 6px;
+  font-weight: 650;
+  text-align: right;
+}
+
+.fsim-tooltip-spread {
+  color: var(--muted2);
+  font-size: 14.5px;
+  text-align: right;
+}
+
+.fsim-tooltip-row.is-emphasized .fsim-tooltip-name {
+  color: var(--text);
+  font-weight: 650;
+}
+
+.fsim-note {
+  margin: 10px 2px 0;
+  color: var(--muted2);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.fsim-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fsim-table-scroll {
+  overflow-x: auto;
+}
+
+.fsim-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px;
+  font-variant-numeric: lining-nums tabular-nums;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.futuresim-q2-disclosure-content .fsim-table-caption {
+  margin: 0 0 8px;
+  color: var(--muted2);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.fsim-table th,
+.fsim-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--border);
+  text-align: right;
+}
+
+.fsim-table thead th {
+  color: var(--muted);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+/* The model column stays put while the day columns scroll sideways. */
+.fsim-table th:first-child {
+  position: sticky;
+  left: 0;
+  padding-left: 0;
+  background: var(--bg);
+  text-align: left;
+}
+
+/* The colour key hangs in the left padding so a wrapped name keeps its indent. */
+.fsim-table tbody th:first-child {
+  padding-left: 22px;
+}
+
+.fsim-table tbody th {
+  font-weight: 600;
+}
+
+.fsim-table tbody th .fsim-key {
+  position: absolute;
+  top: 15px;
+  left: 0;
+}
+
+.fsim-table-sub {
+  display: block;
+  color: var(--muted2);
+  font-size: 13.5px;
+  font-weight: 400;
+}
+
+.fsim-table-final {
+  font-weight: 650;
+}
+
+.fsim-table-spread {
+  color: var(--muted2);
+  font-weight: 400;
+}
+
+.futuresim-q2-disclosure-content .fsim-table-note {
+  margin: 12px 0 0;
+  font-size: 14px;
+}
+
+.fsim-table-note a {
+  color: #0f766e;
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .futuresim-q2-writeup {
@@ -350,10 +812,6 @@
 }
 
 .futuresim-leaderboard-tabs {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
   display: grid;
   grid-template-columns: 1fr 1fr;
   min-width: 128px;
@@ -364,13 +822,15 @@
 }
 
 .futuresim-leaderboard-tabs button {
-  min-height: 28px;
+  min-height: 32px;
+  padding: 0 14px;
   border: 0;
   border-right: 1px solid var(--border);
   background: transparent;
   color: var(--muted);
   font: inherit;
-  font-size: 11px;
+  font-size: 13px;
+  white-space: nowrap;
   cursor: pointer;
 }
 
@@ -1056,6 +1516,40 @@
   text-decoration-color: var(--accent2);
 }
 
+/* Sponsors: logo beside a one-line note; the note drops below the logo on narrow screens. */
+.sponsor-lead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 26px;
+  margin: 20px 0 0;
+}
+
+.sponsor-lead .sponsor-logo {
+  display: block;
+  flex: none;
+  transition: opacity 160ms ease;
+}
+
+.sponsor-lead .sponsor-logo:hover {
+  opacity: 0.7;
+}
+
+.blog-content .sponsor-lead img {
+  width: auto;
+  height: 28px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.blog-content .sponsor-lead p {
+  flex: 1 1 280px;
+  margin: 0;
+  color: var(--muted);
+}
+
 /* Horizontal rules */
 .blog-content hr {
   border: none;
@@ -1130,22 +1624,62 @@
     gap: 8px;
   }
 
-  .futuresim-q2-heading h2 {
-    padding-right: 0;
-    margin-bottom: 12px;
-    font-size: 26px;
+  /* Both switches share one row and stretch; they stack when the screen is too narrow for that. */
+  .futuresim-leaderboard-tabs {
+    flex: 1 1 auto;
   }
 
-  .futuresim-leaderboard-tabs {
-    position: relative;
-    top: auto;
-    right: auto;
-    width: 100%;
-    margin-bottom: 8px;
+  .futuresim-leaderboard-tabs button {
+    min-height: 36px;
   }
 
   .futuresim-q2-results {
     margin-top: 28px;
+  }
+
+  .futuresim-chart {
+    min-height: 520px;
+    padding: 10px 10px 8px;
+  }
+
+  .fsim-legend button {
+    gap: 5px;
+    padding: 4px 8px 4px 7px;
+    font-size: 12.5px;
+  }
+
+  .fsim-legend .fsim-key {
+    width: 13px;
+  }
+
+  .fsim-band-toggle {
+    font-size: 13px;
+  }
+
+  .fsim-note {
+    font-size: 13px;
+  }
+
+  .fsim-table {
+    font-size: 14px;
+  }
+
+  .fsim-table-sub {
+    font-size: 12.5px;
+  }
+
+  .fsim-table th,
+  .fsim-table td {
+    padding: 7px 8px;
+  }
+
+  .fsim-table tbody th {
+    max-width: 160px;
+    white-space: normal;
+  }
+
+  .fsim-table-sub {
+    white-space: nowrap;
   }
 
   .futuresim-q2-disclosure summary {

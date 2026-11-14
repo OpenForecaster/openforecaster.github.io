@@ -12,14 +12,14 @@ nav: futuresim
       <strong>Co-leads:</strong>
       <a href="https://shash42.github.io" target="_blank">Shashwat Goel</a> ·
       <a href="https://nikhilchandak.github.io/" target="_blank">Nikhil Chandak</a> ·
-      Arvindh Arun
+      <a href="https://arvindh75.github.io/" target="_blank">Arvindh Arun</a>
     </p>
     <p class="authors">
       <strong>Advisors:</strong>
       <a href="https://ameya.prabhu.be/" target="_blank">Ameya Prabhu</a> ·
-      Steffen Staab ·
-      Moritz Hardt ·
-      Maksym Andriushchenko ·
+      <a href="https://www.ki.uni-stuttgart.de/institute/team/Staab-00004/" target="_blank">Steffen Staab</a> ·
+      <a href="https://mrtz.org/" target="_blank">Moritz Hardt</a> ·
+      <a href="https://www.andriushchenko.me/" target="_blank">Maksym Andriushchenko</a> ·
       <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a>
     </p>
     <p class="affiliations">
@@ -37,6 +37,10 @@ nav: futuresim
         <span class="icon" aria-hidden="true" data-icon="github"></span>
         <span>Code</span>
       </a>
+      <a class="chip" href="https://huggingface.co/datasets/nikhilchandak/OpenForesight" target="_blank" rel="noreferrer">
+        <span class="icon" aria-hidden="true" data-icon="hf"></span>
+        <span>Dataset</span>
+      </a>
       <a class="chip" href="{{ '/futuresim/traces/' | relative_url }}">
         <span class="icon" aria-hidden="true" data-icon="pdf"></span>
         <span>Traces</span>
@@ -45,18 +49,28 @@ nav: futuresim
 
     <section id="leaderboard" class="futuresim-q2-results" data-futuresim-q2-results aria-labelledby="futuresim-q2-title">
       <div class="futuresim-q2-heading">
-        <h2 id="futuresim-q2-title">2026 Q2 Results</h2>
-        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Q2 result metric">
+        <h2 id="futuresim-q2-title" class="fsim-visually-hidden"><span data-futuresim-period-label>2026 Q2</span> Results</h2>
+        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Simulation period">
+          <button type="button" data-futuresim-period="2026-q1" aria-pressed="false"
+                  data-src="{{ '/futuresim/data/q1_results.json' | relative_url }}?v={{ site.time | date: '%s' }}"
+                  data-fallback-top1="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}"
+                  data-fallback-brier="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}">2026 Q1</button>
+          <button type="button" data-futuresim-period="2026-q2" aria-pressed="true"
+                  data-src="{{ '/futuresim/data/q2_results.json' | relative_url }}?v={{ site.time | date: '%s' }}"
+                  data-fallback-top1="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}"
+                  data-fallback-brier="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}">2026 Q2</button>
+        </div>
+        <div class="futuresim-leaderboard-tabs" role="group" aria-label="Result metric">
           <button type="button" data-futuresim-metric="top1" aria-pressed="true">Top 1</button>
           <button type="button" data-futuresim-metric="brier" aria-pressed="false">Brier</button>
         </div>
       </div>
-      <figure class="futuresim-q2-plot" data-futuresim-plot="top1">
-        <img src="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for six agents evaluated on FutureSim 2026 Q2.">
-      </figure>
-      <figure class="futuresim-q2-plot" data-futuresim-plot="brier" hidden>
-        <img src="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for six agents evaluated on FutureSim 2026 Q2.">
-      </figure>
+      <div class="futuresim-chart" data-futuresim-chart data-logos="{{ '/assets/logos/' | relative_url }}">
+        <noscript>
+          <img src="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for six agents evaluated on FutureSim 2026 Q2.">
+          <img src="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for six agents evaluated on FutureSim 2026 Q2.">
+        </noscript>
+      </div>
       <div class="futuresim-q2-writeup">
         <details class="futuresim-q2-disclosure">
           <summary><strong>Update: We replayed events from April to June 2026 to test newer frontier models. <a href="{{ '/futuresim/traces/' | relative_url }}">Explore the trajectories.</a></strong></summary>
@@ -74,6 +88,13 @@ nav: futuresim
             <p>We also made an important correction in our methodology for the Q2 runs. Notably, being the only environment that back-tests forecasting agents in open-ended simulations where they choose which questions to predict on, we found a new form of leakage we had to fix -- cross-task leakage. For example, the US-Iran war was a major theme in 2026 Q1, and thus many questions were about events related to it. This is generally good, correlation within questions allows testing "continual learning", can models learn from resolutions of related questions to update their predictions / reasoning on related active questions? We found the newest models started trying to infer the answers to some questions by looking at the question text of related questions, perhaps related to their increased propensity to reward hack. This is a novel pitfall, which happens only when we move beyond independent question-answering evaluations. We thank users of FutureSim for also bringing this issue to our notice, especially Eternis AI. We now fix it in the released dataset for Q2 by performing a cross-question leakage filtering step. Specifically, for every question, we task frontier agents with predicting the answer with and without access to the other questions. If the prediction is much better with access to other questions, we filter such questions as potentially having cross-task leakage. We hope this observation informs creators of open-ended multi-task evaluations in the future.</p>
           </div>
         </details>
+        <details class="futuresim-q2-disclosure" data-futuresim-table hidden>
+          <summary><strong>View the <span data-futuresim-period-label>2026 Q2</span> scores as a table</strong></summary>
+          <div class="futuresim-q2-disclosure-content">
+            <div data-futuresim-table-body></div>
+            <p class="fsim-table-note"><a data-futuresim-download href="{{ '/futuresim/data/q2_results.json' | relative_url }}" download="futuresim_2026_q2_results.json">Download the daily scores for every model (JSON)</a></p>
+          </div>
+        </details>
       </div>
     </section>
 
@@ -87,7 +108,7 @@ nav: futuresim
   </div>
 </section>
 
-<script src="{{ '/assets/futuresim-leaderboard.js' | relative_url }}"></script>
+<script src="{{ '/assets/futuresim-leaderboard.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 
 <article class="blog-content" markdown="1">
 <div class="container" markdown="1">
@@ -237,6 +258,15 @@ Finally, we show how FutureSim flexible design enables experiments on various in
 </section>
 
 This was just a teaser ;) There are many interesting details and analysis in our [paper](https://www.alphaxiv.org/abs/2605.15188). Check them out, and [let us know](https://github.com/OpenForecaster/futuresim/issues) what you think!
+
+## Sponsors {#sponsors}
+
+<div class="sponsor-lead">
+  <a class="sponsor-logo" href="https://exa.ai/" target="_blank" rel="noopener noreferrer">
+    <img src="{{ '/assets/sponsors/exa.svg' | relative_url }}" alt="Exa" width="413" height="129">
+  </a>
+  <p>We thank Exa for providing credits for <a href="https://exa.ai/products/snapshot" target="_blank" rel="noopener noreferrer">Exa Snapshot</a> search for reliable backtesting.</p>
+</div>
 
 </div>
 </article>

@@ -10,7 +10,7 @@ description: "OpenForesight (dataset) and OpenForecaster (model): scaling open-e
     <h1 class="title">Scaling Open-Ended Reasoning<br>To Predict the Future</h1>
     <p class="authors">
       <a href="https://nikhilchandak.github.io/" target="_blank">Nikhil Chandak</a><sup>*</sup> · <a href="https://shash42.github.io" target="_blank">Shashwat Goel</a><sup>*</sup> · <a href="https://ameya.prabhu.be/" target="_blank">Ameya Prabhu</a><sup>†</sup> ·
-      Moritz Hardt<sup>†</sup> · <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a><sup>†</sup>
+      <a href="https://mrtz.org/" target="_blank">Moritz Hardt</a><sup>†</sup> · <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a><sup>†</sup>
     </p>
     <p class="affiliations">
       Max Planck Institute for Intelligent Systems · ELLIS Institute Tübingen · Tübingen AI Center ·
