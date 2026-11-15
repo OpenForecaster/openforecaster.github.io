@@ -18,7 +18,11 @@
 #   FSIM_Q3_RUNS   where the runs are      (default: the clean_runs_Q3v8 folder)
 #   FSIM_Q3_OUT    where to write the data (default: futuresim/traces/data/q3)
 #
-# The day summaries are written by build_futuresim_trace_summaries.py (rule-based, as for Q1).
+# The day summaries get their segments, counts and forecasts from build_futuresim_trace_summaries.py
+# (rule-based, as for Q1) and their day titles and segment labels from scripts/futuresim_q3_summary_text/,
+# which a language model wrote from a digest of each day (futuresim_trace_summary_text.py). That
+# text is only put on a run whose segments are still the ones it was written for. If the traces
+# change, the last step says which runs kept their rule-based text, and the text is to be redone.
 set -euo pipefail
 
 repo=$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)
@@ -68,5 +72,6 @@ add_run "Muse Wonder Full 1.0" muse-wonder-full-1.0 muse-wonder-full-10 Muse r01
 python3 "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 --gzip --hide-host-paths "${args[@]}"
 python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 5000000
 # Every run has the same market.csv (question titles and resolved answers).
-python3 "$repo/scripts/build_futuresim_trace_summaries.py" --data-dir "$out" --overwrite \
+python3 "$repo/scripts/build_futuresim_trace_summaries.py" --data-dir "$out" --overwrite --join-short \
   --market-csv "$q3_runs/muse_aljazeera2026Q3v8_wonderfull_max_exa_r00/26-11-14-15-31-51/market.csv"
+python3 "$repo/scripts/futuresim_trace_summary_text.py" apply --data-dir "$out" --text "$repo/scripts/futuresim_q3_summary_text"

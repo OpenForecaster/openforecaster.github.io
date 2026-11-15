@@ -41,10 +41,26 @@ on `2026-06-24`. It differs from Q1 and Q2 in five ways:
   `/home/<account>/…`) is replaced by a note saying how many lines were left
   out. Do not use this option for Q1 or Q2, whose agents worked directly in a
   cluster folder.
-- The summaries are rule-based, written by
-  `scripts/build_futuresim_trace_summaries.py` as for Q1. A segment ends where
-  the acting agent changes, and a sub-agent's segments are labelled with its
-  name.
+- The summaries get their segments, counts and sample forecasts from
+  `scripts/build_futuresim_trace_summaries.py`, as for Q1, run with
+  `--join-short`. A segment ends where the acting agent changes, a sub-agent's
+  segments are labelled with its name, and a stretch of up to three entries
+  with no research or forecasts (a hand-off to a sub-agent, a closing remark)
+  is folded into its neighbour. The day titles and segment labels, which are
+  what the viewer shows, were then written by a language model from a digest of
+  each day. They are kept in `scripts/futuresim_q3_summary_text/`, one file per
+  run, and the build script puts them on a run only if its segments are still
+  the ones the text was written for.
+
+To redo the Q3 titles and labels after the traces change:
+
+```bash
+python3 scripts/futuresim_trace_summary_text.py digest \
+  --data-dir futuresim/traces/data/q3 --market-csv <run>/market.csv --out <digests>
+# have a model write one JSONL line per day into <text>, as the script's header describes
+python3 scripts/futuresim_trace_summary_text.py apply \
+  --data-dir futuresim/traces/data/q3 --text <text> --keep scripts/futuresim_q3_summary_text
+```
 
 Q2 is generated from the 19 selected `Q2results` runs with:
 

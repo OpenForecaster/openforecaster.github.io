@@ -5,7 +5,7 @@ With a summary, the viewer shows a day as a few titled segments and loads the da
 when one is opened. Without one it loads every day of the run at once.
 
   build_futuresim_trace_summaries.py                    the Q1 data
-  build_futuresim_trace_summaries.py --data-dir futuresim/traces/data/q3 --market-csv <run>/market.csv
+  build_futuresim_trace_summaries.py --data-dir futuresim/traces/data/q3 --market-csv <run>/market.csv --join-short
 """
 import argparse
 import csv
@@ -21,10 +21,11 @@ ROOT = Path(__file__).resolve().parents[1]
 DATA = ROOT / "futuresim/traces/data"
 SUMMARY_DIR = DATA / "summaries"
 DEFAULT_MARKET_CSV = Path("/fast/sgoel/forecasting/current_sim/official_runs_complete/gpt-5.5/26-06-01-14-27-01/market.csv")
+JOIN_SHORT = False
 
 
 def main():
-    global DATA, SUMMARY_DIR
+    global DATA, SUMMARY_DIR, JOIN_SHORT
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--overwrite", action="store_true")
     parser.add_argument("--data-dir", type=Path, default=DATA, help="The trace data to summarise (default: the Q1 data).")
@@ -33,8 +34,14 @@ def main():
         type=Path,
         help="The questions' titles and resolved answers. When given, question titles come from it instead of being searched for in the trace.",
     )
+    parser.add_argument(
+        "--join-short",
+        action="store_true",
+        help="Fold a stretch of up to three entries with no research or forecasts into a neighbouring segment.",
+    )
     args = parser.parse_args()
 
+    JOIN_SHORT = args.join_short
     DATA = args.data_dir.resolve()
     SUMMARY_DIR = DATA / "summaries"
 
@@ -132,18 +139,45 @@ def should_show_event(event):
 
 
 def segment_events(events, target=55):
+    chunks = []
     chunk = []
     for event in events:
-        # A sub-agent's stretch of work is never mixed with the main agent's or another sub-agent's.
+        # A sub-agent's stretch of work is never mixed with another sub-agent's.
         if chunk and event.get("subagent", "") != chunk[-1].get("subagent", ""):
-            yield chunk
+            chunks.append(chunk)
             chunk = []
         chunk.append(event)
         if len(chunk) >= target or any(is_next_day_tool(block.get("name")) for block in tool_blocks(event)):
-            yield chunk
+            chunks.append(chunk)
             chunk = []
     if chunk:
-        yield chunk
+        chunks.append(chunk)
+    return join_short_chunks(chunks) if JOIN_SHORT else chunks
+
+
+def join_short_chunks(chunks):
+    """Fold a short stretch with no research or forecasts into a neighbour.
+
+    The main agent's closing remark joins the stretch it closes, and its one or two calls that
+    hand work to a sub-agent join that sub-agent's stretch, so neither is a segment of its own.
+    """
+    joined = []
+    for chunk in chunks:
+        agent = chunk[0].get("subagent", "")
+        previous = joined[-1] if joined else None
+        previous_agent = previous[-1].get("subagent", "") if previous else None
+        if previous and previous_agent == agent and (is_short(chunk) or is_short(previous)):
+            previous.extend(chunk)
+        elif previous and is_short(previous) and not previous_agent and agent:
+            previous.extend(chunk)
+        else:
+            joined.append(list(chunk))
+    return joined
+
+
+def is_short(chunk):
+    kinds = {tool_kind(block.get("name")) for event in chunk for block in tool_blocks(event)}
+    return len(chunk) <= 3 and not kinds & {"search_news", "submit_forecasts", "next_day"}
 
 
 def summarize_segment(date, index, events, title_by_qid):
@@ -152,7 +186,8 @@ def summarize_segment(date, index, events, title_by_qid):
     forecasts = forecast_examples(events, title_by_qid)
     messages = model_messages(events)
     label = segment_label(counts, forecasts, events)
-    subagent = events[0].get("subagent", "")
+    # The last event, because a segment may open with the main agent's hand-off to the sub-agent.
+    subagent = events[-1].get("subagent", "")
     if subagent:
         label = f"Sub-agent {subagent}: {label[0].lower()}{label[1:]}"
     facts = []
