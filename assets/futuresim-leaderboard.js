@@ -4,8 +4,10 @@
  * scripts/build_futuresim_q1_chart_data.py and build_futuresim_q2_chart_data.py)
  * and draws one SVG line chart with a period switch, a metric switch, a
  * hover/touch/keyboard crosshair that reads every model's score for a day, a
- * legend that shows or hides models, and a table view. A period whose data
- * cannot be loaded shows its static PNG figure instead.
+ * legend that shows or hides models, and a table view. The lines draw in one
+ * after another, best model first, when the chart scrolls into view and when
+ * the period or metric changes. A period whose data cannot be loaded shows its
+ * static PNG figure instead.
  */
 (function () {
   'use strict';
@@ -20,7 +22,7 @@
   const downloadLink = root.querySelector('[data-futuresim-download]');
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg' };
+  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg' };
   const minus = (text) => text.replace('-', '−');
   const fixed = (value, digits) => minus((Math.abs(value) < 0.5 * Math.pow(10, -digits) ? 0 : value).toFixed(digits));
 
@@ -32,7 +34,7 @@
       value: (v) => fixed(v, 1) + '%',
       spread: (v) => '±' + v.toFixed(1),
       end: (v) => fixed(v, 0) + '%',
-      includeZero: false,
+      zeroLine: false,
       floor: 0,
     },
     brier: {
@@ -42,10 +44,16 @@
       value: (v) => fixed(v, 3),
       spread: (v) => '±' + v.toFixed(3),
       end: (v) => fixed(v, 2),
-      includeZero: true,
+      zeroLine: true,
       floor: -Infinity,
     },
   };
+
+  /* Entrance animation timing in ms: the gap between one model starting and the next, and how long
+   * one model takes from the start of its line to the end of its label fade. `series` has to cover
+   * the durations under "Entrance" in blog.css. */
+  const ENTRANCE = { stagger: 90, series: 800 };
+  const motionOK = !(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
 
   const dayFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
   const fullDayFormat = new Intl.DateTimeFormat('en-US', {
@@ -125,7 +133,7 @@
     periodButtons.find((button) => button.getAttribute('aria-pressed') === 'true') || periodButtons[periodButtons.length - 1];
   if (!pressed) return;
   /* What the reader has chosen; it carries over when the period changes. */
-  const selection = { period: pressed.dataset.futuresimPeriod, metric: 'top1', bands: true };
+  const selection = { period: pressed.dataset.futuresimPeriod, metric: 'top1' };
   /* The chart or static figure currently in the host: { setMetric, destroy }. */
   let view = null;
 
@@ -144,10 +152,22 @@
     return { setMetric, destroy: () => host.classList.remove('is-fallback') };
   }
 
-  function chartView(data, period) {
+  /* `immediate`: the reader asked for this chart (a period switch), so its entrance animation plays
+   * at once instead of waiting for the plot to be scrolled into view. */
+  function chartView(data, period, immediate) {
     const dates = data.dates.map((value) => new Date(value + 'T00:00:00Z'));
     const count = dates.length;
     const models = data.models;
+    /* A metric with a zero line (Brier skill score: zero is the no-prediction baseline) gets that line,
+     * and an axis that reaches it, only in a period where some model comes down to zero. Decided once
+     * from every model's ±1 std band, so it does not come and go as models are hidden in the legend.
+     * Where every model stays above zero the axis fits the scores instead. */
+    const showZero = {};
+    for (const [name, metric] of Object.entries(METRICS)) {
+      showZero[name] =
+        metric.zeroLine &&
+        models.some((model) => model[metric.key].mean.some((mean, i) => mean - model[metric.key].std[i] <= 0));
+    }
     const logoBase = host.dataset.logos || '';
     const state = {
       metric: selection.metric,
@@ -155,14 +175,22 @@
       emphasis: null,
       index: null,
       pointerY: null,
-      bands: selection.bands,
     };
     let geometry = null;
+    /* Entrance animation: 'waiting' until the plot is in view, 'playing' while the lines draw in,
+     * then 'idle'. A new chart starts out waiting, so it animates the first time it is seen. */
+    let entrance = motionOK ? 'waiting' : 'idle';
+    let entranceTimer = 0;
+    let entranceLength = 0;
+    let inView = typeof IntersectionObserver !== 'function';
+    /* Only the chart drawn at page load waits to be seen. Once the animation has played, or the reader
+     * has switched period or metric, it never holds the lines back again. */
+    let waitForView = !immediate;
 
     host.textContent = '';
     host.classList.add('is-ready');
 
-    /* ---- toolbar: legend + band toggle ---- */
+    /* ---- toolbar: legend ---- */
     const toolbar = html('div', 'fsim-toolbar', null, host);
     const legend = html('ul', 'fsim-legend', null, toolbar);
     legend.setAttribute('aria-label', 'Models. Select one to show or hide it.');
@@ -182,15 +210,6 @@
       button.addEventListener('blur', () => setEmphasis(null));
       legendButtons.set(model.id, button);
     }
-    const bandLabel = html('label', 'fsim-band-toggle', null, toolbar);
-    const bandInput = html('input', '', null, bandLabel);
-    bandInput.type = 'checkbox';
-    bandInput.checked = state.bands;
-    html('span', '', '±1 std bands', bandLabel);
-    bandInput.addEventListener('change', () => {
-      selection.bands = state.bands = bandInput.checked;
-      render();
-    });
 
     /* ---- plot ---- */
     const plot = html('div', 'fsim-plot', null, host);
@@ -207,7 +226,7 @@
       'p',
       'fsim-note',
       'Hover or tap the chart to read every model on a given day. Select a model name to hide or show it. ' +
-        'Lines are means over seeds; bands are ±1 standard deviation from a bootstrap over questions and seeds.',
+        'Lines are means over seeds.',
       host
     );
 
@@ -239,9 +258,39 @@
       });
     }
 
-    function render() {
+    function playEntrance(animate, seriesCount, now) {
+      clearTimeout(entranceTimer);
+      host.classList.toggle('is-entering', animate);
+      host.classList.remove('is-waiting');
+      if (!animate) {
+        entrance = 'idle';
+        return;
+      }
+      entranceLength = Math.max(0, seriesCount - 1) * ENTRANCE.stagger + ENTRANCE.series;
+      if (now) waitForView = false;
+      if (inView || !waitForView) {
+        startEntrance();
+      } else {
+        entrance = 'waiting';
+        host.classList.add('is-waiting');
+      }
+    }
+
+    function startEntrance() {
+      waitForView = false;
+      entrance = 'playing';
+      host.classList.remove('is-waiting');
+      entranceTimer = setTimeout(() => {
+        entrance = 'idle';
+        host.classList.remove('is-entering');
+      }, entranceLength);
+    }
+
+    /* `enter` replays the entrance animation. A redraw while one is waiting or playing restarts it. */
+    function render(enter) {
       const metric = METRICS[state.metric];
       const visible = visibleModels();
+      const animate = motionOK && (enter === true || entrance !== 'idle');
       const width = Math.max(280, Math.round(plot.clientWidth));
       const compact = width < 560;
       const height = compact ? 360 : Math.round(Math.min(540, Math.max(440, width * 0.56)));
@@ -253,17 +302,17 @@
       for (const model of visible) {
         const series = model[metric.key];
         for (let i = 0; i < count; i += 1) {
-          const spread = state.bands ? series.std[i] : 0;
-          lo = Math.min(lo, series.mean[i] - spread);
-          hi = Math.max(hi, series.mean[i] + spread);
+          lo = Math.min(lo, series.mean[i] - series.std[i]);
+          hi = Math.max(hi, series.mean[i] + series.std[i]);
         }
       }
-      if (metric.includeZero) {
+      if (showZero[state.metric]) {
         lo = Math.min(lo, 0);
         hi = Math.max(hi, 0);
       }
       const pad = (hi - lo || 1) * 0.06;
-      lo = Math.max(metric.floor, lo - pad);
+      /* The padding never takes an all-positive range below zero. */
+      lo = Math.max(lo > 0 ? 0 : metric.floor, lo - pad);
       hi += pad;
 
       const step = niceStep((hi - lo) / (compact ? 4 : 5));
@@ -324,7 +373,7 @@
             x2: margin.left + plotWidth,
             y1: ty,
             y2: ty,
-            class: isZero && metric.includeZero ? 'fsim-zero' : '',
+            class: isZero && showZero[state.metric] ? 'fsim-zero' : '',
           },
           grid
         );
@@ -364,30 +413,35 @@
       }
       svg('line', { x1: margin.left, x2: margin.left + plotWidth, y1: margin.top + plotHeight, y2: margin.top + plotHeight, class: 'fsim-baseline' }, grid);
 
-      /* bands under every line, then lines */
+      /* Final-value order, best first: the order of the end labels and of the entrance animation. */
+      const ends = visible
+        .map((model) => ({ model, value: model[metric.key].mean[count - 1] }))
+        .sort((a, b) => b.value - a.value);
+      const delay = new Map(ends.map((end, order) => [end.model.id, order * ENTRANCE.stagger + 'ms']));
+      const staggered = (node, id) => {
+        node.style.setProperty('--fsim-delay', delay.get(id));
+        return node;
+      };
+
+      /* ±1 std bands under every line, then lines */
       const point = (index, value) => x(index).toFixed(2) + ' ' + y(value).toFixed(2);
-      if (state.bands) {
-        const bands = svg('g', { class: 'fsim-bands' }, chart);
-        for (const model of visible) {
-          const series = model[metric.key];
-          let path = '';
-          for (let i = 0; i < count; i += 1) path += (i ? 'L' : 'M') + point(i, series.mean[i] + series.std[i]);
-          for (let i = count - 1; i >= 0; i -= 1) path += 'L' + point(i, series.mean[i] - series.std[i]);
-          svg('path', { d: path + 'Z', fill: model.color, 'data-series': model.id }, bands);
-        }
+      const bands = svg('g', { class: 'fsim-bands' }, chart);
+      for (const model of visible) {
+        const series = model[metric.key];
+        let path = '';
+        for (let i = 0; i < count; i += 1) path += (i ? 'L' : 'M') + point(i, series.mean[i] + series.std[i]);
+        for (let i = count - 1; i >= 0; i -= 1) path += 'L' + point(i, series.mean[i] - series.std[i]);
+        staggered(svg('path', { d: path + 'Z', fill: model.color, 'data-series': model.id }, bands), model.id);
       }
       const lines = svg('g', { class: 'fsim-lines' }, chart);
       for (const model of visible) {
         const series = model[metric.key];
         let path = '';
         for (let i = 0; i < count; i += 1) path += (i ? 'L' : 'M') + point(i, series.mean[i]);
-        svg('path', { d: path, stroke: model.color, 'data-series': model.id }, lines);
+        staggered(svg('path', { d: path, pathLength: 1, stroke: model.color, 'data-series': model.id }, lines), model.id);
       }
 
       /* end labels: vendor badge + final value, spread apart where lines converge */
-      const ends = visible
-        .map((model) => ({ model, value: model[metric.key].mean[count - 1] }))
-        .sort((a, b) => b.value - a.value);
       const labelY = spreadLabels(
         ends.map((end) => y(end.value)),
         badge * 2 + 3,
@@ -397,7 +451,7 @@
       const endLayer = svg('g', { class: 'fsim-ends' }, chart);
       const badgeX = lastX + (compact ? 21 : 33);
       ends.forEach((end, order) => {
-        const group = svg('g', { class: 'fsim-end', 'data-series': end.model.id }, endLayer);
+        const group = staggered(svg('g', { class: 'fsim-end', 'data-series': end.model.id }, endLayer), end.model.id);
         const endY = y(end.value);
         svg('path', { d: 'M' + lastX + ' ' + endY + 'L' + (badgeX - badge) + ' ' + labelY[order], stroke: end.model.color, class: 'fsim-leader' }, group);
         svg('circle', { cx: lastX, cy: endY, r: compact ? 4 : 5, fill: end.model.color }, group);
@@ -429,6 +483,7 @@
       applyEmphasis();
       updateHover();
       renderTable();
+      playEntrance(animate, ends.length, enter === true);
     }
 
     function updateHover() {
@@ -608,16 +663,34 @@
     else window.addEventListener('resize', onResize);
     onResize();
 
+    /* At page load the entrance animation waits until a good part of the plot is on screen. */
+    const viewObserver =
+      typeof IntersectionObserver === 'function'
+        ? new IntersectionObserver(
+            (entries) => {
+              const entry = entries[entries.length - 1];
+              inView =
+                entry.isIntersecting &&
+                (entry.intersectionRatio >= 0.4 || entry.intersectionRect.height >= window.innerHeight * 0.5);
+              if (inView && entrance === 'waiting') startEntrance();
+            },
+            { threshold: [0, 0.2, 0.4, 0.6, 0.8, 1] }
+          )
+        : null;
+    if (viewObserver) viewObserver.observe(plot);
+
     return {
       setMetric(metric) {
         state.metric = metric;
-        render();
+        render(true);
       },
       destroy() {
         if (observer) observer.disconnect();
         else window.removeEventListener('resize', onResize);
+        if (viewObserver) viewObserver.disconnect();
+        clearTimeout(entranceTimer);
         document.removeEventListener('pointerdown', onDocumentPointerDown);
-        host.classList.remove('is-ready', 'is-compact');
+        host.classList.remove('is-ready', 'is-compact', 'is-entering', 'is-waiting');
       },
     };
   }
@@ -643,7 +716,7 @@
     view = make();
   }
 
-  function selectPeriod(id) {
+  function selectPeriod(id, initial) {
     const period = periods.get(id);
     selection.period = id;
     for (const button of periodButtons) {
@@ -656,14 +729,26 @@
       downloadLink.href = period.src.split('?')[0];
       downloadLink.download = 'futuresim_' + id.replace(/-/g, '_') + '_results.json';
     }
-    /* The previous period stays on screen until this one has loaded. */
+    /* The previous period stays on screen until this one has loaded, dimmed and labelled as loading
+     * (see .is-loading in blog.css) so that it is not read as the period just chosen. */
+    host.dataset.loading = 'Loading ' + period.label + '…';
+    host.classList.add('is-loading');
+    host.setAttribute('aria-busy', 'true');
+    const loaded = () => {
+      host.classList.remove('is-loading');
+      host.removeAttribute('aria-busy');
+    };
     load(period)
       .then((data) => {
-        if (selection.period === id) show(() => chartView(data, period));
+        if (selection.period !== id) return;
+        loaded();
+        show(() => chartView(data, period, !initial));
       })
       .catch((error) => {
         console.error('FutureSim chart: showing the static figure for ' + period.label + '.', error);
-        if (selection.period === id) show(() => fallbackView(period));
+        if (selection.period !== id) return;
+        loaded();
+        show(() => fallbackView(period));
       });
   }
 
@@ -679,5 +764,7 @@
       if (button.dataset.futuresimPeriod !== selection.period) selectPeriod(button.dataset.futuresimPeriod);
     });
   }
-  selectPeriod(selection.period);
+  selectPeriod(selection.period, true);
+  /* Fetch the other periods' scores right away, so that switching to one does not wait on the network. */
+  for (const period of periods.values()) load(period);
 })();

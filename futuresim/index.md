@@ -22,11 +22,6 @@ nav: futuresim
       <a href="https://www.andriushchenko.me/" target="_blank">Maksym Andriushchenko</a> ·
       <a href="https://jonasgeiping.github.io/" target="_blank">Jonas Geiping</a>
     </p>
-    <p class="affiliations">
-      ELLIS Institute Tübingen · Max Planck Institute for Intelligent Systems
-      <br>
-      Institute for AI, University of Stuttgart · Tübingen AI Center · University of Southampton
-    </p>
 
     <div class="resource-links" id="resources">
       <a class="chip" href="https://www.alphaxiv.org/abs/2605.15188" target="_blank" rel="noreferrer">
@@ -49,16 +44,20 @@ nav: futuresim
 
     <section id="leaderboard" class="futuresim-q2-results" data-futuresim-q2-results aria-labelledby="futuresim-q2-title">
       <div class="futuresim-q2-heading">
-        <h2 id="futuresim-q2-title" class="fsim-visually-hidden"><span data-futuresim-period-label>2026 Q2</span> Results</h2>
+        <h2 id="futuresim-q2-title" class="fsim-visually-hidden"><span data-futuresim-period-label>2026 Q3</span> Results</h2>
         <div class="futuresim-leaderboard-tabs" role="group" aria-label="Simulation period">
           <button type="button" data-futuresim-period="2026-q1" aria-pressed="false"
                   data-src="{{ '/futuresim/data/q1_results.json' | relative_url }}?v={{ site.time | date: '%s' }}"
                   data-fallback-top1="{{ '/futuresim/figures/main_fig/accuracy.png' | relative_url }}"
                   data-fallback-brier="{{ '/futuresim/figures/main_fig/brier.png' | relative_url }}">2026 Q1</button>
-          <button type="button" data-futuresim-period="2026-q2" aria-pressed="true"
+          <button type="button" data-futuresim-period="2026-q2" aria-pressed="false"
                   data-src="{{ '/futuresim/data/q2_results.json' | relative_url }}?v={{ site.time | date: '%s' }}"
                   data-fallback-top1="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}"
                   data-fallback-brier="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}">2026 Q2</button>
+          <button type="button" data-futuresim-period="2026-q3" aria-pressed="true"
+                  data-src="{{ '/futuresim/data/q3_results.json' | relative_url }}?v={{ site.time | date: '%s' }}"
+                  data-fallback-top1="{{ '/futuresim/figures/q3/top1_accuracy.png' | relative_url }}"
+                  data-fallback-brier="{{ '/futuresim/figures/q3/brier_skill_score.png' | relative_url }}">2026 Q3</button>
         </div>
         <div class="futuresim-leaderboard-tabs" role="group" aria-label="Result metric">
           <button type="button" data-futuresim-metric="top1" aria-pressed="true">Top 1</button>
@@ -67,8 +66,8 @@ nav: futuresim
       </div>
       <div class="futuresim-chart" data-futuresim-chart data-logos="{{ '/assets/logos/' | relative_url }}">
         <noscript>
-          <img src="{{ '/futuresim/figures/q2/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for six agents evaluated on FutureSim 2026 Q2.">
-          <img src="{{ '/futuresim/figures/q2/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for six agents evaluated on FutureSim 2026 Q2.">
+          <img src="{{ '/futuresim/figures/q3/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for five agents evaluated on FutureSim 2026 Q3.">
+          <img src="{{ '/futuresim/figures/q3/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for five agents evaluated on FutureSim 2026 Q3.">
         </noscript>
       </div>
       <div class="futuresim-q2-writeup">
@@ -89,10 +88,10 @@ nav: futuresim
           </div>
         </details>
         <details class="futuresim-q2-disclosure" data-futuresim-table hidden>
-          <summary><strong>View the <span data-futuresim-period-label>2026 Q2</span> scores as a table</strong></summary>
+          <summary><strong>View the <span data-futuresim-period-label>2026 Q3</span> scores as a table</strong></summary>
           <div class="futuresim-q2-disclosure-content">
             <div data-futuresim-table-body></div>
-            <p class="fsim-table-note"><a data-futuresim-download href="{{ '/futuresim/data/q2_results.json' | relative_url }}" download="futuresim_2026_q2_results.json">Download the daily scores for every model (JSON)</a></p>
+            <p class="fsim-table-note"><a data-futuresim-download href="{{ '/futuresim/data/q3_results.json' | relative_url }}" download="futuresim_2026_q3_results.json">Download the daily scores for every model (JSON)</a></p>
           </div>
         </details>
       </div>
@@ -258,6 +257,30 @@ Finally, we show how FutureSim flexible design enables experiments on various in
 </section>
 
 This was just a teaser ;) There are many interesting details and analysis in our [paper](https://www.alphaxiv.org/abs/2605.15188). Check them out, and [let us know](https://github.com/OpenForecaster/futuresim/issues) what you think!
+
+## Institutions {#institutions}
+
+<div class="institution-logos">
+  <div class="institution-row">
+    <a href="https://institute-tue.ellis.eu/" target="_blank" rel="noopener noreferrer">
+      <img src="{{ '/assets/institutions/ellis-institute-tuebingen.webp' | relative_url }}" alt="ELLIS Institute Tübingen" width="270" height="26">
+    </a>
+    <a href="https://is.mpg.de/" target="_blank" rel="noopener noreferrer">
+      <img src="{{ '/assets/institutions/mpi-is.svg' | relative_url }}" alt="Max Planck Institute for Intelligent Systems" width="200" height="40">
+    </a>
+    <a href="https://tuebingen.ai/" target="_blank" rel="noopener noreferrer">
+      <img src="{{ '/assets/institutions/tuebingen-ai-center.svg' | relative_url }}" alt="Tübingen AI Center" width="150" height="44">
+    </a>
+  </div>
+  <div class="institution-row">
+    <a href="https://www.ki.uni-stuttgart.de/" target="_blank" rel="noopener noreferrer">
+      <img src="{{ '/assets/institutions/uni-stuttgart.svg' | relative_url }}" alt="Institute for AI, University of Stuttgart" width="190" height="38">
+    </a>
+    <a href="https://www.southampton.ac.uk/" target="_blank" rel="noopener noreferrer">
+      <img src="{{ '/assets/institutions/uni-southampton.svg' | relative_url }}" alt="University of Southampton" width="170" height="38">
+    </a>
+  </div>
+</div>
 
 ## Sponsors {#sponsors}
 
