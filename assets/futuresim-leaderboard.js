@@ -3,8 +3,8 @@
  * Reads futuresim/data/q1_results.json and q2_results.json (built by
  * scripts/build_futuresim_q1_chart_data.py and build_futuresim_q2_chart_data.py)
  * and draws one SVG line chart with a period switch, a metric switch, a
- * hover/touch/keyboard crosshair that reads every model's score for a day, a
- * legend that shows or hides models, and a table view. The lines draw in one
+ * hover/touch/keyboard crosshair that reads every model's score for a day,
+ * and a legend that shows or hides models. The lines draw in one
  * after another, best model first, when the chart scrolls into view and when
  * the period or metric changes. A period whose data cannot be loaded shows its
  * static PNG figure instead.
@@ -18,8 +18,6 @@
   if (!host) return;
   const metricButtons = Array.from(root.querySelectorAll('[data-futuresim-metric]'));
   const periodButtons = Array.from(root.querySelectorAll('[data-futuresim-period]'));
-  const tableHost = root.querySelector('[data-futuresim-table]');
-  const downloadLink = root.querySelector('[data-futuresim-download]');
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg' };
@@ -142,7 +140,6 @@
     host.textContent = '';
     host.classList.remove('is-ready', 'is-compact');
     host.classList.add('is-fallback');
-    if (tableHost) tableHost.hidden = true;
     const image = html('img', '', null, host);
     const setMetric = (metric) => {
       image.src = period.fallback[metric];
@@ -482,7 +479,6 @@
 
       applyEmphasis();
       updateHover();
-      renderTable();
       playEntrance(animate, ends.length, enter === true);
     }
 
@@ -603,53 +599,6 @@
       if (!docked()) setIndex(null);
     });
 
-    /* ---- table view ---- */
-    function renderTable() {
-      if (!tableHost) return;
-      const metric = METRICS[state.metric];
-      const body = tableHost.querySelector('[data-futuresim-table-body]');
-      if (!body) return;
-      const columns = [];
-      dates.forEach((date, index) => {
-        const day = date.getUTCDate();
-        if (index === 0 || day === 1 || day === 15) columns.push(index);
-      });
-      if (columns[columns.length - 1] !== count - 1) columns.push(count - 1);
-
-      body.textContent = '';
-      /* The caption sits outside the scroller so it wraps on narrow screens instead of
-       * running off with the table. */
-      const caption = html('p', 'fsim-table-caption', metric.title + ' on selected days (mean over seeds; final day ±1 std)', body);
-      caption.id = 'fsim-table-caption';
-      const scroller = html('div', 'fsim-table-scroll', null, body);
-      scroller.tabIndex = 0;
-      scroller.setAttribute('role', 'region');
-      scroller.setAttribute('aria-labelledby', caption.id);
-      const table = html('table', 'fsim-table', null, scroller);
-      table.setAttribute('aria-labelledby', caption.id);
-      const headRow = html('tr', '', null, html('thead', '', null, table));
-      html('th', '', 'Model', headRow).scope = 'col';
-      for (const index of columns) html('th', '', dayFormat.format(dates[index]), headRow).scope = 'col';
-      const tbody = html('tbody', '', null, table);
-      const ranked = models.slice().sort((a, b) => b[metric.key].mean[count - 1] - a[metric.key].mean[count - 1]);
-      for (const model of ranked) {
-        const series = model[metric.key];
-        const row = html('tr', '', null, tbody);
-        const name = html('th', '', null, row);
-        name.scope = 'row';
-        const key = html('span', 'fsim-key', null, name);
-        key.style.setProperty('--series', model.color);
-        html('span', '', model.name, name);
-        html('span', 'fsim-table-sub', model.harness + ' \u00b7 ' + model.seeds + ' seeds', name);
-        columns.forEach((index, position) => {
-          const last = position === columns.length - 1;
-          const cell = html('td', last ? 'fsim-table-final' : '', metric.value(series.mean[index]), row);
-          if (last) html('span', 'fsim-table-spread', ' ' + metric.spread(series.std[index]), cell);
-        });
-      }
-      tableHost.hidden = false;
-    }
-
     /* ---- resize ---- */
     let lastWidth = 0;
     const onResize = () => {
@@ -725,10 +674,6 @@
     root.querySelectorAll('[data-futuresim-period-label]').forEach((node) => {
       node.textContent = period.label;
     });
-    if (downloadLink) {
-      downloadLink.href = period.src.split('?')[0];
-      downloadLink.download = 'futuresim_' + id.replace(/-/g, '_') + '_results.json';
-    }
     /* The previous period stays on screen until this one has loaded, dimmed and labelled as loading
      * (see .is-loading in blog.css) so that it is not read as the period just chosen. */
     host.dataset.loading = 'Loading ' + period.label + '…';
