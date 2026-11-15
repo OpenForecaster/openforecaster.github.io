@@ -1,0 +1,15 @@
+
+## 2026-08-25
+
+Five new outcomes: Celtic EuropaLeague8%, Bruno76%, Patten/Siniakova53%, Ratcliffe unlisted, Pennsylvania22%. Internal last skills −.6928/.916975/.7356/−.704325/.277; fixed62 prior-session TW9.965806/91.6975/−31.014274/−70.4325/.565484. Two favored winners; PA a named second choice and Celtic a named tail. Positive final mixed score does not repair early time-weighted exposure. Earlier Celtic diversification can yield positive overall TW despite last92% favorite losing.
+
+Explicit question-scoped aliases: UEFA Europa League↔Europa League, and Siniakova and Patten↔Patten and Siniakova. Cached primary standard name and exact completed tie establish first; accepted either-order criterion/full pair identities establish second. Keep exact-label diagnostics/history/truth untouched. Ratcliffe is a genuine unlisted winner, not an alias. One outside winner versus.27 field expectation is not a universal confidence transform. Cumulative159 selected last meanSkill .28275438956 vs expected .42944686830,73 top wins vs88.245 summedtopprob,27 unlisted vs11.0298 residual; internal not official/TW/uniformcohort.
+
+Witkoff83%/0.5% field unchangedJune24 on old visitor discussion failed open identity coverage. A name-anchored no-result query can miss another official and is not stability evidence. Broaden source-specific identity searches and aging shortlist review without claiming secret Ratcliffe trip foreseeable. Closed Celtic92/8 tail and concrete PFA76 shortlist have different bases; do not penalize all favorites for one rare collapse. CBS identity report alone suffices under exact criterion, no extra government hurdle. PA announcement time differs from undisclosed individual death dates.
+
+New actual proposals and player commitments justify buyer changes, while fee/PT/medical/completion stages remain distinct. Martinelli fee reports conflict; Jackson majority relays oneAouna chain, Strasbourg intermediary only speculative; Barcola departure conditional excludes PSG/stay. New direct institutional referral in Hungary is stronger than old criminal-review rhetoric but not minister identification, embezzlement classification or parliament's vote. Add modest candidate/field uncertainty rather than fabricate the legal act.
+
+Tiafoe organizer-attributed injury mixed WD adds information beyond treatment but not singles withdrawal/current diagnosis; older hand cyst not proven cause. Alcaraz actual short-format load plus rust is no Bo5 clearance. A same-day R16 win and QF loss are compatible; do not invent source contradiction from “lostTuesday.” Ryb practice-list absence is not medical clearance or definite inability. Contract confirmation is not match readiness; repeated cost-cap/penalty quotes not independent new pace.
+
+Parrott actual transfer/debut adds competition to a stale Cucho role prior, but Cucho started70 and Parrott did not score; reporter prediction of future starts earns only2pt cut. Alabama subpoena/cease-internal-tests letter is not September court halt-development request. Moretto “strong doubts” explicitly not definitive Jesus rejection. Qualifying act, actor and time window control all forecasts.
+

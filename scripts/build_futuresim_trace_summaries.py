@@ -1,6 +1,15 @@
 #!/usr/bin/env python3
+"""Write rule-based day summaries for the trace viewer (the 2026 Q1 and Q3 summaries; Q2's were written by an agent).
+
+With a summary, the viewer shows a day as a few titled segments and loads the day's trace only
+when one is opened. Without one it loads every day of the run at once.
+
+  build_futuresim_trace_summaries.py                    the Q1 data
+  build_futuresim_trace_summaries.py --data-dir futuresim/traces/data/q3 --market-csv <run>/market.csv
+"""
 import argparse
 import csv
+import gzip
 import json
 import os
 import re
@@ -15,12 +24,23 @@ DEFAULT_MARKET_CSV = Path("/fast/sgoel/forecasting/current_sim/official_runs_com
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    global DATA, SUMMARY_DIR
+    parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--overwrite", action="store_true")
+    parser.add_argument("--data-dir", type=Path, default=DATA, help="The trace data to summarise (default: the Q1 data).")
+    parser.add_argument(
+        "--market-csv",
+        type=Path,
+        help="The questions' titles and resolved answers. When given, question titles come from it instead of being searched for in the trace.",
+    )
     args = parser.parse_args()
 
+    DATA = args.data_dir.resolve()
+    SUMMARY_DIR = DATA / "summaries"
+
     manifest = json.loads((DATA / "manifest.json").read_text())
-    market = load_market_truth()
+    market = load_market_truth(args.market_csv)
+    titles = {qid: row["title"] for qid, row in market.items() if row["title"]} if args.market_csv else None
     SUMMARY_DIR.mkdir(parents=True, exist_ok=True)
     written = []
     for run in manifest["runs"]:
@@ -28,7 +48,7 @@ def main():
         if out.exists() and not args.overwrite and not created_by_this_script(out):
             written.append((run, out, "existing"))
             continue
-        summary = summarize_run(run)
+        summary = summarize_run(run, titles)
         out.write_text(json.dumps(summary, indent=2) + "\n")
         written.append((run, out, "written"))
 
@@ -42,15 +62,22 @@ def main():
     }
     (SUMMARY_DIR / "index.json").write_text(json.dumps(index, indent=2) + "\n")
     for run, out, status in written:
-        print(status, run["agent_slug"], run["seed_label"], out.relative_to(ROOT))
+        print(status, run["agent_slug"], run["seed_label"], out.relative_to(ROOT) if out.is_relative_to(ROOT) else out)
 
 
-def summarize_run(run):
-    title_by_qid = build_question_title_index(run)
+def read_trace(path):
+    """A day shard, which the trace builder may have written gzip-compressed."""
+    if path.suffix == ".gz":
+        return json.loads(gzip.decompress(path.read_bytes()))
+    return json.loads(path.read_text())
+
+
+def summarize_run(run, titles=None):
+    title_by_qid = dict(titles) if titles else build_question_title_index(run)
     metric_stats = run_metric_stats(run)
     days = []
     for day_meta in sorted(run.get("days", []), key=lambda row: row["date"]):
-        trace = json.loads((DATA / day_meta["path"]).read_text())
+        trace = read_trace(DATA / day_meta["path"])
         if len(title_by_qid) < 250:
             add_titles(title_by_qid, trace_text(trace))
         visible = [event for event in trace.get("events", []) if should_show_event(event)]
@@ -107,6 +134,10 @@ def should_show_event(event):
 def segment_events(events, target=55):
     chunk = []
     for event in events:
+        # A sub-agent's stretch of work is never mixed with the main agent's or another sub-agent's.
+        if chunk and event.get("subagent", "") != chunk[-1].get("subagent", ""):
+            yield chunk
+            chunk = []
         chunk.append(event)
         if len(chunk) >= target or any(is_next_day_tool(block.get("name")) for block in tool_blocks(event)):
             yield chunk
@@ -121,6 +152,9 @@ def summarize_segment(date, index, events, title_by_qid):
     forecasts = forecast_examples(events, title_by_qid)
     messages = model_messages(events)
     label = segment_label(counts, forecasts, events)
+    subagent = events[0].get("subagent", "")
+    if subagent:
+        label = f"Sub-agent {subagent}: {label[0].lower()}{label[1:]}"
     facts = []
     for name, label_text in [("search_news", "news searches"), ("submit_forecasts", "forecast submissions"), ("next_day", "day advance calls"), ("compaction", "context compactions")]:
         if counts.get(name):
@@ -131,6 +165,7 @@ def summarize_segment(date, index, events, title_by_qid):
         "event_idx_start": events[0]["idx"],
         "event_idx_end": events[-1]["idx"],
         "label": label,
+        **({"subagent": subagent} if subagent else {}),
         "summary": segment_summary(counts, forecasts, events),
         "action_count": len(events),
         "tool_call_count": len(tool_names),
@@ -154,6 +189,8 @@ def segment_label(counts, forecasts, events):
         return "Save state and advance day"
     if counts.get("compaction"):
         return "Context compaction"
+    if counts.get("spawn_agent") or counts.get("workflow"):
+        return "Starts sub-agents"
     if any(tool_blocks(event) for event in events):
         return "Workspace and tool work"
     return "Agent reasoning"
@@ -263,8 +300,12 @@ def clean_transition_phrase(text):
     return text
 
 
-def load_market_truth():
+def load_market_truth(market_csv=None):
     candidates = []
+    if market_csv:
+        if not market_csv.exists():
+            raise SystemExit(f"Missing market CSV: {market_csv}")
+        candidates.append(market_csv)
     if os.environ.get("FSIM_MARKET_CSV"):
         candidates.append(Path(os.environ["FSIM_MARKET_CSV"]))
     candidates.extend([DATA / "market.csv", DEFAULT_MARKET_CSV])
@@ -288,7 +329,7 @@ def run_update_stats(run, market):
     last_predictions = {}
     stats_by_date = {}
     for day_meta in sorted(run.get("days", []), key=lambda row: row["date"]):
-        trace = json.loads((DATA / day_meta["path"]).read_text())
+        trace = read_trace(DATA / day_meta["path"])
         today = final_day_predictions(trace)
         scored = []
         unscored = 0

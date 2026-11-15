@@ -1,0 +1,28 @@
+# August 24, 2026
+
+The market has 98 active and 154 resolved questions, with four new resolutions. All 61 prior files / 1005 prediction entries reconcile; all 252 text and criteria fields are unchanged. Corpus: 2885 articles, 2778 eligible, 107 future excluded, zero missing dates.
+
+Semantic diagnostics over 61 held days are not official harness scores. Full original distributions, literal labels and daily weights remain in resolution_review.
+
+- Allan388162, City30: final +.412500, held mean −.199985.
+- Lincoln461239, Thailand omitted: final −.287300, held mean −.269172.
+- Hadjam623398, Brighton omitted: final −.302400, held mean −.271564.
+- Eurovision964047, Netherlands39: final +.499700, held mean −.025152.
+
+AVROTROS24 at10:01CEST explicitly withdraws from2027 over lost neutrality, and Eurovision/EBU24 at13:29 acknowledges it. NPO potentially finding another broadcaster does not negate the exact broadcaster-announcement criterion. Do not overstate irreversible whole-country absence. AJ524 old20metadata has actual24URL/Mondaybody; no backdating. Netherlands17 for60 days and39 forone day still yields a slightly negative held mean. Original Belgian autumn/Dutch endAugust timing reports were dated12/18/19 and incorporated23, not newly published23.
+
+Lincoln suppliedThailand has no qualifying arrival proof. Original USA Today24 cites crew-family texts of a PLANNED earlySeptember Thailand port call; Navy declines future-movement comment. AP20 confirms carrier relief, not arrival. Current Reuters reports homeward departure after long uninterrupted time at sea. GeorgeWashington arriving in the region is another ship. No Thai city/arrival date invented. Thailand was omitted with only7%field: after route changes revisit likely liberty ports and stale Gulf alternatives. Homeward voyage does not establish nextportUSA or nonstop sailing.
+
+Allan suppliedCity and Hadjam suppliedBrighton retain official completed-transfer gaps. Original ge/UOL24 verbal agreement37.5m+2.5m and explicit Palmeiras nonconfirmation differ from ESPN40mfixed+bonus. BBC medical is future; prior100m releaseclause is not acceptedfee. Hadjam Como50 remained based on July27 verbal/personalterms and an unverified promised rapid announcement. New FootMercato Brighton verbaldeal/adminpending and Tavolieri futureflight/contract2031 are not official announcement. Refresh buyer pools when expected quick confirmation stalls and retain genuine residual beyond five, without hindsight-correct probability claims.
+
+Gauff actualAug23 final6–2/6–4Pegula75min is now verified in eligible AFP/AJ24; yesterday preview-only record remains valid. Her serve/level supports a modest USOpen update, not a promised title. Fabinho AJ24 explicitly reports club-announced TWOYEAR permanent free-agent signing and Monday24stockfiling, quoting clubX. This advances beyond old agreement/futureflight; original filing/post retrieval remains empty. Record reliable reported official completion with document limit, not continued mere agreement or backdated22 completion. Fils actual final already verified23; repeats are not another win. AP upperLEFTLEG/lowerBACK versus AFP rightHIP treatment descriptions do not diagnose Tiafoe or establish withdrawal.
+
+Monza correction: Aug23AFP minimum10-place penalty was already retrieved in root/late records but target668636 remained26Antonelli. This was a delayed application to the correct market. Fuller Motorsport/ESPN24 Wolff/Antonelli quotes confirm fullPU/backgridplan; CNA24body hasAug23dateline, so no invented separate24decision or formal fixed FIA grid. Russell28/Norris21/Hamilton17/Leclerc12/Piastri9 leaves13%field includingAntonelli~7. Overtaking/newengine preserve a nonzero chance. Russell future penalty timing is undecided, not automaticallyBaku/Spain. Route cross-market facts directly to each owner withqid.
+
+Mixed qualification is verified but the bracket conflicts. SiniakovaPatten won both qualifying rounds4–1/4–2 with embeddedUSTAposts; RoutliffeGlasspool qualified perBBC. BBC explicitly says SiniPattenDjokSabaR1, while AP23/Sportstar24fullbracket and Czechreport indicate LF/Tia first and qualifiers in MuchovaMensik/SerenaAlcaraz slots. No corroborated LF/Tiawithdrawal/redraw. Hedge: LF/Tia30, None24, SiniPatten12, EalaFAA10, SvitMonfils8,16%field. None is criterion-valid no completed eliminator, not unknown. Qualification is not a main-round result.
+
+Raam provenance correction prevented a forced update. A draft called the actual22conference/election missed, but full22raw2/4 and the recorded reason already explicitly gave elected Taha second and reservation authority. Ynet/Davar copies corroborate the same event. Early acknowledged this and RETAINED88; no false new vote/missed-source story. Compare original dated evidence before claiming a miss, distinct from Monza.
+
+Other gates: Kunlun24 is expert candidate evidence, not a designation; old2012Part561restriction and currentcurepolicy do not qualify. No Chinese institution named today, and expected endweek announcement may be BEFORE Aug31–Sep6 target. NAZA is newly MAINcompetition, SPECIALJuryPrize differs from GrandJuryPrize; WildHorseNine remains live outside five. Signed/readiness/squad Parrott differs from pendingmedical, without a SeptemberXI/goal guarantee. Actual MunirTehranarrival is not the specific Saudi-triggered private Iran-restraint request.
+
+Final verification:6 accepted updates and92 retained forecasts cover all98 active questions. All252 reviewed exactly once. History, receipts, ownership, probability and source audits pass. All22 full paid responses match individual archives after JSON normalization:13 nonempty,9 empty,0 losses; contiguous budget1044→1022. RootURLaudit44 references/39 uniqueURLs.

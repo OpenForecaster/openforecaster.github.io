@@ -1,0 +1,7 @@
+# Calibration: September 1, 2026
+
+New resolution875467: Enzo Fernandez, prior probability9%; Barcola81%. Last internal skill -0.487625;69-session internal TW estimate -52.7621. These are diagnostics, not official simulator metrics.
+
+The designated source confirms Enzo's actual£125m completion in the final minutes onSeptember1. Yesterday's near€140m agreement report was not a completed transfer, but was a serious live rival. We increased confidence in Barcola because his deal completed and AJ called him biggest so far. That removed Barcola completion risk; it did not remove rival-overbid risk. We discounted comparable-fee ambiguity too aggressively. For future deadline questions, keep specific rival scenarios through signing and final source-basis comparisons. Do not claim the final figure was known earlier or force every proposal to occur.
+
+Across173 resolved last forecasts, mean internal skill0.282274, expected0.427899.80 top wins versus96.075 summed top probabilities;30 unlisted truths versus12.4348 expected from residuals. This remains a warning about stale candidate fields and excessive identity concentration, not a justified universal probability cap. Keep actual probabilities and residual mass in large fields, refresh viable rivals and distinguish current leader from eventual winner. Exact-label scores and explicit aliases remain separately recorded; history is never rewritten.

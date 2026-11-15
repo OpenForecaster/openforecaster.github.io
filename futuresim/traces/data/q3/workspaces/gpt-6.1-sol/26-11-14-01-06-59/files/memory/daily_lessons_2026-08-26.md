@@ -1,0 +1,33 @@
+# Forecast review 2026-08-26
+
+Reviewed 252 questions: 91 active and 161 resolved, including two new resolutions. Accepted 6 updates and retained 85; all 91 active questions are covered. All 63 prior files / 1,015 entries reconcile across all 252 questions, with no changed prior resolved answers or criteria. Of 3,149 local articles, 3,090 are eligible, 59 are future dated, and none lack publication dates. Used 20 searches (15 nonempty, 5 empty), leaving 979; no archival losses.
+
+Accepted updates:
+
+- 162316: Liverpool 83.0%, Arsenal 8.0%, Bayern Munich 3.0%, Manchester City 1.0%, Chelsea 0.5%; residual 4.5%.
+- 450664: Chelsea 38.0%, Inter Milan 20.0%, Al-Nassr 10.0%, Tottenham Hotspur 9.0%, Atletico Madrid 7.0%; residual 16.0%.
+- 891014: Carlos Alcaraz 50.0%, Alexander Zverev 11.5%, Novak Djokovic 10.0%, Arthur Fils 7.5%, Ben Shelton 7.5%; residual 13.5%.
+- 788295: Wael Naouar 44.0%, Ghassen Boughdiri 25.0%, Ghassen Henchiri 18.0%, Nabil Chennoufi 11.0%; residual 2.0%.
+- 120116: Harald V 94.0%, Haakon VIII 6.0%; residual 0.0%.
+- 127253: AC Milan 26.0%, Everton 24.0%, Juventus 17.0%, Napoli 12.0%, Ipswich Town 11.0%; residual 10.0%.
+
+New resolutions below are diagnostics against SUPPLIED labels only. They are NOT official harness scores or proof that the substantive event has completed:
+
+- 588637 supplied Aston Villa: final probability 40%, semantic final diagnostic +0.589800, 63-held-day mean +0.304543.
+- 834692 supplied Egypt: final probability 4%, semantic final diagnostic -0.320200, 63-held-day mean -0.303743.
+
+Jackson: original Athletic August 26 reports an agreed £65m package (£47.5m upfront), with personal terms still being finalised. Romano says medical next; the official club trace was empty. A completed permanent transfer remains unverified. Villa was 22% for the first 54 held days and 40% for the next nine after the August 17 BBC/RMC buyer refresh. A correct final favorite does not erase earlier exposure. Sky's August 25 metadata accompanies a Wednesday August 26 body; do not backdate it.
+
+Xi: CGTN, Xinhua/CCTV, Reuters and AFP August 26 announce a FUTURE August 30–September 3 itinerary: Kyrgyzstan/SCO, then Egypt. The original MFA trace was empty. No actual Egypt arrival is verified, so the exact in-person travel criterion remains a source gap despite the supplied resolved label. AJ's August 20 metadata conflicts with its August 26 URL/body. Egypt remained 4% throughout. Saudi Arabia rose from 57% to 60% on July 30 unconfirmed Riyadh summit planning, with Xi attendance, date and trip order explicitly unknown. If still active, a concrete new itinerary would warrant a substantial prospective revision; it does not prove completed travel or an earlier missed Egypt lead.
+
+Buyer refreshes: original Athletic August 25 confirms Barcola's commitment to Liverpool and direct PSG talks. Two contract years remain and the fee gap is large; Romano says an agreement is still needed, conflicting with Plateau's claim. Liverpool 83% is conditional on a permanent move. Original Guardian August 26 identifies Chelsea talks with Martínez's camp, while Chelsea is only considering an offer. Spurs broker availability and Inter Miami player preference are weaker evidence. Original Corriere dello Sport August 26 calls Jesus Napoli's first target, but all incoming business depends on a Lang sale; Guiu and Gouiri are alternatives. Derivatives claiming an agreed Jesus fee overstate the original. Preserve the earlier Branchini denial in the history.
+
+Nawar: the actual August 16 hunger-strike start was newly retrieved today in original Arabi21 August 18, New Arab August 19 and Infobae August 20 reporting. The other three detainees then only intended to join. There is no qualifying Al Jazeera report of a September 12–27 suspension yet. Root checked the prior August 18–25 archives; the only similar date phrase was an unrelated sprint article. Boughdiri's July strike and Bennour's May release were already priced July 25. Do not assume a continuous July-to-August strike or infer a clinical diagnosis.
+
+Alcaraz completed two shortened mixed matches, winning once before losing in the quarterfinal. Actual court time supports a modest 48% to 50% move, with rust and an arm sleeve still visible. It provides neither pain-free clearance nor evidence of five-set endurance. Sinner's absence is already priced. Harald's 92% to 94% adjustment reflects the shorter horizon and current evidence that he remains alive and king. The latest treating palace bulletin is still August 24: stable, no significant change after August 23 worsening. No new recovery is claimed. Haakon's regency is not accession; the criterion is legal ownership of the crown at the BEGINNING of August 29 local time.
+
+Close two older gaps: Brighton's PRIMARY August 25 19:58+01 announcement, retrieved today, confirms Hadjam's contract through June 2031 subject to regulatory processes. The question resolves on the official announcement, not debut; do not claim completed registration or backdate to the supplied August 24 label. PRIMARY LOSC August 26 says Bouaddi leaves TODAY for City; Reuters/AFP quote a signed five-year contract and player statement. Do not backdate to the supplied August 23 label. Marmoush's agreed loan and future medical remain short of an official completed move, although a loan qualifies in form. Allan remains an agreed-fee report. Lincoln's AP/Royal Thai Navy scheduled stop remains short of physical arrival.
+
+Keep Baleba and Sávio's August 25 completed announcements and Fabinho's reliably reported August 24 contract/filing verified. Fabinho's original documents remain unextracted. Sávio's actual Cup debut adds one goal; the later deflection was credited to Ben Davies. Treasury's Monday list names no Chinese bank; an unnamed future threat does not establish the exact August 31–September 6 designation. MAGA Inc spending in a South Carolina PRIMARY is the wrong election instrument. Rodri actually joined Barcelona. Antonelli's penalty was retrieved August 23 and applied August 24; no second update for the same episode. Russell's future penalty timing is undecided. Raam's August 22 conference and election were already read and priced that day.
+
+Final checks: submissions, coverage, ownership, full response hashes and 41 scoped root URL references passed. Normalize helper winner-label metadata to an actual alias list before diagnostics; a new finalizer assertion prevents dictionary keys from being mistaken for answer names. Final Jackson diagnostic correctly uses Villa 40%; no forecast was affected. Full histories and exact-label diagnostics are saved. The next-session priorities are in JSON. Ready to call next_day once.

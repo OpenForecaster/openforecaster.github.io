@@ -1,0 +1,7 @@
+# August 29 calibration
+
+169 selected closed questions: internal mean last Brier skill0.2893292778 versus modeled expected0.4266470536. Top wins79 versus93.535 summed top probabilities; unlisted winners29 versus12.2398 summed unlisted mass. These are mixed, selected last-forecast diagnostics, not official or time-weighted aggregate metrics and not a universal probability transform.
+
+New AlHilal Martinelli90% last forecast achieved0.9893 skill, but earlier wrong-club exposure leaves fixed66-session internalTW estimate−20.7652. Information quality and early identification both matter. Sydney men's AddisuGobena unlisted gives−0.1227 last skill despite27% field; full roster and recent developing-runner form deserve attention beyond best-PB tables and famous names. Sydney women's Jepchirchir32% plurality wins with0.4754 last skill. No observed finish details are inferred beyond supplied market truth, and no future public article is backdated.
+
+Today's major corrections came from eligibility and named direct evidence: Chopra's stated season-ending injury (not absence from a meet); Shimoji's actual withdrawal (not a rumor); Szijjarto/Lazar no longer MPs (not simply implicated former ministers); Barcola agreed final structure (not completed transfer yet). Keep those stages distinct. Pundit prediction shares are correlated selections, not directly calibrated probabilities. A new meeting or related policy act does not override an exact position/date/mechanism in resolution criteria.

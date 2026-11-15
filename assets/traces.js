@@ -1,8 +1,8 @@
 (function () {
   const rootDataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
-  const periodPaths = { '2026-q2': 'q2/', '2026-q1': '' };
-  let dataBase = rootDataBase + periodPaths['2026-q2'];
-  const state = { period: '2026-q2', manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
+  const periodPaths = { '2026-q3': 'q3/', '2026-q2': 'q2/', '2026-q1': '' };
+  let dataBase = rootDataBase + periodPaths['2026-q3'];
+  const state = { period: '2026-q3', manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
   const chartColors = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#047857', '#4f46e5', '#a16207'];
   const workspaceCache = new Map();
   const summaryCache = new Map();
@@ -203,9 +203,11 @@
     if (!summary) {
       els.status.textContent = `Loading ${days.length} day shards...`;
       loaded = await Promise.all(days.map(async (day) => {
-        const response = await fetch(dataBase + day.path, { cache: 'no-store' });
-        if (!response.ok) return { meta: day, error: `HTTP ${response.status}` };
-        return { meta: day, payload: await response.json() };
+        try {
+          return { meta: day, payload: await fetchDayTrace(day.path) };
+        } catch (error) {
+          return { meta: day, error: error.message };
+        }
       }));
       if (state.loadedRunKey !== runKey) return;
       for (const item of loaded) {
@@ -315,11 +317,22 @@
 
   async function loadDayTrace(meta) {
     if (state.currentDays.has(meta.date)) return state.currentDays.get(meta.date);
-    const response = await fetch(dataBase + meta.path, { cache: 'no-store' });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    const payload = await response.json();
+    const payload = await fetchDayTrace(meta.path);
     state.currentDays.set(meta.date, payload);
     return payload;
+  }
+
+  // A day file may be gzip-compressed: 2026 Q3's are, to keep the site within its hosting size
+  // limit. The first two bytes decide, not the file name, because a server may already have
+  // decompressed the file on the way.
+  async function fetchDayTrace(path) {
+    const response = await fetch(dataBase + path, { cache: 'no-store' });
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    const bytes = new Uint8Array(await response.arrayBuffer());
+    if (bytes[0] !== 0x1f || bytes[1] !== 0x8b) return JSON.parse(new TextDecoder().decode(bytes));
+    if (typeof DecompressionStream === 'undefined') throw new Error('this browser is too old to unpack the trace');
+    const unzipped = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Response(unzipped).json();
   }
 
   function renderSummaryDay(daySummary, visibleEvents, resultById, meta) {
@@ -801,13 +814,16 @@
     loadWorkspace(run).then((workspace) => {
       if (token !== `${state.agent}/${state.runId}/${state.day}`) return;
       const files = workspaceFilesForDay((workspace && workspace.files) || [], state.day);
+      // Set when the export kept only the Markdown notes of a memory folder full of data files.
+      const leftOut = workspace && workspace.data_files_left_out;
+      const leftOutNote = leftOut ? ` · ${Number(leftOut.file_count).toLocaleString('en-US')} data files (${formatBytes(leftOut.bytes)}) not shown` : '';
       if (!files.length) {
-        els.workspaceStatus.textContent = `${state.day} · no relevant files`;
+        els.workspaceStatus.textContent = `${state.day} · no relevant files${leftOutNote}`;
         return;
       }
       const selected = files.find((file) => file.path === state.workspaceFile) || defaultWorkspaceFile(files, state.day);
       state.workspaceFile = selected ? selected.path : '';
-      els.workspaceStatus.textContent = `${state.day} · ${files.length}/${workspace.files.length} files`;
+      els.workspaceStatus.textContent = `${state.day} · ${files.length}/${workspace.files.length} files${leftOutNote}`;
       for (const file of files) {
         const button = document.createElement('button');
         button.type = 'button';

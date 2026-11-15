@@ -1,0 +1,9 @@
+# Calibration note: September 6, 2026
+
+New resolutions: Barcelona64%, NorthKivu23%, Antonelli unlisted inlastmap. Internal lastskills0.8106,0.1833,-0.2471; internal74-sessionTW49.8992,-8.4165,+43.2319. EarlyAntonelliforecasts wereuseful despitea finalunlistedrarebackgridwin; lastmapisnot thetimeweightedscore.
+
+Barcelona update usedactualpoints/game-in-hand evidence, whilederbystrength movedonlyslightly. NorthKivu maintainedmaterial23% butcomparativeweeklygrowthresearch wouldhavebeenbetterthanwaitingfortheexactWHOrelease. Resolutioncriteria determineadjudication, not aminimumthresholdforanticipatoryprobabilitymoves. Oneimportedcaseisnotcertainty, butemergingspreadcanstillbeaincrementalforecastsignal. Snapshotresolvesearlierthantwoquestionsstatedtargetwindows; do notmanufacturefutureexternalproof.
+
+Antonelli wonfrom19th withMercedespace, earlyredflag andVSCfreshmediums versusRusselloldhards. Pre-raceBetMGM+2000aftermarginwasroughly4%; a realizedrarewin doesnot establish it shouldhavebeenlargeexante. Five-namecapmakesunlistedwinnerprobabilityzeroforscoreevenwhenresidualacknowledgeshim. Postrace“weforesawit” quoteswerenot pre-raceevidence.
+
+Across183lastforecasts meaninternal skill0.2715979 versusexpected0.4229376;82modalwins versus101.015summedmodalprobabilities,33unlistedwinners versus13.7448expectedresidual. Continuecandidatecoverageandcalibrationreview, withoutauniversalmechanicalshrinkrule. Nohistoricaledits ornewaliases.

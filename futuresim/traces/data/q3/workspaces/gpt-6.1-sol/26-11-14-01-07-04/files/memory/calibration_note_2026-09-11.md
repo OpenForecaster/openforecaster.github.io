@@ -1,0 +1,11 @@
+# September 11 calibration note
+
+All three new truths were named. Ilyas Kherbouch64% earns last-distribution internal skill+0.7926; Ben Shelton74% earns+0.8648; Jakob Ingebrigtsen23% earns+0.2998. Their approximate79-file session-average scores are+82.3405/+45.1486/+20.6948, not official simulator time-weighted metrics or a complete daily calendar.
+
+The three cases support different lessons. Yesterday replacing unsupported Bakary with named MoktarDiop7 was justified by actual trial reporting, even though lowering the eventual winner from68→64 slightly reduced realized score. Shelton72→74 used a complete current moneyline fair74.1; the limited adjustment was appropriate. Jakob23 was a second-choice competitive outcome. His tactical finish does not imply yesterday's subjective previews demanded certainty, nor that 5,000m could benefit from skipping a later1,500m race.
+
+Keep evidence stages explicit. Donnarumma sources retrieved only prosecutor requests10/9/6, not imposed sentences or a longest-sentence tie check. No completed Shelton semifinal score was retrieved. The snapshot truths are authoritative, but neither is relabeled as a personally retrieved completed result. Conversely, the resolved unique furthest-American truth logically implies Shelton wins the direct American semifinal, allowing a transparently labeled men-title update. Reuters fully confirms Jakob's actual race.
+
+Internal192 last-forecast diagnostics: mean skill0.27421340 versus calibrated expectation0.42182827;86 modal wins versus105.765 summed top probabilities;34 unlisted truths versus14.5648 expected residual. This is a selected mixed question sample and not an official aggregate score. Three positives do not erase earlier rare-event and candidate-coverage issues or imply a universal confidence cap.
+
+Today's process distinctions: actual practice versus qualifying odds versus race probabilities; lost FP2 laps versus a formal grid penalty; a liability judgment versus a settlement; a semifinal result versus a scheduled match; distinct primary polls versus syndicated copies; final candidate lists versus awarded host cities. Repeated known performances and the same four-round javelin format do not deserve a second adjustment. Full secondary drama nominee list corrects a prior Cherry example without editing historical forecasts.

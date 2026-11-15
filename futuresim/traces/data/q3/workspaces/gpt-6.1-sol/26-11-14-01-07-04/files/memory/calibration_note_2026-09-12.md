@@ -1,0 +1,13 @@
+# September 12 calibration note
+
+All four new truths were named. NAZA12% was the modal named forecast; the other three were nonmodal. Last-distribution internal skills: Kitaguchi13% −0.1949, NAZA12% +0.2021, NottinghamForest27% +0.1894, Rybakina43% +0.3502. Approximate80-file session averages are−28.06025/+1.9315/+0.505/+12.958625. These are not official simulator time-weighted scores or a complete daily calendar.
+
+Kitaguchi's68.92 beatYan68.05 despite Yan's65% forecast. Championship pedigree had a meaningful13% share after theBrussels update. Yan retired aftertwo attempts with cause unspecified; no evidence establishes a foreseeable pre-existing injury. Fourrounds were already known. Audit whether exceptional peak marks and repeated wins justify confidence, but do not use a single upset as a blanket cap or cut unrelated men's probabilities automatically.
+
+NAZA's officialSpecialJuryPrize supports the bounded8→12 premiere-review update while preserving category uncertainty. PossibleLove tookGrandJuryPrize and WomanUnknownGoldenLion: favorable reception is not a deterministic allocation rule. Forest's win rewards yesterday44/29/27 move from48/27/25, though eventual victory was not certain. Rybakina43% winning a final against57% favorite is ordinary competitive variance, not proof the market-informed prior was wrong.
+
+All four actual results are now corroborated by eligible contemporaneous reporting; Venice has a primaryofficial awards announcement. The full officialWA result sheet was not retrieved, despite multiple strong result reports. A separate ReutersSep12 follow-up confirms Kherbouch's actualnine-year imposedsentence, partially closing yesterday source-stage gap, but gives no complete other-defendant/tie comparison. Do not retrodate newsource access or rewrite forecasts.
+
+Internal196 last-forecast diagnostics: mean skill0.27140700 versus calibrated expectation0.42012361;87modalwins versus107.545 summed top probabilities;34unlistedtruths versus15.1848 expected residual. Selected and mixed question types limit universal recalibration; three positive lastskills do not erase prior confidence and candidate-coverage issues.
+
+Today's distinctions: an actual qualifying grid versus incompletepostqualifying raceprices; a100m win as limited200m form evidence; an expiring contract versus the explicit incumbent default when no replacement is announced; aUN commission/HRCstatement versus a jointNGO UNGA appeal. Prospective evidence can justify naming a better real candidate without falsely claiming the final qualifying statement already exists. Retrospective next-day headline766 was rejected afterdiscovery, not falsely described as prefiltered; validator now rejects its URL explicitly.

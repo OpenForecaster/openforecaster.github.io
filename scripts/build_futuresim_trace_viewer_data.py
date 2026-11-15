@@ -1,10 +1,16 @@
 #!/usr/bin/env python3
-"""Build static FutureSim trace-viewer data from harness stdout JSONL files."""
+"""Build static FutureSim trace-viewer data from harness stdout JSONL files.
+
+A run's source is usually its `<backend>_stdout.jsonl`. It can instead be the run's
+`codex_sessions` or `muse_sessions` directory: those session logs also hold the sub-agents'
+work, which stdout leaves out (see futuresim_session_logs.py).
+"""
 
 from __future__ import annotations
 
 import argparse
 import csv
+import gzip
 import json
 import re
 import shutil
@@ -13,18 +19,29 @@ from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
 
+from futuresim_session_logs import is_session_log, read_session_log
+
 
 START_SIM_DATE = date(2025, 12, 24)
 DAY_ADVANCED_RE = re.compile(r"Day advanced to (20\d{2}-\d{2}-\d{2})")
 SECRET_RE = re.compile(
     r"(?i)(sk-[A-Za-z0-9_-]{20,}|[A-Za-z0-9_-]*(?:api|token|key)[A-Za-z0-9_-]*[=:][A-Za-z0-9_.-]{16,})"
 )
+# An agent that lists processes (ps, pgrep) sees other people's jobs on the shared cluster. With
+# --hide-host-paths, a line of tool output that names a path in someone's area there is left out.
+# /home/user and the like are an agent's guesses at its own home folder, not accounts on the cluster.
+HOST_PATH_RE = re.compile(
+    r"(?<![\w.:/-])/(?:lustre|fast|scratch|is/cluster|local/condor_execute"
+    r"|home/(?!(?:user|claude|agent|ubuntu|root)/)[\w.-]+)/[\w.-]"
+)
 DROP_KEYS = {"thinking", "signature"}
 MAX_STRING_CHARS = 20000
+GZIP_SHARDS = False
+HIDE_HOST_PATHS = False
 
 
 def main() -> None:
-    global MAX_STRING_CHARS
+    global MAX_STRING_CHARS, GZIP_SHARDS, HIDE_HOST_PATHS
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument(
@@ -38,8 +55,17 @@ def main() -> None:
     parser.add_argument("--max-events-per-day", type=int, default=0, help="Optional sample-data limit.")
     parser.add_argument("--max-source-events", type=int, default=0, help="Optional per-run parse limit for local previews.")
     parser.add_argument("--max-string-chars", type=int, default=MAX_STRING_CHARS, help="Maximum stored length for one raw text field.")
+    parser.add_argument("--gzip", action="store_true", help="Write the day shards gzip-compressed, as <date>.json.gz (about a third of the size).")
+    parser.add_argument(
+        "--hide-host-paths",
+        action="store_true",
+        help="Leave out lines of tool output that name a path on the shared cluster. For runs whose agents "
+        "work in a sandbox (/agent/workspace): there, such paths only appear when an agent lists processes.",
+    )
     args = parser.parse_args()
     MAX_STRING_CHARS = args.max_string_chars
+    GZIP_SHARDS = args.gzip
+    HIDE_HOST_PATHS = args.hide_host_paths
 
     if not args.run:
         raise SystemExit("Pass at least one --run spec.")
@@ -84,6 +110,28 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         )
         current_day = segment_start
         pending_next_day = False
+        if is_session_log(source_path):
+            # The session log states each record's simulation day, so nothing is inferred here.
+            records, notes = read_session_log(source_path, segment_start)
+            for note in notes:
+                print(f"{run_id}: {note}")
+            for record in records:
+                if segment_end and date.fromisoformat(record.day) >= segment_end:
+                    break
+                if max_source_events and event_idx >= max_source_events:
+                    break
+                current_day = date.fromisoformat(record.day)
+                event = normalize_event(record.raw, event_idx, record.day, turn)
+                if record.subagent:
+                    event["subagent"] = record.subagent
+                event_idx += 1
+                annotate_forecast_history(event, forecast_history)
+                if should_keep_event(event):
+                    if event["kind"] == "assistant":
+                        turn += 1
+                        event["turn"] = turn
+                    days[record.day].append(event)
+            continue
         with source_path.open(encoding="utf-8") as handle:
             for line in handle:
                 if segment_end and current_day >= segment_end:
@@ -150,8 +198,8 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
             "events": events,
             "truncated": truncated,
         }
-        shard_path = run_dir / f"{day_key}.json"
-        write_json(shard_path, shard)
+        shard_path = run_dir / (f"{day_key}.json.gz" if GZIP_SHARDS else f"{day_key}.json")
+        write_json(shard_path, shard, gzipped=GZIP_SHARDS)
         for name, count in tool_counts(events).items():
             run_tool_counts[name] += count
         compactions = count_compactions(events)
@@ -209,7 +257,7 @@ def parse_source_segments(spec: str) -> list[tuple[Path, date]]:
         path_text, _, start_text = segment.partition("@")
         source_path = Path(path_text)
         if not source_path.exists():
-            raise SystemExit(f"Missing stdout JSONL: {source_path}")
+            raise SystemExit(f"Missing trace source: {source_path}")
         start_day = date.fromisoformat(start_text) if start_text else START_SIM_DATE
         segments.append((source_path, start_day))
     if not segments:
@@ -314,6 +362,11 @@ def normalize_event(raw: dict[str, Any], idx: int, sim_date: str, turn: int) -> 
         event_kind = kind
         if not blocks:
             blocks = [{"type": "system", "text": compact_text(raw)}]
+
+    if HIDE_HOST_PATHS:
+        for block in blocks:
+            if block.get("type") == "tool_result" and isinstance(block.get("content"), str):
+                block["content"] = without_host_lines(block["content"])
 
     return {
         "idx": idx,
@@ -535,6 +588,30 @@ def clean_string(value: str) -> str:
     return SECRET_RE.sub("[redacted]", value)
 
 
+def without_host_lines(text: str) -> str:
+    """Replace each run of lines that name a path on the shared cluster with one note."""
+    if not HOST_PATH_RE.search(text):
+        return text
+    kept: list[str] = []
+    dropped = 0
+
+    def note() -> str:
+        lines = "1 line" if dropped == 1 else f"{dropped} lines"
+        return f"[{lines} left out: paths on the shared cluster, outside the agent's sandbox]"
+
+    for line in text.split("\n"):
+        if HOST_PATH_RE.search(line):
+            dropped += 1
+            continue
+        if dropped:
+            kept.append(note())
+            dropped = 0
+        kept.append(line)
+    if dropped:
+        kept.append(note())
+    return "\n".join(kept)
+
+
 def event_time(raw: dict[str, Any]) -> str:
     ts = raw.get("timestamp") or raw.get("ts")
     if not ts:
@@ -612,9 +689,15 @@ def tool_counts(events: list[dict[str, Any]]) -> dict[str, int]:
     return counts
 
 
-def write_json(path: Path, payload: Any) -> None:
+def write_json(path: Path, payload: Any, gzipped: bool = False) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if gzipped:
+        text = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
+        # mtime=0 keeps the bytes the same from one build to the next.
+        path.write_bytes(gzip.compress(text.encode("utf-8"), compresslevel=9, mtime=0))
+        return
+    text = json.dumps(payload, ensure_ascii=False, indent=2)
+    path.write_text(text + "\n", encoding="utf-8")
 
 
 if __name__ == "__main__":

@@ -1,0 +1,12 @@
+# Watchlist (updated 2026-08-21) — check these on the given sim dates
+- 08-22: 669987 Dutch GP quali (race 08-23); 260735/372528 Cincinnati SF results (finals 08-23); RESOLVE 187330 IndyCar pole, 48050 robot 100m, 97251 Hull-MU, 72132 Forest-Leeds, 974146 Fabinho, 720892 AIPAC.
+- 08-23: 22056/354508 Silesia DL; 222955 Bouaddi official?; 669987 race.
+- 08-24: 461239 Lincoln port; 623398 Hadjam (Porto/Como); 388162 Allan->City official?; 964047 AVROTROS decision; 772246 mixed doubles DRAW + qualifying (R1/QF Tue 08-25).
+- 08-25: 277370 Celtic 2nd leg; 53266 PFA ceremony; 903529 measles death?; 874244 Witkoff Moscow?
+- 08-26: 588637 Jackson->Villa (needs Watkins sale); 834692 Xi ME trip.
+- 08-27: 162316 Barcola; 450664 E. Martinez; 876325 Enzo; US Open draw (408930, 891014, 608158).
+- 08-28: 120116 Norway king health; 921981 Ushakov SCO briefing.
+- 08-29: 20480 Martinelli; 2260/409386 Sydney Marathon (race Aug 30).
+- 08-30: 127253 G. Jesus. 08-31: 335239 Raam #2; 79046 Villa-Arsenal. 09-01: 875467 top PL fee (Barcola/Enzo vs Rogers GBP117m).
+- 09-02: 712131 Gaza plan; 591807 Ghana coach (Queiroz vs Ofei).
+- Transfer questions: re-search every 2 days until Sep 1 deadline.

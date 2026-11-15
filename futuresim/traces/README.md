@@ -2,16 +2,51 @@
 
 Static viewer for official FutureSim leaderboard traces.
 
-The deployed page defaults to 2026 Q2 and can switch between two static data
+The deployed page defaults to 2026 Q3 and can switch between three static data
 roots:
 
+- 2026 Q3: `futuresim/traces/data/q3/`
 - 2026 Q2: `futuresim/traces/data/q2/`
 - 2026 Q1: `futuresim/traces/data/`
 
 Each root contains a manifest, per-day raw trace shards, workspace history, and
 summary overlays. Q1 is generated from `official_runs_complete` with
-`scripts/build_futuresim_official_trace_data.sh`. Q2 is generated from the 19
-selected `Q2results` runs with:
+`scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 14
+leaderboard runs in `clean_runs_Q3v8` with:
+
+```bash
+scripts/build_futuresim_q3_trace_data.sh
+```
+
+That one script writes the shards, the workspaces and the summaries. Q3 starts
+on `2026-06-24`. It differs from Q1 and Q2 in five ways:
+
+- Codex and Muse runs are read from their session logs (`codex_sessions/`,
+  `muse_sessions/`) by `scripts/futuresim_session_logs.py`, not from stdout.
+  Their sub-agents make most of the forecasts and stdout does not have them.
+  Each event from a sub-agent carries its name in `subagent`. Codex stores the
+  text of messages between agents encrypted, so the viewer shows a placeholder
+  for those.
+- Day shards are gzip-compressed (`<date>.json.gz`, about a third of the size)
+  with the same 10,000-character cap per text field as Q2. The viewer
+  decompresses them in the browser.
+- A run whose `memory/` folder holds more than 5 MB of files other than
+  Markdown notes (search dumps, article scans) is exported with its notes and
+  predictions only. Its workspace manifest records the count and size under
+  `data_files_left_out`, and the viewer shows that next to the file count.
+- The agents ran in a sandbox (`/agent/workspace`) on a shared cluster. An
+  agent that lists processes (`ps`, `pgrep`) sees other people's jobs there, so
+  the build passes `--hide-host-paths`: a line of tool output that names a
+  cluster path (`/lustre/…`, `/fast/…`, `/is/cluster/…`, `/scratch/…`,
+  `/home/<account>/…`) is replaced by a note saying how many lines were left
+  out. Do not use this option for Q1 or Q2, whose agents worked directly in a
+  cluster folder.
+- The summaries are rule-based, written by
+  `scripts/build_futuresim_trace_summaries.py` as for Q1. A segment ends where
+  the acting agent changes, and a sub-agent's segments are labelled with its
+  name.
+
+Q2 is generated from the 19 selected `Q2results` runs with:
 
 ```bash
 scripts/build_futuresim_q2_trace_data.sh
@@ -23,6 +58,10 @@ dates. Q2 raw text fields are capped at 10,000 characters so the published site
 stays below GitHub Pages' 1 GB limit. After generating new summary overlays, place them in
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
+
+With all three periods the built site is about 990 MB, so there is little room
+left under that limit. Check the size of a Jekyll build before adding more
+trace data.
 
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.

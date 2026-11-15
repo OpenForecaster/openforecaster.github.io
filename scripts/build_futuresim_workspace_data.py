@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import gzip
 import json
 import re
 import shutil
@@ -28,6 +29,19 @@ def main() -> None:
         type=Path,
         default=[Path("/lustre/fast/fast/sgoel/forecasting/current_sim/final_runs_v37")],
     )
+    parser.add_argument(
+        "--root-first",
+        action="store_true",
+        help="Look under --workspace-root before the workspace paths that appear in the trace. "
+        "A stitched run needs this: its trace also names the workspaces of the segments it was stitched from.",
+    )
+    parser.add_argument(
+        "--max-data-bytes",
+        type=int,
+        default=0,
+        help="Per run. When the files under memory/ that are not Markdown notes add up to more than this, "
+        "leave them out and record how many there were. 0 (the default) exports everything.",
+    )
     args = parser.parse_args()
 
     manifest_path = args.data_dir / "manifest.json"
@@ -38,11 +52,11 @@ def main() -> None:
     out_root.mkdir(parents=True)
 
     for run in manifest["runs"]:
-        workspace = find_workspace(args.data_dir, run, args.workspace_root)
+        workspace = find_workspace(args.data_dir, run, args.workspace_root, args.root_first)
         if not workspace:
             run.pop("workspace", None)
             continue
-        workspace_manifest = export_workspace(args.data_dir, out_root, run, workspace)
+        workspace_manifest = export_workspace(args.data_dir, out_root, run, workspace, args.max_data_bytes)
         run["workspace"] = {
             "manifest_path": workspace_manifest["path"],
             "file_count": workspace_manifest["file_count"],
@@ -53,26 +67,57 @@ def main() -> None:
     manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 
 
-def find_workspace(data_dir: Path, run: dict[str, Any], roots: list[Path]) -> Path | None:
+def find_workspace(data_dir: Path, run: dict[str, Any], roots: list[Path], root_first: bool = False) -> Path | None:
+    def under_roots() -> Path | None:
+        for root in roots:
+            for path in root.glob(f"*/{run['run_id']}/agents/*/workspace"):
+                if path.exists():
+                    return path
+        return None
+
+    if root_first:
+        found = under_roots()
+        if found:
+            return found
+
     for day in run.get("days", []):
-        text = (data_dir / day["path"]).read_text(encoding="utf-8", errors="ignore")
+        text = read_shard(data_dir / day["path"])
         for match in WORKSPACE_RE.findall(text):
             path = Path(match)
             if path.exists():
                 return path
 
-    for root in roots:
-        for path in root.glob(f"*/{run['run_id']}/agents/*/workspace"):
-            if path.exists():
-                return path
-    return None
+    return under_roots()
 
 
-def export_workspace(data_dir: Path, out_root: Path, run: dict[str, Any], workspace: Path) -> dict[str, Any]:
+def read_shard(path: Path) -> str:
+    """The text of a day shard, which the trace builder may have written gzip-compressed."""
+    if path.suffix == ".gz":
+        return gzip.decompress(path.read_bytes()).decode("utf-8", errors="ignore")
+    return path.read_text(encoding="utf-8", errors="ignore")
+
+
+def is_data_file(rel: Path) -> bool:
+    """A file under memory/ that is not a Markdown note: a search dump, a scan result, a script."""
+    return rel.parts[0] == "memory" and rel.suffix.lower() != ".md"
+
+
+def export_workspace(
+    data_dir: Path, out_root: Path, run: dict[str, Any], workspace: Path, max_data_bytes: int = 0
+) -> dict[str, Any]:
     run_root = out_root / run["agent_slug"] / run["run_id"]
     files_root = run_root / "files"
     files = []
-    for source in workspace_files(workspace):
+    sources = workspace_files(workspace)
+    left_out: dict[str, int] | None = None
+    if max_data_bytes:
+        data_files = [source for source in sources if is_data_file(source.relative_to(workspace))]
+        data_bytes = sum(source.stat().st_size for source in data_files)
+        if data_bytes > max_data_bytes:
+            left_out = {"file_count": len(data_files), "bytes": data_bytes}
+            skip = set(data_files)
+            sources = [source for source in sources if source not in skip]
+    for source in sources:
         if source.stat().st_size > MAX_FILE_BYTES:
             continue
         rel = source.relative_to(workspace)
@@ -88,7 +133,14 @@ def export_workspace(data_dir: Path, out_root: Path, run: dict[str, Any], worksp
             "source": "final_workspace",
         })
 
-    files.extend(export_trace_workspace_versions(data_dir, files_root, run, workspace))
+    history = export_trace_workspace_versions(data_dir, files_root, run, workspace)
+    if left_out:
+        # Files left out of the export are left out of its day-by-day history too.
+        for item in history:
+            if is_data_file(Path(item["label"])):
+                (data_dir / item["path"]).unlink()
+        history = [item for item in history if not is_data_file(Path(item["label"]))]
+    files.extend(history)
     files.sort(key=lambda item: (item["kind"] != "memory", item["date"] or "9999-99-99", item["label"]))
     payload = {
         "agent_slug": run["agent_slug"],
@@ -98,6 +150,8 @@ def export_workspace(data_dir: Path, out_root: Path, run: dict[str, Any], worksp
         "workspace_source": str(workspace),
         "files": files,
     }
+    if left_out:
+        payload["data_files_left_out"] = left_out
     path = run_root / "manifest.json"
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return {
@@ -129,7 +183,7 @@ def export_trace_workspace_versions(data_dir: Path, files_root: Path, run: dict[
         shard = data_dir / day["path"]
         if not shard.exists():
             continue
-        payload = json.loads(shard.read_text(encoding="utf-8"))
+        payload = json.loads(read_shard(shard))
         for event in payload.get("events", []):
             for block in event.get("blocks", []):
                 if block.get("type") != "tool_use":

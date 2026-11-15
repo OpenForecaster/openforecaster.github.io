@@ -1,0 +1,39 @@
+# Forecast review 2026-09-12
+
+Reviewed252 questions:56active/196resolved. Accepted6 unique updates in6calls, retained50; all56covered. All80priorfiles/1127entries reconcile, no carry/oldtruth/four-fieldcriteri changes. Early owns56active+7OLDresolved; othergroups each63resolved. Rootnewresolutions261941/52657/5814/608158; no resolved submissions.
+
+Accepted forecasts:
+
+- 48458: Lando Norris 38.0%, Kimi Antonelli 35.0%, Max Verstappen 11.0%, George Russell 6.0%, Lewis Hamilton 5.0%; unassigned 5.0%.
+- 487575: Manchester City 46.0%, Draw 25.0%, Manchester United 29.0%; unassigned 0.0%.
+- 788295: Wael Naouar 55.0%, Ghassen Boughdiri 21.0%, Ghassen Henchiri 14.0%, Nabil Chennoufi 8.0%; unassigned 2.0%.
+- 574553: Arman Tsarukyan 74.0%, Mauricio Ruffy 25.0%; unassigned 1.0%.
+- 653425: Kenny Bednarek 55.0%, Letsile Tebogo 27.0%, Bryan Levell 6.5%, Sinesipho Dambile 3.5%, Makanakaishe Charamba 3.0%; unassigned 5.0%.
+- 660356: Suberu Siyaka Aniviye 60.0%, Ahmed Abubakar Audi 10.0%, Abubakar Rabiu Muti 5.0%; unassigned 25.0%.
+
+MenUSOpen: Shelton’s actual4–6/6–3/6–3/7–5 semifinal is independently verifiedTODAY12 byAJ/AFP andofficialUSOpen. SuppliedhighestAmerican outcome had already informed58Z/42ShelSeptember11, so no duplicateadvancementuplift. Currenttwo-sided prices normalize57–58%Z. Spainprimary qualifying and updatedgrid/odds make Norris materiallystronger afterpole; Fridaygearboxtroubleisnotanautomaticpenalty. Derbycurrentthreewayprices supportamodestcorrectiontowardUnited. Naouar’s four-monthdetentionextensionandcontinuingfastis apredictivepressureprecursor, notanactualstop; windowhasopened. UFC331isSeptember19, distinctfromtonight’sNochecard; Ortega–Moicanoisanotherbout. Normalizedpricebenchmarksare uncertainandmargin-bearing, notoutcomes.
+
+Sevenrootpolicyhelpersretain. BudanovOctoberplanninghasnovenue; ZelenskyTurkey/UAE/Switzerlandpossibilitieswerealreadypriced. ThecriterionallowsaproposedcountrycurrentSeptember25withouttalksactuallyoccurringbythen. Nofreshexactorbitalweaponsack/SCIsectorGDP/coalitionappeal/DOSBselection/75thArtemissigning. KnownDjibouti72ceremonyremainsfutureSeptember14. Middle’sninelegalhelpersfindnonewqualifyingact; unrelatedcorporateAI,EUteenpolicy,McConnellhealthandFluttercompetitionarenottherespectivelegalpredicates. Absenceofretrievalisnotnegativeproof.
+
+Exploratory calibration check: among 29 supplied resolved questions with final top probability at least80%, average confidence was86.8% and top-answer accuracy14/29. Saved semantic aliases are used, but topic/horizon dependence, selection and source/date disputes limit inference; these are not official scores. The other bins show55questions at29.1%mean confidence/23.6%accuracy,62at48.5%/46.8%, and50at68.5%/56.0%. No mechanical pooled shrinkage is applied. Early and root re-read three concentrated June24 priors. Nigeria78 came from a February commander identification after miners killed an officer, without establishing the target custody-death/disciplinary link. Correct it TODAY to Aniviye60/Audi10/Muti5,25%field; this is a candidate-specific reassessment of the old basis, not a newly reported suspension or inferred negative result. Aniviye remains the leading named candidate, with broader identification and chain-of-command uncertainty. Florida78 retains genuine lawsuit/probe precursors despite its relief/date gap; Puyo94 retains actual selection and Japanese scene-strength support despite no current comparative field benchmark. Continue concrete audits of those concentrations; empty coverage is not validation. Five earlier accepted updates and the sixth Nigeria correction each retain full receipts; no same-day replacement is involved.
+
+NewresolutiondiagnosticsareINTERNAL, notofficialharnessscores. Full80helddaysJune24–September11andallhistoriesremainunchanged:
+
+- 261941 (Haruka Kitaguchi): final probability 9.0%; final diagnostic -0.28170; 80-day held mean -0.23286.
+- 52657 (NAZA): final probability 11.0%; final diagnostic 0.16650; 80-day held mean 0.01604.
+- 5814 (Nottingham Forest): final probability 29.0%; final diagnostic 0.23540; 80-day held mean 0.11723.
+- 608158 (Elena Rybakina): final probability 43.0%; final diagnostic 0.35020; 80-day held mean 0.14143.
+
+Womenjavelin: completedKitaguchi68.92/Yan68.05isreportedbyReuters. MandatoryofficialWAresultunextractedafteroneemptytrace. WrittenResolutionDateSeptember19versussuppliedSeptember12isvisible, butdoesnotexplicitlyrequiretheeventitselfonSeptember19. All4forecastsretained; Yan58→65→69→66,Kitaguchi13→9→9→9. Seasongreatestthrowisnotanexpectedperformance distribution. Four-roundexecutionvarianceandveteranupsideare usefulmodelsensitivities; a singleupsetdoesnotestablishthecorrectoldprobability. Menjavelin47%leaderalreadyretainsbroadoppositionrisk; donotmechanicallytransferthiswinner.
+
+Venice: originalBiennaleSeptember12announcementexplicitlyawardsSPECIALJURYPRIZEtoNAZA. WomanUnknownGoldenLion/PossibleLoveGrandJury/DAUdirector/Orizzontiprizeseparate. All4priorspreserved,NAZA8fromactualAugust24competitionadditionthen11afterreception/categoryspecificcriticism. Onecritic,mainprizehandicappingandovationarenotjuryvotes. BroadfieldmasswasnotnamedNAZAcreditandisnotrewritteninhindsight.
+
+Villa: Reuters/AJ/AFPreportForest2–1atVillaPark,IgorJesus88thminutewinner. Reliablematchreportingexpresslyallowed,soofficialPLtableunextractedisnotamandatorysourcegap. NinepriorsmovedForest20→29withseparatelynewcoaching/roster/clinical/form/fixturebanfacts. Last42Villa/29draw/29Forestremaineduncertain; a latewinnerdoesnotproveauniquehindsightforecast. PreserveearlierWestHam2–2versuscurrentfirstleaguegoalreportconflictwithoutrewritinghistory.
+
+WomenUSOpen: ReutersandoriginalWTAconfirmRybakina6–4/5–7/6–2. TwoofficialtournamenttracesproduceWTAactualplusUSOpenwomenpreview, notthemandatoryofficialUSOpencompletedresult. Eventverified/documentgateunextracted. Rootfirstqueryhadmalformedsiteoperator; correctedexplicitdomainquerywasthesecondcall, withbothfullresponsesretained. All17forecastsremain: Rybakina18initial,11afteractualCincinnatiankleretirement,9afterdraw,24atfinalfour,43infinal. Clinicalriskwasrealandlatersustainedplaylegitimatelyimprovedreadiness; nowinner’sretrospectivequoteisbackdatedaspre-eventclearance. Final57/43matchednormalizedtwo-sidedbenchmarks;a43%winnerisnotitselfacalibrationfailure.
+
+PriorDonnarummagapclosesTODAY12: originalAFP/TF1/20MinutesrecoverIMPOSEDtotalKherbouch9,Diop5including2suspended,Khyanacquitted0. Nineistheuniquelongest. Prosecutor10/9/6requests,othercaseprisonuntil2043,finesandjuvenileconvictionsdiffer. Verdictabout01:00night11→12isdescribedFriday/Saturdayacrossreports; preservepublication/retrievalanddonotbackdatethesourceclosure. HighestUSnewsindependentlyclosesTODAY12;noadditionalactiveforecaststageupdatebecauseprovidedoutcomealreadyusedyesterday.
+
+WHO490094isthesolegenuinequalifyingassessmentgap: newnational7022stock,schoolspreadandseventhprovinceimportedcasedonotgiveexplicitWHOprovincialWEEKLYsurgeassessmentSeptember10–16. OlderAfricaCDC381versus165THREE-WEEKfiguresarewrongactorandmetric. MandatorywomenWA/USOpenoriginaldocumentsandpriorcricketoriginalscorecardareseparatelimitsdespitecompletednews. AllowedreportingalternativesforVilla/prior5000andCensuscannotbeconfusedwiththosegates. Exact19oldwatchunchanged;intentionalownedOLDoverlapnowWatkins160265andSavinho225772. Mayun/fuelremainclosedfromSeptember11,norepeatpaidwork.
+
+Corpus2207logical/2145eligible/62future,0missing/invalid,rawunmodifiedandASCIIviewlossless. Research14calls(12nonempty/2empty),budget697→683. Root3nonempty;late3(2nonempty/1empty);middle0;earlyremainingcalls. Fullcanonical/individualresponsesmatch,counterscontiguous,0archivalloss. ScopedURLprovenance43references/27URLsprovesretrieval,nottruth/date/criterionfulfillment. Readyforone next_day callafterrecordscomplete.

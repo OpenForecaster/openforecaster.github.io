@@ -1,0 +1,13 @@
+# Calibration note: September 15, 2026
+
+Nairobi2029 won with our16% thirdnamed forecast. Primary WorldAthletics separately awards Munich2031. Internal lastdistribution skill is+0.01825 and approximate83-session mean+11.09386, so a wrong modal choice can still beat abstention. These are internal diagnostics, not official simulator metrics.
+
+The historical record did review Nairobi's formal government-backed bid and Ruto delivery guarantees. It gave more relative weight to London/Rome financing/venue improvements while treating Nairobi guarantees as existing advocacy rather than a comparable feasibility update. Use a candidate-by-candidate table for funding, approved access, infrastructure, visas/security and confirmed delivery; compare promises and removed barriers by the same standard. Model the paired2029/2031 allocation explicitly. No retrieved council voting/evaluation data proves a precise alternative probability or that Nairobi should have been favorite.
+
+Positive complete entry-list evidence differs from an empty search. FloTrack2026 complete women'shalf list supports a boundedTaye25→4 revision, with source/late-change risk, without inventing an explicit withdrawal or primary confirmation. Correctyear, distance and apparently unabridged list were checked. CurrentIOC group/crossover data likewise supersedes older conflicting footballGroupD information; exact semifinal placement remains unknown.
+
+Do not double-count unchanged INSA as a new poll. Newly retrieved olderCivey numbers improve the probability estimate but are labeled as old data. Full UFC pair normalization removes vig before allocating named-winner mass; overlapping price articles are not independent books. Sherbini knockout reduces future ranking points without proving exactSeptember21 arithmetic. Coachpermit clearance reverses only part of an earlier disruption adjustment, not an automatic managerial bounce.
+
+Fresh Democratic proceedings are not the Republican senator question; actualstrikers' appeals/refusal are not completed suspension; rehearing petitions/stays are not new merits holdings. Exclude a searchbody retrospectively claiming a futureSeptember17 event despiteSeptember14 metadata, rather than treating it as current proof. September15 explicit Emmy winners close an earlier evidence gap asofSeptember15 only.
+
+Across209 lastforecasts: semantic mean0.29212487 versus expected0.42136795;98modalwins versus114.855 summedtopprobabilities;34unlistedtruths versus15.4498 residual expectation. Mixed selected pool and onehost result do not support universal recalibration or hindsight certainty.
