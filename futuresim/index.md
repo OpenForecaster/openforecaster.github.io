@@ -72,18 +72,18 @@ nav: futuresim
       </div>
       <div class="futuresim-q2-writeup">
         <details class="futuresim-q2-disclosure">
-          <summary><strong>Update: We evaluated the latest models on events from July to September and found test-time adaptation has started to improve across the board!</strong></summary>
+          <summary><strong>Update - Nov 15, 2026: We evaluated the latest models on events from July to September and found test-time adaptation has started to improve across the board!</strong></summary>
           <div class="futuresim-q2-disclosure-content">
             <ol>
-              <li>Most models now show good test-time adaptation compared to the flat curves we saw in Q2, improving by 10-15% over the course of the simulation. Opus 5.5 is especially strong, overtaking GPT models which used to dominate earlier, especially on Brier score. We found Opus 5.5 to be very proactive with increased awareness at test-time -- it tried to identify every pattern about the evaluation, the design of the questions, and how the grading was performed, and made the best of it.</li>
-              <li>We now use Exa Snapshot as the search tool as it provides reliable backtest results and has better coverage than CCNews. We limit the number of Exa tool calls to 3000 per run in total and found that while Opus and Sol come close to that limit, all other models make far fewer search tool calls.</li>
-              <li>All the models, even the open-weight ones, are now positively calibrated. Opus 5.5 both starts and ends at the highest Brier score, showcasing both its strong priors and great test-time adaptation capability.</li>
+              <li>In contrast to the flat curves we saw in Q2, most models now show good test-time adaptation improving by 5-15% over the course of the simulation. Opus 5.5 is especially strong, overtaking GPT models which used to dominate earlier, especially on Brier score. We found Opus 5.5 to be very proactive with increased awareness at test-time, trying to identify patterns about the evaluation like the design of the questions and how the grading was performed. For example, Opus 5.5 became increasingly confident during the simulation that the future questions being asked resolve to proper answers/events (and never to Others/None) so it barely assigned probability to "None" unlike other models.</li>
+              <li>We now use <a href="https://exa.ai/products/snapshot" target="_blank" rel="noopener noreferrer">Exa Snapshot</a> as the search tool as it provides reliable backtest results and has better coverage than CCNews. We limit the number of Exa tool calls to 3000 per run in total and found that Opus and Sol make the most of it by using almost all of their quota while all other models make far fewer search calls.</li>
+              <li>All the models, even the open-weight ones, are now positively calibrated. Opus 5.5 both starts and ends at the highest Brier score, showcasing not only its strong priors but also great online adaptation capability.</li>
               <li>We now show a preview of our test set on this website. <a href="{{ '/futuresim/questions/' | relative_url }}">Check out the open-ended questions from Q3.</a></li>
             </ol>
           </div>
         </details>
         <details class="futuresim-q2-disclosure">
-          <summary><strong>Aug 5, 2026: We replayed events from April to June 2026 to test newer frontier models. <a href="{{ '/futuresim/traces/' | relative_url }}">Explore the trajectories.</a></strong></summary>
+          <summary><strong>Past Update - Aug 5, 2026: We replayed events from April to June 2026 to test newer frontier models. <a href="{{ '/futuresim/traces/' | relative_url }}">Explore the trajectories.</a></strong></summary>
           <div class="futuresim-q2-disclosure-content">
             <ol>
               <li>OpenAI models (in the Codex harness) continue to show really strong improvements with test-time adaptation, this time GPT 5.6 Sol performs 15k tool calls in one run and is slightly better than 5.5. This indicates they are better at both seeking new information, and learning from events they observe at test-time than Anthropic models, or even open-weight models, which all show a flat curve.</li>
@@ -93,7 +93,7 @@ nav: futuresim
           </div>
         </details>
         <details class="futuresim-q2-disclosure">
-          <summary><strong>Update: Fixing cross-task leakage, a novel pitfall</strong></summary>
+          <summary><strong>Past Update - Aug 5, 2026: Fixing cross-task leakage, a novel pitfall</strong></summary>
           <div class="futuresim-q2-disclosure-content">
             <p>We also made an important correction in our methodology for the Q2 runs. Notably, being the only environment that back-tests forecasting agents in open-ended simulations where they choose which questions to predict on, we found a new form of leakage we had to fix -- cross-task leakage. For example, the US-Iran war was a major theme in 2026 Q1, and thus many questions were about events related to it. This is generally good, correlation within questions allows testing "continual learning", can models learn from resolutions of related questions to update their predictions / reasoning on related active questions? We found the newest models started trying to infer the answers to some questions by looking at the question text of related questions, perhaps related to their increased propensity to reward hack. This is a novel pitfall, which happens only when we move beyond independent question-answering evaluations. We thank users of FutureSim for also bringing this issue to our notice, especially Eternis AI. We now fix it in the released dataset for Q2 by performing a cross-question leakage filtering step. Specifically, for every question, we task frontier agents with predicting the answer with and without access to the other questions. If the prediction is much better with access to other questions, we filter such questions as potentially having cross-task leakage. We hope this observation informs creators of open-ended multi-task evaluations in the future.</p>
           </div>

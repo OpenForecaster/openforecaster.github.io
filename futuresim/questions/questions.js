@@ -193,15 +193,24 @@
     return centres;
   }
 
-  /* A value axis that fits lo..hi: the finest of `steps` that covers the range in at most
-   * `intervals` gaps, with both ends moved out to a multiple of that step. */
+  /* A value axis that fits lo..hi. The step is the finest of `steps` that covers the range in at
+   * most `intervals` gaps, and the bottom is moved out to a multiple of it. The top is the next
+   * multiple only when the highest value is nearly there (within AXIS_SNAP of the plot height);
+   * otherwise it stops AXIS_ROOM of the plot height above the highest value, so the best line
+   * always runs close to the top of the plot. */
+  const AXIS_SNAP = 0.1;
+  const AXIS_ROOM = 0.05;
+
   function fitAxis(lo, hi, steps, intervals) {
     const first = (step) => Math.floor(lo / step + 1e-9);
     const last = (step) => Math.ceil(hi / step - 1e-9);
     const step = steps.find((size) => last(size) - first(size) <= intervals) || steps[steps.length - 1];
+    const bottom = first(step) * step;
+    const grid = last(step) * step;
+    const top = grid - hi <= AXIS_SNAP * (grid - bottom) ? grid : hi + (AXIS_ROOM / (1 - AXIS_ROOM)) * (hi - bottom);
     const ticks = [];
-    for (let k = first(step); k <= last(step); k++) ticks.push(Math.round(k * step * 100) / 100);
-    return { lo: ticks[0], hi: ticks[ticks.length - 1], ticks: ticks };
+    for (let k = first(step); k * step <= top + 1e-9; k++) ticks.push(Math.round(k * step * 100) / 100);
+    return { lo: ticks[0], hi: Math.round(top * 1e4) / 1e4, ticks: ticks };
   }
 
   function prepare() {
@@ -1138,15 +1147,17 @@
     const y1 = y0 + (narrow ? 194 : 282);
     const height = y1 + 32;
 
-    // The value axis fits the lines on show (and, for probabilities, the range of their runs),
-    // so a question where no agent went above 30% is not drawn on an axis that runs to 100%.
+    // The value axis fits the lines on show, so its top sits just above the best agent's line and
+    // a question where no agent went above 30% is not drawn on an axis that runs to 100%. The range
+    // of an agent's runs (the band behind an emphasised line) does not stretch the axis; where it
+    // goes past the top it is cut off there.
     let lo = 0;
     let hi = 0;
     data.models.forEach((model) => {
       const series = q.series[model.id];
       if (hidden.has(model.id) || !series || !series.d.length) return;
       lo = Math.min(lo, Math.min.apply(null, series[metric]));
-      hi = Math.max(hi, Math.max.apply(null, metric === 'p' ? series.hi : series[metric]));
+      hi = Math.max(hi, Math.max.apply(null, series[metric]));
     });
     const axis = fitAxis(lo, Math.max(hi, lo + spec.span), spec.steps, spec.intervals);
     const X = (day) => x0 + (day / q.day) * (x1 - x0);
