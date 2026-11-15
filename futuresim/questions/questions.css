@@ -1,0 +1,2105 @@
+/* FutureSim "Questions" page (futuresim/questions/). Everything is scoped to .fq, except the one
+   rule below for the site's top navigation. The layout links this file in <head> (the page's
+   "stylesheet" front matter), so that rule is in place before the top bar is first painted. */
+
+/* The layout marks this page's link in the top bar; no other page has a current link. */
+.nav a[aria-current="page"] {
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.fq {
+  --fq-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --fq-ink: rgba(0, 0, 0, 0.88);
+  --fq-ink-2: rgba(0, 0, 0, 0.62);
+  --fq-ink-3: rgba(0, 0, 0, 0.46);
+  --fq-line: rgba(0, 0, 0, 0.1);
+  --fq-grid: rgba(0, 0, 0, 0.08);
+  --fq-surface: #fff;
+  --fq-wash: rgba(0, 0, 0, 0.035);
+  --fq-good: #0f766e;
+  --fq-bar: #c3c9d2;
+  /* A little wider than the site's text column, so the mosaic's tiles keep a readable size. */
+  width: min(1240px, calc(100% - 36px));
+  margin: 0 auto;
+  padding: 86px 0 56px;
+  color: var(--fq-ink);
+}
+
+.fq-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.fq-icon {
+  display: inline-block;
+  flex: none;
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+}
+
+/* Header ------------------------------------------------------------------ */
+
+/* Centred, like the hero of the site's other pages. */
+.fq-header {
+  text-align: center;
+}
+
+.fq-kicker {
+  margin: 0 0 6px;
+  color: var(--muted2);
+  font-size: 14px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.fq-header h1 {
+  margin: 0;
+  font-size: clamp(30px, 3.6vw, 42px);
+  line-height: 1.04;
+  letter-spacing: 0;
+}
+
+/* The intro stays centred, with the view switch at the end of its row. */
+.fq-header-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px 20px;
+  margin-top: 14px;
+}
+
+/* One line where the page is wide enough, and evenly broken lines where it is not. */
+.fq-lede {
+  grid-column: 2;
+  margin: 0;
+  color: var(--muted);
+  text-wrap: balance;
+}
+
+.fq-lede a {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: color-mix(in srgb, currentColor, transparent 50%);
+  text-underline-offset: 3px;
+}
+
+.fq-lede a:hover {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+/* Chart tooltip ----------------------------------------------------------- */
+
+.fq-tip {
+  position: absolute;
+  z-index: 4;
+  width: max-content;
+  max-width: min(300px, 82vw);
+  padding: 8px 11px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.98);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-size: 13.5px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.fq-tip[hidden] {
+  display: none;
+}
+
+.fq-tip-meta {
+  display: block;
+  color: var(--fq-ink-2);
+  font-size: 12.5px;
+}
+
+/* View switch ------------------------------------------------------------- */
+
+.fq-view {
+  grid-column: 3;
+  justify-self: end;
+  font-family: var(--fq-sans);
+}
+
+.fq-view .fq-seg button {
+  min-height: 34px;
+  padding: 0 18px;
+}
+
+/* Inside the button, because the switch clips what is drawn outside it. */
+.fq-view .fq-seg button:focus-visible {
+  outline-offset: -3px;
+}
+
+/* Mosaic ------------------------------------------------------------------ */
+
+/* One colour per category. White drawings read on all six, and the six stay apart under the
+   common colour-vision deficiencies; each block also carries its category's name. */
+.fq [data-fq-cat] {
+  --fq-tint: #5b6470;
+  --fq-shade: color-mix(in srgb, var(--fq-tint), #000 24%);
+}
+
+.fq [data-fq-cat="geopolitics"] {
+  --fq-tint: #4f74d9;
+}
+
+.fq [data-fq-cat="politics"] {
+  --fq-tint: #6b2e8a;
+}
+
+.fq [data-fq-cat="economy"] {
+  --fq-tint: #a8820f;
+}
+
+.fq [data-fq-cat="science"] {
+  --fq-tint: #0b6b5c;
+}
+
+.fq [data-fq-cat="culture"] {
+  --fq-tint: #d2609a;
+}
+
+.fq [data-fq-cat="sport"] {
+  --fq-tint: #b0391a;
+}
+
+/* questions.js places the blocks and picks each block's rows of tiles; the box only sets the
+   shape they have to fill, which gets taller as the screen gets narrower. */
+.fq-mosaic {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 100 / 60;
+  min-height: 320px;
+  /* As tall as the window allows under the page header, with the line of help still in view. */
+  max-height: max(420px, calc(100vh - var(--fq-above, 284px)));
+  max-height: max(420px, calc(100dvh - var(--fq-above, 284px)));
+  margin: 32px 0 0;
+}
+
+.fq-mosaic > .fq-loading,
+.fq-mosaic > .fq-empty {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  border-radius: var(--radius-sm);
+}
+
+.fq-mosaic-note {
+  margin: 12px 0 0;
+  color: var(--fq-ink-2);
+  font-family: var(--fq-sans);
+  font-size: 13px;
+  line-height: 1.45;
+  text-align: center;
+  text-wrap: pretty;
+}
+
+.fq-block {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: 8px;
+  background: var(--fq-shade);
+}
+
+.fq-block-head {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 7px;
+  height: var(--fq-head, 30px);
+  margin: 0;
+  padding: 0 10px;
+  color: #fff;
+  font-family: var(--fq-sans);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.fq-block-head .fq-icon {
+  width: 15px;
+  height: 15px;
+}
+
+.fq-block-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.fq-block-n {
+  margin-left: auto;
+  font-weight: 500;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.fq-tiles {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  min-height: 0;
+  padding: 0 3px 3px;
+}
+
+.fq-tile-row {
+  display: flex;
+  flex: 1 1 0;
+  gap: 3px;
+  min-height: 0;
+}
+
+.fq-tile {
+  --fq-tile: var(--fq-tint);
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--fq-tile);
+  color: #fff;
+  transition: opacity 140ms ease, background-color 140ms ease;
+}
+
+.fq-tile:hover,
+.fq-tile:focus-visible,
+.fq-tile.is-peeked {
+  --fq-tile: color-mix(in srgb, var(--fq-tint), #fff 13%);
+}
+
+.fq-tile:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: -4px;
+}
+
+/* While one question's summary is up, the other tiles step back into their block. */
+.fq-mosaic.has-peek .fq-tile:not(.is-peeked) {
+  opacity: 0.7;
+}
+
+/* Pictograms (art.js) ------------------------------------------------------ */
+
+.fq-art {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transition: transform 180ms ease;
+}
+
+.fq-tile:hover .fq-art,
+.fq-tile.is-peeked .fq-art {
+  transform: scale(1.07);
+}
+
+/* Shown when a question has no drawing at all: its topic's icon. */
+.fq-art-plain {
+  display: block;
+  width: 34%;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.fq-art .a {
+  fill: #fff;
+}
+
+.fq-art .b {
+  fill: #fff;
+  fill-opacity: 0.55;
+}
+
+.fq-art .c {
+  fill: #fff;
+  fill-opacity: 0.26;
+}
+
+.fq-art .k {
+  fill: var(--fq-tile, var(--fq-tint));
+  transition: fill 140ms ease;
+}
+
+.fq-art .s,
+.fq-art .u,
+.fq-art .t,
+.fq-art .n,
+.fq-art .w {
+  fill: none;
+  stroke: #fff;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.fq-art .s {
+  stroke-width: 7;
+}
+
+.fq-art .u {
+  stroke-width: 4;
+}
+
+.fq-art .t {
+  stroke-width: 4;
+  stroke-opacity: 0.6;
+}
+
+.fq-art .n {
+  stroke-width: 2.5;
+  stroke-opacity: 0.6;
+}
+
+.fq-art .w {
+  stroke-width: 11;
+}
+
+.fq-art .ks,
+.fq-art .kn,
+.fq-art .ko {
+  fill: none;
+  stroke: var(--fq-tile, var(--fq-tint));
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 140ms ease;
+}
+
+.fq-art .ks {
+  stroke-width: 5;
+}
+
+.fq-art .kn {
+  stroke-width: 2.5;
+}
+
+.fq-art .ko {
+  stroke-width: 15;
+}
+
+/* Summary of the tile under the pointer ------------------------------------ */
+
+.fq-peek {
+  position: absolute;
+  z-index: 6;
+  width: min(348px, 100%);
+  border-radius: 12px;
+  background: var(--fq-surface);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.1), 0 16px 40px rgba(0, 0, 0, 0.24);
+  font-family: var(--fq-sans);
+  font-size: 13px;
+  line-height: 1.35;
+  pointer-events: none;
+}
+
+.fq-peek[hidden] {
+  display: none;
+}
+
+/* On a touch screen the summary stays up after a tap, and is itself the way in. */
+.fq-peek.is-pinned {
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+/* The pointer that ties the summary to its tile. */
+.fq-peek::after {
+  content: "";
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  background: var(--fq-surface);
+  transform: rotate(45deg);
+}
+
+.fq-peek.is-on-band::after {
+  background: var(--fq-shade);
+}
+
+.fq-peek[data-side="above"]::after,
+.fq-peek[data-side="below"]::after {
+  left: var(--fq-caret, 50%);
+  margin-left: -6px;
+}
+
+.fq-peek[data-side="left"]::after,
+.fq-peek[data-side="right"]::after {
+  top: var(--fq-caret, 50%);
+  margin-top: -6px;
+}
+
+.fq-peek[data-side="above"]::after {
+  bottom: -6px;
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.fq-peek[data-side="below"]::after {
+  top: -6px;
+}
+
+.fq-peek[data-side="left"]::after {
+  right: -6px;
+  box-shadow: 1px -1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.fq-peek[data-side="right"]::after {
+  left: -6px;
+  box-shadow: -1px 1px 0 rgba(0, 0, 0, 0.1);
+}
+
+.fq-peek.is-on-band::after {
+  box-shadow: none;
+}
+
+.fq-peek-band {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px 10px 10px;
+  border-radius: 12px 12px 0 0;
+  background: var(--fq-shade);
+  color: #fff;
+}
+
+.fq-peek-art {
+  --fq-tile: var(--fq-tint);
+  flex: none;
+  width: 96px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--fq-tint);
+}
+
+.fq-peek-meta {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fq-peek-filed {
+  font-weight: 600;
+}
+
+.fq-peek-topic,
+.fq-peek-when {
+  font-size: 12.5px;
+}
+
+.fq-peek-topic[hidden] {
+  display: none;
+}
+
+.fq-peek-body {
+  display: grid;
+  gap: 11px;
+  padding: 13px 14px 12px;
+}
+
+.fq-peek-title {
+  margin: 0;
+  color: var(--fq-ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.34;
+  text-wrap: pretty;
+}
+
+.fq-peek-label {
+  display: block;
+  margin: 0 0 3px;
+  color: var(--fq-ink-2);
+  font-size: 12px;
+}
+
+.fq-peek-fact {
+  margin: 0;
+}
+
+.fq-peek-answer {
+  display: block;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.fq-peek-agents .fq-peek-label {
+  margin-bottom: 6px;
+}
+
+.fq-peek-rows {
+  display: grid;
+  gap: 5px;
+}
+
+.fq-peek-row {
+  display: grid;
+  grid-template-columns: 15px minmax(0, 1fr) 60px 34px;
+  gap: 8px;
+  align-items: center;
+  font-size: 12.5px;
+}
+
+.fq-peek-row img {
+  width: 15px;
+  height: 15px;
+  object-fit: contain;
+}
+
+.fq-peek-name {
+  overflow: hidden;
+  color: var(--fq-ink-2);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fq-peek-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgba(0, 0, 0, 0.09);
+}
+
+.fq-peek-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--fq-series);
+}
+
+.fq-peek-value {
+  font-weight: 650;
+  font-variant-numeric: lining-nums tabular-nums;
+  text-align: right;
+}
+
+.fq-peek-hint {
+  margin: 0;
+  padding-top: 9px;
+  border-top: 1px solid var(--fq-line);
+  color: var(--fq-ink-2);
+  font-size: 12.5px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .fq-peek:not([hidden]) {
+    animation: fq-peek-in 130ms ease-out;
+  }
+
+  @keyframes fq-peek-in {
+    from {
+      opacity: 0;
+    }
+  }
+}
+
+@media (max-width: 1100px) {
+  /* No room beside the centred intro, so the view switch drops under it. */
+  .fq-header-row {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .fq-lede,
+  .fq-view {
+    grid-column: 1;
+    justify-self: center;
+  }
+
+  /* Its row comes out of the mosaic's height. */
+  .fq-header:has(.fq-view) ~ [data-fq-pane] {
+    --fq-above: 332px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .fq-mosaic {
+    aspect-ratio: 100 / 70;
+    max-height: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .fq-mosaic {
+    aspect-ratio: 100 / 250;
+    margin-top: 22px;
+  }
+
+  .fq-block-head {
+    font-size: 12.5px;
+  }
+}
+
+/* Category filter --------------------------------------------------------- */
+
+.fq-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 18px 0 0;
+  font-family: var(--fq-sans);
+}
+
+.fq-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 32px;
+  padding: 4px 11px 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--fq-surface);
+  color: var(--fq-ink);
+  font: inherit;
+  font-size: 13.5px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+
+.fq-chip .fq-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--fq-ink-2);
+}
+
+.fq-chip-n {
+  color: var(--fq-ink-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.fq-chip:hover {
+  border-color: rgba(0, 0, 0, 0.24);
+}
+
+.fq-chip[aria-pressed="true"] {
+  border-color: color-mix(in srgb, var(--fq-good), transparent 35%);
+  background: #e3f1ef;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--fq-good), transparent 35%);
+}
+
+.fq-chip[aria-pressed="true"] .fq-chip-n {
+  color: var(--fq-ink-2);
+}
+
+.fq-chip[aria-pressed="true"] .fq-icon {
+  color: var(--fq-good);
+}
+
+.fq-chip:focus-visible,
+.fq-view button:focus-visible,
+.fq-card:focus-visible,
+.fq-search input:focus-visible,
+.fq-sort select:focus-visible,
+.fq-dialog button:focus-visible,
+.fq-dialog a:focus-visible,
+.fq-dialog summary:focus-visible,
+.fq-scrub input:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--accent2), transparent 25%);
+  outline-offset: 2px;
+}
+
+/* Toolbar ----------------------------------------------------------------- */
+
+.fq-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  margin: 14px 0 0;
+  font-family: var(--fq-sans);
+}
+
+.fq-search {
+  position: relative;
+  flex: 1 1 260px;
+  max-width: 420px;
+}
+
+.fq-search .fq-icon {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  width: 16px;
+  height: 16px;
+  color: var(--fq-ink-3);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.fq-search input {
+  width: 100%;
+  min-height: 40px;
+  padding: 8px 12px 8px 36px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--fq-surface);
+  color: var(--fq-ink);
+  font: inherit;
+  font-size: 14.5px;
+}
+
+.fq-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--fq-ink-2);
+  font-size: 13px;
+}
+
+.fq-sort select {
+  min-height: 40px;
+  padding: 8px 30px 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--fq-surface);
+  color: var(--fq-ink);
+  font: inherit;
+  font-size: 14.5px;
+}
+
+.fq-count {
+  margin: 0 0 0 auto;
+  color: var(--fq-ink-2);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Reading key for the cards ----------------------------------------------- */
+
+.fq-key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 22px;
+  margin: 16px 0 0;
+  padding: 0 2px;
+  color: var(--fq-ink-2);
+  font-family: var(--fq-sans);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+.fq-key-part {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.fq-key-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+}
+
+.fq-key-item img {
+  width: 13px;
+  height: 13px;
+}
+
+/* The line's caption is a sentence, so it wraps beside its glyph on a phone. */
+.fq-key-line {
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.fq-key-line span {
+  min-width: 0;
+}
+
+.fq-key-spark {
+  flex: none;
+  width: 26px;
+  height: 12px;
+  margin-top: 3px;
+}
+
+.fq-key-spark path {
+  fill: none;
+  stroke: var(--fq-ink);
+  stroke-width: 1.5;
+}
+
+/* Question cards ---------------------------------------------------------- */
+
+/* Five to a row on a wide screen, four on a laptop, down to one on a phone. */
+.fq-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(224px, 1fr));
+  gap: 14px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fq-cards > li {
+  display: flex;
+  min-width: 0;
+}
+
+.fq-cards > .fq-loading,
+.fq-cards > .fq-empty {
+  display: block;
+  grid-column: 1 / -1;
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  border-radius: var(--radius-sm);
+}
+
+.fq-loading,
+.fq-empty {
+  padding: 44px 18px;
+  color: var(--fq-ink-2);
+  font-family: var(--fq-sans);
+  font-size: 14.5px;
+  text-align: center;
+}
+
+.fq-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--fq-surface);
+  color: inherit;
+  transition: border-color 140ms ease, box-shadow 140ms ease, transform 140ms ease;
+}
+
+.fq-card:hover {
+  border-color: rgba(0, 0, 0, 0.28);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.fq-card-cat {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--fq-ink-2);
+  font-family: var(--fq-sans);
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+.fq-card-cat .fq-icon {
+  width: 16px;
+  height: 16px;
+  transition: color 140ms ease;
+}
+
+.fq-card:hover .fq-card-cat .fq-icon {
+  color: var(--fq-good);
+}
+
+.fq-card-title {
+  display: block;
+  margin: 10px 0 18px;
+  font-size: 0.94rem;
+  font-weight: 550;
+  line-height: 1.34;
+  overflow-wrap: break-word;
+  text-wrap: pretty;
+}
+
+/* The foot sits on the bottom edge, so it lines up across a row of cards. */
+.fq-card-foot {
+  display: block;
+  margin-top: auto;
+  padding-top: 11px;
+  border-top: 1px solid var(--fq-line);
+  font-family: var(--fq-sans);
+}
+
+.fq-card-when {
+  display: block;
+  color: var(--fq-ink-2);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.fq-card-answer {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-top: 1px;
+  font-size: 14.5px;
+  font-weight: 650;
+  line-height: 1.3;
+}
+
+.fq-card-answer span {
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.fq-card-answer .fq-icon {
+  position: relative;
+  top: 2px;
+  width: 14px;
+  height: 14px;
+  color: var(--fq-good);
+}
+
+.fq-card-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 11px;
+}
+
+.fq-card-trend {
+  display: block;
+  flex: none;
+}
+
+.fq-spark {
+  display: block;
+  width: 96px;
+  height: 25px;
+}
+
+.fq-spark-base {
+  stroke: var(--fq-grid);
+  stroke-width: 1;
+}
+
+.fq-spark-line {
+  fill: none;
+  stroke: var(--fq-ink);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.fq-spark-area {
+  fill: var(--fq-ink);
+  opacity: 0.08;
+}
+
+.fq-spark-end {
+  fill: var(--fq-ink);
+}
+
+/* Pointing at a card redraws its line from 24 June to the resolution day. */
+@media (prefers-reduced-motion: no-preference) {
+  .fq-card:hover .fq-spark-line,
+  .fq-card:focus-visible .fq-spark-line {
+    stroke-dasharray: 1;
+    animation: fq-spark-draw 520ms ease-out both;
+  }
+
+  .fq-card:hover .fq-spark-end,
+  .fq-card:focus-visible .fq-spark-end {
+    animation: fq-spark-land 520ms ease-out both;
+  }
+}
+
+@keyframes fq-spark-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fq-spark-land {
+  0%,
+  80% {
+    opacity: 0;
+  }
+}
+
+.fq-strip {
+  display: inline-flex;
+  gap: 4px;
+}
+
+/* One square per agent, drawn in that agent's colour (--fq-sq, set by the
+   script): filled when its top pick was right in every run, half filled for
+   some runs, an outline for none. The reading key's samples stay grey. */
+.fq-sq {
+  --fq-sq: var(--fq-ink-2);
+  display: inline-block;
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid color-mix(in srgb, var(--fq-sq) 60%, transparent);
+  border-radius: 3.5px;
+}
+
+.fq-sq[data-state="all"] {
+  border-color: var(--fq-sq);
+  background: var(--fq-sq);
+}
+
+.fq-sq[data-state="some"] {
+  border-color: var(--fq-sq);
+  background: linear-gradient(135deg, var(--fq-sq) 50%, transparent 50%);
+}
+
+/* Question detail --------------------------------------------------------- */
+
+.fq-dialog {
+  width: min(1040px, calc(100vw - 32px));
+  max-width: none;
+  max-height: calc(100dvh - 48px);
+  padding: 0;
+  border: 0;
+  border-radius: 16px;
+  background: var(--fq-surface);
+  color: var(--fq-ink);
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+}
+
+.fq-dialog:focus {
+  outline: none;
+}
+
+.fq-dialog[open] {
+  display: flex;
+  flex-direction: column;
+  animation: fq-pop 180ms ease-out;
+}
+
+.fq-dialog::backdrop {
+  background: rgba(17, 24, 39, 0.46);
+  -webkit-backdrop-filter: blur(3px);
+  backdrop-filter: blur(3px);
+}
+
+@keyframes fq-pop {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+
+/* The top of the dialog wears the colour of the question's category, like its tile. */
+.fq-d-bar,
+.fq-d-hero {
+  flex: none;
+  background: var(--fq-shade);
+  color: #fff;
+}
+
+.fq-d-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 12px 10px 24px;
+  font-family: var(--fq-sans);
+}
+
+.fq-d-art {
+  --fq-tile: var(--fq-tint);
+  flex: none;
+  width: 60px;
+  aspect-ratio: 3 / 2;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--fq-tint);
+}
+
+.fq-d-domain {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13.5px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fq-d-domain b {
+  color: #fff;
+  font-weight: 650;
+}
+
+.fq-d-nav {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 2px;
+}
+
+.fq-d-pos {
+  margin-right: 6px;
+  color: rgba(255, 255, 255, 0.88);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.fq-icon-button {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+
+.fq-icon-button .fq-icon {
+  width: 17px;
+  height: 17px;
+}
+
+.fq-icon-button:hover {
+  background: rgba(255, 255, 255, 0.18);
+}
+
+.fq-icon-button:disabled {
+  background: transparent;
+  opacity: 0.4;
+  cursor: default;
+}
+
+.fq-d-bar button:focus-visible,
+.fq-d-hero a:focus-visible {
+  outline-color: #fff;
+}
+
+.fq-d-hero {
+  padding: 4px 24px 20px;
+}
+
+/* The question runs the full width of the dialog. */
+.fq-d-hero h2 {
+  margin: 0;
+  color: #fff;
+  font-size: clamp(22px, 2.7vw, 29px);
+  line-height: 1.2;
+  letter-spacing: 0;
+  text-wrap: pretty;
+}
+
+.fq-d-facts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin: 16px 0 0;
+  font-family: var(--fq-sans);
+  font-size: 13.5px;
+  line-height: 1.3;
+}
+
+.fq-d-facts > div {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  min-width: 0;
+}
+
+.fq-d-facts > div[hidden] {
+  display: none;
+}
+
+.fq-d-facts dt {
+  flex: none;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 12.5px;
+}
+
+.fq-d-facts dd {
+  min-width: 0;
+  margin: 0;
+  font-weight: 600;
+}
+
+.fq-d-facts .fq-fact-answer {
+  gap: 6px;
+  padding: 3px 10px 3px 9px;
+  border-radius: 7px;
+  background: #fff;
+  color: var(--fq-ink);
+}
+
+.fq-fact-answer dt {
+  color: var(--fq-ink-2);
+}
+
+.fq-fact-answer dd {
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.fq-d-facts .fq-fact-source {
+  flex: 1 1 240px;
+}
+
+.fq-fact-source dd {
+  display: flex;
+  font-weight: 400;
+}
+
+.fq-fact-source a,
+.fq-fact-source dd > span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  min-width: 0;
+  color: #fff;
+  text-decoration: none;
+}
+
+.fq-fact-source a span {
+  min-width: 0;
+  padding-bottom: 2px;
+  overflow: hidden;
+  text-decoration: underline;
+  text-decoration-color: rgba(255, 255, 255, 0.5);
+  text-overflow: ellipsis;
+  text-underline-offset: 3px;
+  white-space: nowrap;
+}
+
+.fq-fact-source a:hover span {
+  text-decoration-color: #fff;
+}
+
+/* The publisher, in brackets after the headline: never cut short, never underlined. */
+.fq-fact-source .fq-fact-outlet {
+  flex: none;
+  overflow: visible;
+  color: rgba(255, 255, 255, 0.86);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.fq-fact-source a .fq-icon {
+  position: relative;
+  top: 1px;
+  width: 12px;
+  height: 12px;
+}
+
+.fq-d-body {
+  flex: 1;
+  min-height: 0;
+  padding: 18px 24px 26px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+
+.fq-chart,
+.fq-day {
+  font-family: var(--fq-sans);
+}
+
+.fq-day {
+  margin-top: 26px;
+}
+
+/* Above the plot: the legend on the left, the measure switch on the right. */
+.fq-chart-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px 12px;
+  margin-bottom: 8px;
+}
+
+.fq-chart-head .fq-seg {
+  flex: none;
+  border-radius: 8px;
+}
+
+.fq-chart-head .fq-seg button {
+  min-height: 28px;
+  padding: 0 9px;
+  font-size: 12px;
+}
+
+.fq-day h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.fq-seg {
+  display: inline-grid;
+  grid-auto-flow: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--fq-surface);
+}
+
+.fq-seg button {
+  min-height: 32px;
+  padding: 0 13px;
+  border: 0;
+  border-right: 1px solid var(--border);
+  background: transparent;
+  color: var(--fq-ink-2);
+  font: inherit;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.fq-seg button:last-child {
+  border-right: 0;
+}
+
+.fq-seg button[aria-pressed="true"] {
+  background: #eef7f6;
+  color: var(--fq-ink);
+  font-weight: 650;
+}
+
+/* A model's mark: its maker's logo in a ring of the model's colour. The chart ends each line
+   in the same mark. */
+.fq-badge {
+  display: grid;
+  place-items: center;
+  flex: none;
+  box-sizing: border-box;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--fq-series);
+  border-radius: 50%;
+  background: #fff;
+}
+
+.fq-badge img {
+  display: block;
+  width: 12px;
+  height: 12px;
+  object-fit: contain;
+}
+
+.fq-badge:empty {
+  background: var(--fq-series);
+}
+
+/* Small enough for all five agents to share one row with the measure switch. */
+.fq-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px;
+  min-width: 0;
+  margin: 0 0 0 -3px;
+  padding: 0;
+  list-style: none;
+}
+
+.fq-legend button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 0 5px 0 3px;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  color: var(--fq-ink);
+  font: inherit;
+  font-size: 11.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.fq-legend .fq-badge {
+  width: 16px;
+  height: 16px;
+  border-width: 1.5px;
+}
+
+.fq-legend .fq-badge img {
+  width: 9px;
+  height: 9px;
+}
+
+.fq-legend button:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+.fq-legend button[aria-pressed="false"] {
+  color: var(--fq-ink-3);
+  text-decoration: line-through;
+}
+
+.fq-legend button[aria-pressed="false"] .fq-badge {
+  filter: grayscale(1);
+  opacity: 0.4;
+}
+
+.fq-plot {
+  position: relative;
+}
+
+.fq-plot svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  cursor: crosshair;
+  touch-action: pan-y;
+  -webkit-user-select: none;
+  user-select: none;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.fq-tick {
+  fill: var(--fq-ink-2);
+  font-size: 12px;
+}
+
+.fq-grid {
+  stroke: var(--fq-grid);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fq-grid.is-zero {
+  stroke: rgba(0, 0, 0, 0.3);
+}
+
+.fq-xtick {
+  stroke: rgba(0, 0, 0, 0.3);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fq-playhead {
+  stroke: rgba(0, 0, 0, 0.3);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fq-line {
+  fill: none;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: opacity 120ms ease, stroke-width 120ms ease;
+}
+
+.is-narrow .fq-line {
+  stroke-width: 2.75;
+}
+
+.fq-series.is-emphasized .fq-line {
+  stroke-width: 4.75;
+}
+
+.is-narrow .fq-series.is-emphasized .fq-line {
+  stroke-width: 3.75;
+}
+
+.fq-line.is-future {
+  opacity: 0.2;
+}
+
+.fq-band {
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.fq-series.is-emphasized .fq-band {
+  opacity: 0.16;
+}
+
+.fq-series.is-dimmed .fq-line {
+  opacity: 0.16;
+}
+
+.fq-series.is-dimmed .fq-line.is-future {
+  opacity: 0.06;
+}
+
+/* Line ends: a dot on the line, tied to the maker's logo and the value on the chosen day. */
+.fq-ends {
+  transition: opacity 220ms ease;
+}
+
+.fq-end {
+  transition: opacity 120ms ease;
+}
+
+.fq-end.is-dimmed {
+  opacity: 0.25;
+}
+
+.fq-leader {
+  fill: none;
+  stroke-width: 1.25;
+  opacity: 0.55;
+}
+
+.fq-end-dot {
+  stroke: #fff;
+  stroke-width: 1.5;
+}
+
+.fq-end-ring {
+  fill: #fff;
+  stroke-width: 2;
+}
+
+/* The white edge keeps the number legible where it sits over the faint lines of later days. */
+.fq-end-value {
+  fill: var(--fq-ink);
+  stroke: #fff;
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.is-narrow .fq-end-value {
+  font-size: 13px;
+}
+
+.fq-hover {
+  pointer-events: none;
+}
+
+.fq-cross {
+  stroke: rgba(0, 0, 0, 0.42);
+  stroke-width: 1;
+  shape-rendering: crispEdges;
+}
+
+.fq-hover circle {
+  stroke: #fff;
+  stroke-width: 2;
+}
+
+.fq-hover circle.is-dimmed {
+  opacity: 0.2;
+}
+
+/* While the lines draw in, the days after the playhead are not shown, and the badges wait. */
+.fq-dialog.is-drawing .fq-line.is-future,
+.fq-dialog.is-replaying .fq-line.is-future,
+.fq-dialog.is-drawing .fq-hover {
+  opacity: 0;
+}
+
+.fq-dialog.is-drawing .fq-ends {
+  opacity: 0;
+  transition: none;
+}
+
+/* The timeline under the plot. The two side columns are the plot's own margins, so the track
+   covers the same days at the same places as the lines above it. */
+.fq-scrub {
+  --fq-thumb: 14px;
+  display: grid;
+  grid-template-columns: var(--fq-pad-left, 44px) minmax(0, 1fr) var(--fq-pad-right, 92px);
+  align-items: center;
+  margin-top: 4px;
+}
+
+.fq-play {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid rgba(0, 0, 0, 0.16);
+  border-radius: 50%;
+  background: var(--fq-surface);
+  color: var(--fq-ink);
+  cursor: pointer;
+  transition: background-color 120ms ease, border-color 120ms ease;
+}
+
+.fq-play:hover {
+  border-color: rgba(0, 0, 0, 0.3);
+  background: var(--fq-wash);
+}
+
+.fq-play .fq-icon {
+  width: 13px;
+  height: 13px;
+}
+
+.fq-scrub-track {
+  position: relative;
+  height: 28px;
+}
+
+.fq-scrub-rail {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: 4px;
+  margin-top: -2px;
+  overflow: hidden;
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.fq-scrub-fill {
+  display: block;
+  width: var(--fq-progress, 100%);
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+/* The slider itself draws only its thumb, over the rail, and overhangs the rail by half a
+   thumb at each end so the thumb's centre runs from the first day to the last. */
+.fq-scrub input {
+  position: absolute;
+  top: 0;
+  left: calc(var(--fq-thumb) / -2);
+  width: calc(100% + var(--fq-thumb));
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.fq-scrub input::-webkit-slider-runnable-track {
+  height: var(--fq-thumb);
+  background: transparent;
+}
+
+.fq-scrub input::-moz-range-track {
+  height: var(--fq-thumb);
+  background: transparent;
+}
+
+.fq-scrub input::-webkit-slider-thumb {
+  box-sizing: border-box;
+  width: var(--fq-thumb);
+  height: var(--fq-thumb);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1f2328;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 120ms ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.fq-scrub input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--fq-thumb);
+  height: var(--fq-thumb);
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: #1f2328;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 1px 3px rgba(0, 0, 0, 0.3);
+  transition: box-shadow 120ms ease;
+}
+
+.fq-scrub input:hover::-webkit-slider-thumb,
+.fq-scrub input:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.fq-scrub input:hover::-moz-range-thumb,
+.fq-scrub input:active::-moz-range-thumb {
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.18), 0 0 0 5px rgba(0, 0, 0, 0.1);
+}
+
+.fq-scrub-date {
+  padding-left: 18px;
+  color: var(--fq-ink);
+  font-size: 12.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.fq-chart-note {
+  margin: 8px 2px 0;
+  color: var(--fq-ink-2);
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.fq-day-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+/* Each card is three rows (name, runs, outcomes) on a shared subgrid, so the
+   same line of every card sits at the same height and the cards compare at a glance. */
+.fq-agent {
+  display: grid;
+  grid-row: span 3;
+  grid-template-rows: subgrid;
+  row-gap: 0;
+  align-content: start;
+  min-width: 0;
+  padding: 10px 12px 12px;
+  border: 1px solid var(--fq-line);
+  border-radius: 12px;
+  background: var(--fq-surface);
+}
+
+.fq-agent-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+}
+
+.fq-agent-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 13px;
+  font-weight: 650;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-wrap: balance;
+}
+
+.fq-agent-runs {
+  margin: 5px 0 0;
+  color: var(--fq-ink-2);
+  font-size: 12px;
+  line-height: 1.35;
+  font-variant-numeric: lining-nums;
+  text-wrap: balance;
+}
+
+.fq-agent-empty {
+  margin: 7px 0 0;
+  color: var(--fq-ink-3);
+  font-size: 12.5px;
+}
+
+.fq-outcomes {
+  display: grid;
+  gap: 7px;
+  align-content: start;
+  margin: 9px 0 0;
+  padding: 9px 0 0;
+  border-top: 1px solid var(--fq-line);
+  list-style: none;
+}
+
+.fq-outcome {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 3px 8px;
+  align-items: center;
+  font-size: 12.5px;
+  line-height: 1.3;
+}
+
+.fq-outcome-name {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+  color: var(--fq-ink-2);
+}
+
+.fq-outcome-name span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fq-outcome-name .fq-icon {
+  width: 12px;
+  height: 12px;
+  color: var(--fq-good);
+}
+
+.fq-outcome-value {
+  color: var(--fq-ink-2);
+  font-variant-numeric: tabular-nums;
+}
+
+.fq-outcome.is-answer .fq-outcome-name,
+.fq-outcome.is-answer .fq-outcome-value {
+  color: var(--fq-ink);
+  font-weight: 650;
+}
+
+.fq-outcome-track {
+  grid-column: 1 / -1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--fq-wash);
+}
+
+.fq-outcome-fill {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  border-radius: 2px;
+  background: var(--fq-bar);
+}
+
+.fq-outcome.is-answer .fq-outcome-fill {
+  background: var(--fq-good);
+}
+
+.fq-criteria {
+  margin-top: 22px;
+  border-top: 1px solid var(--fq-line);
+  font-family: var(--fq-sans);
+}
+
+.fq-criteria summary {
+  padding: 12px 2px 0;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.fq-criteria dl {
+  display: grid;
+  gap: 10px;
+  max-width: 78ch;
+  margin: 12px 2px 0;
+}
+
+.fq-criteria dt {
+  color: var(--fq-ink-2);
+  font-size: 12.5px;
+}
+
+.fq-criteria dd {
+  margin: 1px 0 0;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.fq-criteria a {
+  text-decoration: underline;
+  text-decoration-color: rgba(0, 0, 0, 0.25);
+  text-underline-offset: 3px;
+}
+
+.fq-criteria a .fq-icon {
+  width: 13px;
+  height: 13px;
+  margin-left: 4px;
+  color: var(--fq-ink-2);
+  vertical-align: -1px;
+}
+
+.fq-criteria dd > span {
+  display: block;
+  color: var(--fq-ink-2);
+  font-size: 12.5px;
+}
+
+/* Narrow screens ---------------------------------------------------------- */
+
+@media (max-width: 760px) {
+  .fq {
+    padding-top: 82px;
+  }
+
+  /* One swipeable row of categories, bleeding to the screen edges. */
+  .fq-chips {
+    flex-wrap: nowrap;
+    margin-right: -18px;
+    margin-left: -18px;
+    padding: 2px 18px 4px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .fq-chips::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fq-chip {
+    flex: none;
+    white-space: nowrap;
+  }
+
+  .fq-count {
+    margin-left: 0;
+  }
+
+  .fq-card-title {
+    font-size: 1rem;
+  }
+
+  .fq-dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .fq-d-bar {
+    padding: 10px 8px 10px 16px;
+  }
+
+  .fq-d-art {
+    width: 48px;
+  }
+
+  .fq-d-hero {
+    padding: 2px 16px 18px;
+  }
+
+  .fq-d-body {
+    padding: 16px 16px 24px;
+  }
+
+  .fq-d-hero h2 {
+    font-size: 20px;
+    line-height: 1.22;
+  }
+
+  /* The headline gets its own row. */
+  .fq-d-facts .fq-fact-source {
+    flex-basis: 100%;
+  }
+
+  /* No room for the measure switch beside the legend, so it gets a row of its own. */
+  .fq-chart-head {
+    display: grid;
+  }
+
+  .fq-chart-head .fq-seg {
+    display: grid;
+  }
+
+  .fq-chart-head .fq-seg button {
+    min-height: 32px;
+    padding: 0 6px;
+  }
+}
+
+/* On a phone or in a short window the whole dialog scrolls, and only its bar stays put. */
+@media (max-width: 760px), (max-height: 640px) {
+  .fq-dialog[open] {
+    display: block;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .fq-d-bar {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+  }
+
+  .fq-d-body {
+    overflow: visible;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fq-dialog[open] {
+    animation: none;
+  }
+
+  .fq-tile,
+  .fq-art,
+  .fq-art .k,
+  .fq-art .ks,
+  .fq-art .kn,
+  .fq-art .ko {
+    transition: none;
+  }
+
+  .fq-tile:hover .fq-art,
+  .fq-tile.is-peeked .fq-art {
+    transform: none;
+  }
+}
+
+/* Additions used by questions.js ------------------------------------------ */
+
+/* The page behind an open question does not scroll, and keeps its scrollbar gutter. */
+html.fq-lock {
+  overflow: hidden;
+  scrollbar-gutter: stable;
+}
+
+.fq-chart-tip {
+  display: grid;
+  gap: 3px;
+  min-width: 190px;
+  font-variant-numeric: lining-nums tabular-nums;
+}
+
+.fq-chart-tip .fq-tip-meta {
+  margin-bottom: 2px;
+  color: var(--fq-ink);
+  font-weight: 650;
+}
+
+.fq-tip-row {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.fq-tip-row .fq-badge {
+  width: 18px;
+  height: 18px;
+  border-width: 1.5px;
+}
+
+.fq-tip-row .fq-badge img {
+  width: 10px;
+  height: 10px;
+}
+
+.fq-tip-row[hidden] {
+  display: none;
+}
+
+.fq-tip-name {
+  color: var(--fq-ink-2);
+}
+
+.fq-tip-value {
+  font-weight: 650;
+}
+
+.fq-tip-value.is-none {
+  color: var(--fq-ink-3);
+  font-weight: 400;
+}
