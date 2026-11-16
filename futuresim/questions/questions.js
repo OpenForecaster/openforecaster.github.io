@@ -1,4 +1,4 @@
-/* FutureSim "Questions" page.
+/* The Questions section of the FutureSim front page (_includes/futuresim-questions.html).
  *
  * Reads futuresim/questions/data/q3_questions.json (built by
  * scripts/build_futuresim_questions_data.py) and draws two views of the 50 previewed questions,
@@ -700,7 +700,7 @@
       block.el = h('section', 'fq-block');
       block.el.dataset.fqCat = block.category.id;
       block.el.setAttribute('aria-label', block.category.label + ', ' + plural(count, 'question'));
-      const head = h('h2', 'fq-block-head');
+      const head = h('h3', 'fq-block-head');
       const tally = h('span', 'fq-block-n', String(count));
       tally.appendChild(h('span', 'fq-visually-hidden', count === 1 ? ' question' : ' questions'));
       // "Arts & entertainment" becomes "Arts" where the block is too narrow for the whole name.
@@ -995,7 +995,8 @@
       document.documentElement.classList.remove('fq-lock');
       if (hashId()) {
         if (history.state && history.state.fq) history.back();
-        else history.replaceState(null, '', location.pathname + location.search);
+        // The page was opened on this question: leave its address at the section.
+        else history.replaceState(null, '', location.pathname + location.search + (root.id ? '#' + root.id : ''));
       }
     });
 
@@ -1573,7 +1574,8 @@
     buildMosaic();
 
     // The Cards view is switched off for now; the mosaic is the only view. To bring it back,
-    // un-comment these lines and the two commented blocks of markup in index.html.
+    // un-comment these lines and the two commented blocks of markup in
+    // _includes/futuresim-questions.html.
     // renderFilters();
     // renderKey();
     // data.questions.forEach(buildCard);
@@ -1592,6 +1594,9 @@
 
     window.addEventListener('popstate', syncFromHash);
     window.addEventListener('hashchange', syncFromHash);
+    // A page opened on a question (#q-<id>) starts at this section, so that closing the question
+    // leaves the reader at the mosaic and not at the top of the page.
+    if (byId[hashId()]) root.scrollIntoView({ behavior: 'instant', block: 'start' });
     syncFromHash();
   }
 

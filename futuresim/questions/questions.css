@@ -1,14 +1,6 @@
-/* FutureSim "Questions" page (futuresim/questions/). Everything is scoped to .fq, except the one
-   rule below for the site's top navigation. The layout links this file in <head> (the page's
-   "stylesheet" front matter), so that rule is in place before the top bar is first painted. */
-
-/* The layout marks this page's link in the top bar. The trace viewer has the same rule in
-   assets/traces.css. */
-.nav a[aria-current="page"] {
-  background: rgba(0, 0, 0, 0.06);
-  color: var(--text);
-  font-weight: 600;
-}
+/* The Questions section of the FutureSim front page (_includes/futuresim-questions.html).
+   Everything is scoped to .fq. The page links this file in <head> through its "stylesheet"
+   front matter. */
 
 .fq {
   --fq-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -21,11 +13,14 @@
   --fq-wash: rgba(0, 0, 0, 0.035);
   --fq-good: #0f766e;
   --fq-bar: #c3c9d2;
-  /* A little wider than the site's text column, so the mosaic's tiles keep a readable size. */
-  width: min(1240px, calc(100% - 36px));
+  /* The column of the leaderboard above it. */
+  width: min(900px, 100%);
   margin: 0 auto;
-  padding: 86px 0 56px;
   color: var(--fq-ink);
+  /* The hero this sits in centres its text. */
+  text-align: left;
+  /* Clear of the site's fixed top bar when the page jumps to #questions. */
+  scroll-margin-top: 84px;
 }
 
 .fq-visually-hidden {
@@ -50,41 +45,22 @@
 
 /* Header ------------------------------------------------------------------ */
 
-/* Centred, like the hero of the site's other pages. */
-.fq-header {
-  text-align: center;
-}
-
-.fq-kicker {
-  margin: 0 0 6px;
-  color: var(--muted2);
-  font-size: 14px;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.fq-header h1 {
-  margin: 0;
-  font-size: clamp(30px, 3.6vw, 42px);
-  line-height: 1.04;
-  letter-spacing: 0;
-}
-
-/* The intro stays centred, with the view switch at the end of its row. */
+/* The heading is styled as the page's other section titles (.futuresim-what-title in
+   assets/blog.css). Under it the intro, with the view switch at the end of its row or, where
+   there is no room beside the intro, under it. */
 .fq-header-row {
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: 12px 20px;
-  margin-top: 14px;
+  justify-content: space-between;
+  gap: 10px 20px;
+  margin-top: 8px;
 }
 
-/* One line where the page is wide enough, and evenly broken lines where it is not. */
 .fq-lede {
-  grid-column: 2;
   margin: 0;
   color: var(--muted);
-  text-wrap: balance;
+  text-wrap: pretty;
 }
 
 .fq-lede a {
@@ -129,8 +105,6 @@
 /* View switch ------------------------------------------------------------- */
 
 .fq-view {
-  grid-column: 3;
-  justify-self: end;
   font-family: var(--fq-sans);
 }
 
@@ -182,12 +156,13 @@
 .fq-mosaic {
   position: relative;
   width: 100%;
-  aspect-ratio: 100 / 60;
+  aspect-ratio: 100 / 70;
   min-height: 320px;
-  /* As tall as the window allows under the page header, with the line of help still in view. */
-  max-height: max(420px, calc(100vh - var(--fq-above, 284px)));
-  max-height: max(420px, calc(100dvh - var(--fq-above, 284px)));
-  margin: 32px 0 0;
+  /* No taller than fits the window together with the heading above it and the line of help
+     below it, when the page has jumped to this section. */
+  max-height: max(420px, calc(100vh - 244px));
+  max-height: max(420px, calc(100dvh - 244px));
+  margin: 18px 0 0;
 }
 
 .fq-mosaic > .fq-loading,
@@ -207,7 +182,6 @@
   font-family: var(--fq-sans);
   font-size: 13px;
   line-height: 1.45;
-  text-align: center;
   text-wrap: pretty;
 }
 
@@ -609,28 +583,8 @@
   }
 }
 
-@media (max-width: 1100px) {
-  /* No room beside the centred intro, so the view switch drops under it. */
-  .fq-header-row {
-    grid-template-columns: 1fr;
-    justify-items: center;
-  }
-
-  .fq-lede,
-  .fq-view {
-    grid-column: 1;
-    justify-self: center;
-  }
-
-  /* Its row comes out of the mosaic's height. */
-  .fq-header:has(.fq-view) ~ [data-fq-pane] {
-    --fq-above: 332px;
-  }
-}
-
 @media (max-width: 1000px) {
   .fq-mosaic {
-    aspect-ratio: 100 / 70;
     max-height: none;
   }
 }
@@ -638,7 +592,7 @@
 @media (max-width: 640px) {
   .fq-mosaic {
     aspect-ratio: 100 / 250;
-    margin-top: 22px;
+    margin-top: 16px;
   }
 
   .fq-block-head {
@@ -1928,10 +1882,6 @@
 /* Narrow screens ---------------------------------------------------------- */
 
 @media (max-width: 760px) {
-  .fq {
-    padding-top: 82px;
-  }
-
   /* One swipeable row of categories, bleeding to the screen edges. */
   .fq-chips {
     flex-wrap: nowrap;

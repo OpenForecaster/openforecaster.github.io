@@ -1,4 +1,4 @@
-/* Pictograms for the mosaic on the FutureSim "Questions" page: one per question, drawn in white on
+/* Pictograms for the mosaic in the FutureSim Questions section: one per question, drawn in white on
  * the colour of the question's category. A pictogram shows what the question is about and never how
  * it resolved. questions.js reads window.FQ_ART; a question that has no drawing of its own gets its
  * category's.

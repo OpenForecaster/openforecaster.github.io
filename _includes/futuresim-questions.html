@@ -1,0 +1,84 @@
+{% comment %}
+The Questions section of the FutureSim front page (futuresim/index.md, under the leaderboard):
+50 of the 2026 Q3 questions as a mosaic, each opening a chart of how the agents' forecasts moved.
+Its styles, scripts and data are in futuresim/questions/. The page that includes this links
+questions.css through its "stylesheet" front matter.
+{% endcomment %}
+{% assign asset_version = site.time | date: '%s' %}
+<section id="questions" class="fq" data-fq-app aria-labelledby="fq-title"
+  data-src="{{ '/futuresim/questions/data/q3_questions.json' | relative_url }}?v={{ asset_version }}"
+  data-icons="{{ '/futuresim/questions/icons.svg' | relative_url }}?v={{ asset_version }}"
+  data-logos="{{ '/assets/logos/' | relative_url }}">
+
+  <header class="fq-header">
+    <h2 id="fq-title" class="futuresim-what-title">Questions</h2>
+    <div class="fq-header-row">
+      <p class="fq-lede">
+        Showing 50 of the 252 open-ended questions from
+        <a href="https://huggingface.co/datasets/nikhilchandak/OpenForesight" target="_blank" rel="noreferrer">2026 Q3</a>,
+        spanning several domains.
+      </p>
+      {% comment %}
+      The Cards view is switched off for now, so the mosaic is the only view. To bring it back,
+      remove this comment pair and the one around the cards pane below, and un-comment the
+      "Cards view" lines in start() in questions.js.
+      <div class="fq-view">
+        <div class="fq-seg" role="group" aria-label="View">
+          <button type="button" data-fq-view="mosaic" aria-pressed="true">Mosaic</button>
+          <button type="button" data-fq-view="cards" aria-pressed="false">Cards</button>
+        </div>
+      </div>
+      {% endcomment %}
+    </div>
+  </header>
+
+  <div data-fq-pane="mosaic">
+    <div class="fq-mosaic" data-fq-mosaic>
+      <p class="fq-loading">Loading questions&hellip;</p>
+    </div>
+    <p class="fq-mosaic-note" data-fq-mosaic-note></p>
+  </div>
+
+  {% comment %} Cards view, switched off for now (see the note in the header above).
+  <div data-fq-pane="cards" hidden>
+    <div class="fq-chips" data-fq-filters role="group" aria-label="Filter by category"></div>
+
+    <div class="fq-toolbar">
+      <label class="fq-search">
+        <span class="fq-visually-hidden">Search questions</span>
+        <svg class="fq-icon" aria-hidden="true"><use href="{{ '/futuresim/questions/icons.svg' | relative_url }}?v={{ asset_version }}#qi-search"></use></svg>
+        <input type="search" data-fq-search placeholder="Search questions and answers" autocomplete="off" spellcheck="false">
+      </label>
+      <label class="fq-sort">
+        <span>Sort</span>
+        <select data-fq-sort>
+          <option value="date" selected>Resolution date</option>
+          <option value="category">Category</option>
+          <option value="hard">Hardest first</option>
+          <option value="easy">Easiest first</option>
+          <option value="swing">Biggest swings</option>
+        </select>
+      </label>
+      <p class="fq-count" data-fq-count aria-live="polite"></p>
+    </div>
+
+    <div class="fq-key" data-fq-key></div>
+
+    <ol class="fq-cards" data-fq-list>
+      <li class="fq-loading">Loading questions&hellip;</li>
+    </ol>
+  </div>
+  {% endcomment %}
+
+  <noscript>
+    <p class="fq-empty">
+      This section needs JavaScript to draw the questions and charts. The full question set is on
+      <a href="https://huggingface.co/datasets/nikhilchandak/OpenForesight">Hugging Face</a>.
+    </p>
+  </noscript>
+
+  <dialog class="fq-dialog" data-fq-dialog aria-labelledby="fq-d-title"></dialog>
+</section>
+
+<script src="{{ '/futuresim/questions/art.js' | relative_url }}?v={{ asset_version }}" defer></script>
+<script src="{{ '/futuresim/questions/questions.js' | relative_url }}?v={{ asset_version }}" defer></script>

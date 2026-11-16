@@ -3,6 +3,7 @@ layout: default
 title: "FutureSim"
 description: "We propose building simulations that evaluate adaptive agents by replaying real-world events."
 nav: futuresim
+stylesheet: /futuresim/questions/questions.css
 ---
 
 <section class="blog-hero futuresim-hero">
@@ -78,7 +79,7 @@ nav: futuresim
               <li>In contrast to the flat curves we saw in Q2, most models now show good test-time adaptation improving by 5-15% over the course of the simulation. Opus 5.5 is especially strong, overtaking GPT models which used to dominate earlier, especially on Brier score. We found Opus 5.5 to be very proactive with increased awareness at test-time, trying to identify patterns about the evaluation like the design of the questions and how the grading was performed. For example, Opus 5.5 became increasingly confident during the simulation that the future questions being asked resolve to proper answers/events (and never to Others/None) so it barely assigned probability to "None" unlike other models.</li>
               <li>We now use <a href="https://exa.ai/products/snapshot" target="_blank" rel="noopener noreferrer">Exa Snapshot</a> as the search tool as it provides reliable backtest results and has better coverage than CCNews. We limit the number of Exa tool calls to 3000 per run in total and found that Opus and Sol make the most of it by using almost all of their quota while all other models make far fewer search calls. <a href="{{ '/futuresim/traces/' | relative_url }}">Check out the Q3 trajectories!</a></li>
               <li>All the models, even the open-weight ones, are now positively calibrated. Opus 5.5 both starts and ends at the highest Brier score, showcasing both its strong priors and great online adaptation capability.</li>
-              <li>We now show a preview of our test set on this website. <a href="{{ '/futuresim/questions/' | relative_url }}">Check out the open-ended questions from Q3.</a></li>
+              <li>We now show a preview of our test set on this website. <a href="#questions">Check out the open-ended questions from Q3.</a></li>
             </ol>
           </div>
         </details>
@@ -100,6 +101,9 @@ nav: futuresim
         </details>
       </div>
     </section>
+
+    <hr class="futuresim-section-divider">
+    {% include futuresim-questions.html %}
 
     <hr class="futuresim-section-divider">
     <h2 class="futuresim-what-title">What is FutureSim?</h2>

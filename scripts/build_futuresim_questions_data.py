@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
-"""Build the data behind the FutureSim "Questions" page (futuresim/questions/).
+"""Build the data behind the Questions section of the FutureSim page.
 
-The page previews 50 of the 252 questions in the 2026 Q3 set and shows, for
-each one, how every leaderboard agent's forecast moved over the simulation.
+The section (_includes/futuresim-questions.html, with its files in
+futuresim/questions/) previews 50 of the 252 questions in the 2026 Q3 set and
+shows, for each one, how every leaderboard agent's forecast moved over the
+simulation.
 
 Two things are curated by hand and live in this file:
 
