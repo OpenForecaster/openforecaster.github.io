@@ -19,7 +19,8 @@
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const DAY_MS = 86400000;
-  // A question opens this many days before it resolved, and its summary gives that day's forecasts.
+  // The summary shown on pointing at a tile gives the forecasts of this many days before the
+  // question resolved.
   const LEAD_DAYS = 7;
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -162,8 +163,8 @@
     return index;
   }
 
-  /* The day a question is first shown on: LEAD_DAYS before it resolved (its first day, if it ran
-   * for less than that). */
+  /* The day a question's summary describes: LEAD_DAYS before it resolved (its first day, if it
+   * ran for less than that). */
   function leadDay(q) {
     return Math.max(0, q.day - LEAD_DAYS);
   }
@@ -1355,7 +1356,7 @@
     dlg.range.setAttribute('aria-valuetext', longDate(pin));
     dlg.date.textContent = shortDate(pin);
     const replaying = !!(anim && anim.replay);
-    const action = replaying ? 'Pause' : pin >= leadDay(q) ? 'Replay' : 'Play';
+    const action = replaying ? 'Pause' : pin >= q.day ? 'Replay' : 'Play';
     dlg.playIcon.firstChild.setAttribute('href', iconBase + '#qi-' + action.toLowerCase());
     dlg.playLabel.textContent = action;
     dlg.play.title = action;
@@ -1393,8 +1394,7 @@
   function renderPanel(force) {
     const q = current;
     if (!q) return;
-    dlg.dayLabel.textContent = longDate(pin)
-      + (pin === q.day ? ' (the day it resolved)' : ' (' + plural(q.day - pin, 'day') + ' before it resolved)');
+    dlg.dayLabel.textContent = longDate(pin) + (pin === q.day ? ' (the day it resolved)' : '');
     const indices = data.models.map((model) => {
       const series = q.series[model.id];
       return hidden.has(model.id) ? 'x' : series ? stepIndex(series.d, pin) : -1;
@@ -1481,9 +1481,10 @@
     updateDay();
   }
 
-  /* The lines draw in from the left, as far as the chosen day, when a question opens. */
+  /* The lines draw in from the left when a question opens. */
   function drawIn() {
     if (reduceMotion || !current) return;
+    const q = current;
     const duration = 850;
     let started = null;
     anim = { raf: 0, replay: false };
@@ -1494,7 +1495,7 @@
       if (!anim) return;
       if (started == null) started = now;
       const k = Math.min(1, (now - started) / duration);
-      clip = (1 - Math.pow(1 - k, 3)) * pin;
+      clip = (1 - Math.pow(1 - k, 3)) * q.day;
       updateDay();
       if (k < 1) anim.raf = requestAnimationFrame(tick);
       else stopAnim();
@@ -1502,8 +1503,7 @@
     anim.raf = requestAnimationFrame(tick);
   }
 
-  /* Replay walks the chosen day from the start of the simulation to the resolution day. From a
-   * day before the one a question opens on, it carries on from that day instead. */
+  /* Replay walks the chosen day from the start of the simulation to the resolution day. */
   function togglePlay() {
     if (!current) return;
     if (anim && anim.replay) {
@@ -1512,7 +1512,7 @@
     }
     stopAnim();
     const q = current;
-    const from = pin >= leadDay(q) ? 0 : pin;
+    const from = pin >= q.day ? 0 : pin;
     const duration = clamp(q.day * 70, 2600, 7000) * ((q.day - from) / q.day);
     let started = null;
     hover = null;
@@ -1537,8 +1537,8 @@
   function openQuestion(q) {
     stopAnim();
     current = q;
-    pin = leadDay(q);
-    clip = pin;
+    pin = q.day;
+    clip = q.day;
     hover = null;
     dragging = false;
     fillDialog(q);
