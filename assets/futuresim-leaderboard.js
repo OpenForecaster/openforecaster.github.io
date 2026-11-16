@@ -219,13 +219,17 @@
     tooltip.setAttribute('aria-hidden', 'true');
     const live = html('p', 'fsim-visually-hidden', null, host);
     live.setAttribute('aria-live', 'polite');
-    html(
+    const note = html(
       'p',
       'fsim-note',
       'Hover or tap the chart to read every model on a given day. Select a model name to hide or show it. ' +
-        'Lines are means over seeds. All closed source models are evaluated in their native harness ' +
-        '(like Muse Wonder in Muse Code).',
+        'Lines are means over seeds.',
       host
+    );
+    // The sentence about harnesses starts on a line of its own.
+    note.append(
+      document.createElement('br'),
+      'All closed source models are evaluated in their native harness (like Muse Wonder in Muse Code).'
     );
 
     const visibleModels = () => models.filter((model) => !state.hidden.has(model.id));
