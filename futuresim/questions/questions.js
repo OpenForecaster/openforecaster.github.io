@@ -19,6 +19,8 @@
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
   const DAY_MS = 86400000;
+  // A question opens this many days before it resolved, and its summary gives that day's forecasts.
+  const LEAD_DAYS = 7;
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg' };
@@ -158,6 +160,12 @@
     let index = -1;
     for (let i = 0; i < days.length && days[i] <= day; i++) index = i;
     return index;
+  }
+
+  /* The day a question is first shown on: LEAD_DAYS before it resolved (its first day, if it ran
+   * for less than that). */
+  function leadDay(q) {
+    return Math.max(0, q.day - LEAD_DAYS);
   }
 
   /* Moves label centres at least `gap` apart, each as near its target as the range lo..hi allows.
@@ -584,7 +592,8 @@
       return { model: model, fill: fill, value: value };
     });
     const agents = h('div', 'fq-peek-agents');
-    agents.append(h('p', 'fq-peek-label', 'Probability on the answer when it resolved'), rows);
+    peek.label = h('p', 'fq-peek-label');
+    agents.append(peek.label, rows);
     peek.hint = h('p', 'fq-peek-hint');
     const body = h('div', 'fq-peek-body');
     body.append(peek.title, answer, agents, peek.hint);
@@ -617,9 +626,12 @@
     peek.when.textContent = 'Resolved ' + shortDate(q.day);
     peek.title.textContent = q.title;
     peek.answer.textContent = q.answer;
+    const day = leadDay(q);
+    peek.label.textContent = 'Probability on the answer ' + plural(q.day - day, 'day') + ' before it resolved';
     peek.rows.forEach((row) => {
-      const final = q.final[row.model.id];
-      const p = final && typeof final.p === 'number' ? final.p : null;
+      const series = q.series[row.model.id];
+      const i = series ? stepIndex(series.d, day) : -1;
+      const p = i < 0 ? null : series.p[i];
       row.fill.style.width = p == null ? '0' : f(clamp(p, 0, 1) * 100) + '%';
       row.value.textContent = p == null ? '–' : fmtP(p);
     });
@@ -957,7 +969,7 @@
     const dayBox = h('section', 'fq-day');
     const dayHead = h('h3');
     dlg.dayLabel = h('span');
-    dayHead.append('Forecasts in force on ', dlg.dayLabel);
+    dayHead.append('Forecasts on ', dlg.dayLabel);
     dlg.dayGrid = h('div', 'fq-day-grid');
     dayBox.append(dayHead, dlg.dayGrid);
 
@@ -1343,7 +1355,7 @@
     dlg.range.setAttribute('aria-valuetext', longDate(pin));
     dlg.date.textContent = shortDate(pin);
     const replaying = !!(anim && anim.replay);
-    const action = replaying ? 'Pause' : pin >= q.day ? 'Replay' : 'Play';
+    const action = replaying ? 'Pause' : pin >= leadDay(q) ? 'Replay' : 'Play';
     dlg.playIcon.firstChild.setAttribute('href', iconBase + '#qi-' + action.toLowerCase());
     dlg.playLabel.textContent = action;
     dlg.play.title = action;
@@ -1381,7 +1393,8 @@
   function renderPanel(force) {
     const q = current;
     if (!q) return;
-    dlg.dayLabel.textContent = longDate(pin) + (pin === q.day ? ' (the day it resolved)' : '');
+    dlg.dayLabel.textContent = longDate(pin)
+      + (pin === q.day ? ' (the day it resolved)' : ' (' + plural(q.day - pin, 'day') + ' before it resolved)');
     const indices = data.models.map((model) => {
       const series = q.series[model.id];
       return hidden.has(model.id) ? 'x' : series ? stepIndex(series.d, pin) : -1;
@@ -1468,10 +1481,9 @@
     updateDay();
   }
 
-  /* The lines draw in from the left when a question opens. */
+  /* The lines draw in from the left, as far as the chosen day, when a question opens. */
   function drawIn() {
     if (reduceMotion || !current) return;
-    const q = current;
     const duration = 850;
     let started = null;
     anim = { raf: 0, replay: false };
@@ -1482,7 +1494,7 @@
       if (!anim) return;
       if (started == null) started = now;
       const k = Math.min(1, (now - started) / duration);
-      clip = (1 - Math.pow(1 - k, 3)) * q.day;
+      clip = (1 - Math.pow(1 - k, 3)) * pin;
       updateDay();
       if (k < 1) anim.raf = requestAnimationFrame(tick);
       else stopAnim();
@@ -1490,7 +1502,8 @@
     anim.raf = requestAnimationFrame(tick);
   }
 
-  /* Replay walks the chosen day from the start of the simulation to the resolution day. */
+  /* Replay walks the chosen day from the start of the simulation to the resolution day. From a
+   * day before the one a question opens on, it carries on from that day instead. */
   function togglePlay() {
     if (!current) return;
     if (anim && anim.replay) {
@@ -1499,7 +1512,7 @@
     }
     stopAnim();
     const q = current;
-    const from = pin >= q.day ? 0 : pin;
+    const from = pin >= leadDay(q) ? 0 : pin;
     const duration = clamp(q.day * 70, 2600, 7000) * ((q.day - from) / q.day);
     let started = null;
     hover = null;
@@ -1524,8 +1537,8 @@
   function openQuestion(q) {
     stopAnim();
     current = q;
-    pin = q.day;
-    clip = q.day;
+    pin = leadDay(q);
+    clip = pin;
     hover = null;
     dragging = false;
     fillDialog(q);
