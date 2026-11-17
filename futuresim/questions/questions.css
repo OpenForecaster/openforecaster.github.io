@@ -1361,15 +1361,21 @@
   background: var(--fq-series);
 }
 
-/* Small enough for all five agents to share one row with the measure switch. */
+/* The names flow like words beside the measure switch, a space apart, so that when they need
+   a second row the rows come out even (six agents sit three and three, not five and one). */
 .fq-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
   min-width: 0;
-  margin: 0 0 0 -3px;
+  margin: 0 0 -2px -3px;
   padding: 0;
   list-style: none;
+  font-size: 8px;
+  text-wrap: balance;
+}
+
+.fq-legend li {
+  display: inline-block;
+  margin-bottom: 2px;
+  vertical-align: top;
 }
 
 .fq-legend button {
@@ -1707,9 +1713,15 @@
   line-height: 1.45;
 }
 
+/* At most --fq-per-row cards to a row (questions.js sets it), and fewer once that would
+   make a card narrower than 170px. */
 .fq-day-grid {
+  --fq-per-row: 5;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(max(170px, (100% - (var(--fq-per-row) - 1) * 10px) / var(--fq-per-row)), 1fr)
+  );
   gap: 10px;
   margin-top: 10px;
 }

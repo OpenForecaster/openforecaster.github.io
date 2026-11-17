@@ -24,7 +24,7 @@
   const LEAD_DAYS = 7;
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg' };
+  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg' };
   // How to work the chart, worded for a mouse or for a touch screen.
   const HINTS = !window.matchMedia || window.matchMedia('(hover: hover)').matches
     ? {
@@ -906,7 +906,8 @@
       });
       dlg.legendButtons[model.id] = button;
       item.appendChild(button);
-      dlg.legend.appendChild(item);
+      // The space lets the names wrap in even rows (Firefox only balances at spaces).
+      dlg.legend.append(item, ' ');
     });
 
     // What the chart measures, on the same row as the legend.
@@ -972,6 +973,9 @@
     dlg.dayLabel = h('span');
     dayHead.append('Forecasts on ', dlg.dayLabel);
     dlg.dayGrid = h('div', 'fq-day-grid');
+    // Up to five cards to a row; with more agents the rows fill evenly (six sit three and three).
+    const agentRows = Math.ceil(data.models.length / 5);
+    dlg.dayGrid.style.setProperty('--fq-per-row', Math.ceil(data.models.length / agentRows));
     dayBox.append(dayHead, dlg.dayGrid);
 
     dlg.criteria = h('details', 'fq-criteria');
