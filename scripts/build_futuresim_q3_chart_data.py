@@ -64,6 +64,12 @@ MODELS = [
         "gemini-4-carbon (Antigravity)", "Gemini 4 Carbon", "gemini-4-carbon", "google", "Antigravity", "#966AB5",
         [f"agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r{i:02d}" for i in range(2)],
     ),
+    (
+        # r00 and r01, as in the main figure; r02 is in clean_runs_Q3v8 but left out.
+        "inkling-2-small (Claude Code)", "Inkling 2 Small", "inkling-2-small", "thinkingmachines", "Claude Code",
+        "#B8860B",
+        [f"claude_code_aljazeera2026Q3v8_inkling2small_tinker_exa_r{i:02d}" for i in range(2)],
+    ),
 ]
 
 METRICS = {"accuracy": ("accuracy", 3), "brier": ("avg_brier", 5)}

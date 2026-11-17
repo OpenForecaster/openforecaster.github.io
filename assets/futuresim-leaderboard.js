@@ -20,7 +20,9 @@
   const periodButtons = Array.from(root.querySelectorAll('[data-futuresim-period]'));
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg' };
+  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg', thinkingmachines: 'thinkingmachines.png' };
+  /* Thinking Machines has a wordmark, not a symbol: it is drawn larger, as wide as its badge allows. */
+  const LOGO_SCALE = { thinkingmachines: 1.3 };
   const minus = (text) => text.replace('-', '−');
   const fixed = (value, digits) => minus((Math.abs(value) < 0.5 * Math.pow(10, -digits) ? 0 : value).toFixed(digits));
 
@@ -460,7 +462,7 @@
         svg('circle', { cx: badgeX, cy: labelY[order], r: badge, stroke: end.model.color, class: 'fsim-badge' }, group);
         const logo = LOGOS[end.model.vendor];
         if (logo) {
-          const size = badge * 1.24;
+          const size = badge * 1.24 * (LOGO_SCALE[end.model.vendor] || 1);
           svg('image', { href: logoBase + logo, x: badgeX - size / 2, y: labelY[order] - size / 2, width: size, height: size }, group);
         }
         const value = svg(

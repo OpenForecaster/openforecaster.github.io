@@ -24,7 +24,9 @@
   const LEAD_DAYS = 7;
   const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const MONTHS_LONG = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg' };
+  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg', thinkingmachines: 'thinkingmachines.png' };
+  // Thinking Machines has a wordmark, not a symbol: it is drawn larger, as wide as its ring allows.
+  const LOGO_SCALE = { thinkingmachines: 1.3 };
   // How to work the chart, worded for a mouse or for a touch screen.
   const HINTS = !window.matchMedia || window.matchMedia('(hover: hover)').matches
     ? {
@@ -122,6 +124,7 @@
     img.alt = '';
     img.decoding = 'async';
     img.addEventListener('error', () => img.remove());
+    if (LOGO_SCALE[model.vendor]) img.style.transform = 'scale(' + LOGO_SCALE[model.vendor] + ')';
     img.src = logoBase + file;
     return img;
   }
@@ -973,7 +976,7 @@
     dlg.dayLabel = h('span');
     dayHead.append('Forecasts on ', dlg.dayLabel);
     dlg.dayGrid = h('div', 'fq-day-grid');
-    // Up to five cards to a row; with more agents the rows fill evenly (six sit three and three).
+    // Up to five cards to a row; with more agents the rows fill evenly (seven sit four and three).
     const agentRows = Math.ceil(data.models.length / 5);
     dlg.dayGrid.style.setProperty('--fq-per-row', Math.ceil(data.models.length / agentRows));
     dayBox.append(dayHead, dlg.dayGrid);
@@ -1246,7 +1249,7 @@
       const mark = s('g');
       mark.appendChild(s('circle', { class: 'fq-end-ring', r: ring, stroke: model.color }));
       if (LOGOS[model.vendor]) {
-        const size = ring * 1.2;
+        const size = ring * 1.2 * (LOGO_SCALE[model.vendor] || 1);
         mark.appendChild(s('image', { href: logoBase + LOGOS[model.vendor], x: -size / 2, y: -size / 2, width: size, height: size }));
       }
       const value = s('text', { class: 'fq-end-value', x: ring + (narrow ? 5 : 7), dy: '0.35em' });

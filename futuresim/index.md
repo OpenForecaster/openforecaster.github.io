@@ -67,8 +67,8 @@ stylesheet: /futuresim/questions/questions.css
       </div>
       <div class="futuresim-chart" data-futuresim-chart data-logos="{{ '/assets/logos/' | relative_url }}">
         <noscript>
-          <img src="{{ '/futuresim/figures/q3/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for six agents evaluated on FutureSim 2026 Q3.">
-          <img src="{{ '/futuresim/figures/q3/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for six agents evaluated on FutureSim 2026 Q3.">
+          <img src="{{ '/futuresim/figures/q3/top1_accuracy.png' | relative_url }}" alt="Top-1 accuracy trajectories for seven agents evaluated on FutureSim 2026 Q3.">
+          <img src="{{ '/futuresim/figures/q3/brier_skill_score.png' | relative_url }}" alt="Brier skill score trajectories for seven agents evaluated on FutureSim 2026 Q3.">
         </noscript>
       </div>
       <div class="futuresim-q2-writeup">
