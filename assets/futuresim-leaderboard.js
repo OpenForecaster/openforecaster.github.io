@@ -20,7 +20,7 @@
   const periodButtons = Array.from(root.querySelectorAll('[data-futuresim-period]'));
 
   const SVG_NS = 'http://www.w3.org/2000/svg';
-  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg' };
+  const LOGOS = { openai: 'openai.svg', anthropic: 'anthropic.svg', deepseek: 'deepseek.svg', zhipu: 'zhipu.png', qwen: 'qwen.svg', meta: 'meta.svg', google: 'gemini.svg' };
   const minus = (text) => text.replace('-', '−');
   const fixed = (value, digits) => minus((Math.abs(value) < 0.5 * Math.pow(10, -digits) ? 0 : value).toFixed(digits));
 

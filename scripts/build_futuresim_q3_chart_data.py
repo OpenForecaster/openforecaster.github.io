@@ -60,6 +60,10 @@ MODELS = [
         "muse-wonder-full-1.0 (Muse)", "Muse Wonder Full 1.0", "muse-wonder-full-1.0", "meta", "Muse", "#3182F4",
         [f"muse_aljazeera2026Q3v8_wonderfull_max_exa_r{i:02d}" for i in range(2)],
     ),
+    (
+        "gemini-4-carbon (Antigravity)", "Gemini 4 Carbon", "gemini-4-carbon", "google", "Antigravity", "#966AB5",
+        [f"agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r{i:02d}" for i in range(2)],
+    ),
 ]
 
 METRICS = {"accuracy": ("accuracy", 3), "brier": ("avg_brier", 5)}
