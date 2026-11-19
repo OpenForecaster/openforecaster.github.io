@@ -10,7 +10,9 @@ roots:
 - 2026 Q1: `futuresim/traces/data/`
 
 Each root contains a manifest, per-day raw trace shards, workspace history, and
-summary overlays. Q1 is generated from `official_runs_complete` with
+summary overlays. The day shards are gzip-compressed
+(`runs/<agent>/<run>/<date>.json.gz`) and the viewer decompresses them in the
+browser. Q1 is generated from `official_runs_complete` with
 `scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 18
 leaderboard runs in `clean_runs_Q3v8` with:
 
@@ -19,7 +21,8 @@ scripts/build_futuresim_q3_trace_data.sh
 ```
 
 That one script writes the shards, the workspaces and the summaries. Q3 starts
-on `2026-06-24`. It differs from Q1 and Q2 in six ways:
+on `2026-06-24` and caps raw text fields at 10,000 characters, as Q2 does. It
+differs from Q1 and Q2 in five ways:
 
 - Codex, Muse and Antigravity runs are read from their session logs
   (`codex_sessions/`, `muse_sessions/`, `agy_conversations/`) by
@@ -35,9 +38,6 @@ on `2026-06-24`. It differs from Q1 and Q2 in six ways:
   were started in the same second, so their ids also carry the seed
   (`26-11-16-16-51-30-r00`). Each run's entry in the manifest records its
   folder as `source_run`, which is how the workspace export finds it.
-- Day shards are gzip-compressed (`<date>.json.gz`, about a third of the size)
-  with the same 10,000-character cap per text field as Q2. The viewer
-  decompresses them in the browser.
 - A run whose `memory/` folder holds more than 5 MB of files other than
   Markdown notes (search dumps, article scans) is exported with its notes and
   predictions only. Its workspace manifest records the count and size under
@@ -83,11 +83,17 @@ stays below GitHub Pages' 1 GB limit. After generating new summary overlays, pla
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
 
-With all three periods the built site is about 1,009 MB (0.94 GiB). GitHub's
-deploy step counts the 1 GB limit as 1,073,741,824 bytes, which leaves about
-64 MB. Check the size of a Jekyll build before adding more trace data. The Q1
-and Q2 day shards are not compressed; gzipping them as Q3's are (the viewer
-unpacks any gzipped day file) would take about 430 MB off Q2 and 200 MB off Q1.
+With all three periods the built site is about 376 MB, of which the day shards
+are 274 MB (Q1 60, Q2 116, Q3 98). GitHub Pages allows 1 GB, which its deploy
+step counts as 1,073,741,824 bytes. Check the size of a Jekyll build before
+adding more trace data.
+
+Q1 and Q2 were first published with plain JSON shards (260 MB and 549 MB). They
+were compressed in place with `scripts/gzip_futuresim_trace_shards.py`, which
+renames each shard in the manifest and in the summaries' `trace_path` and
+changes nothing else, and their build scripts pass `--gzip` since then. The
+viewer tells a compressed shard by its first two bytes, not by its name, so it
+also reads plain JSON from another data host.
 
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.

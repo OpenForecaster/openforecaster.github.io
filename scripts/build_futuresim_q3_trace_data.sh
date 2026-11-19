@@ -5,12 +5,12 @@
 # from their session logs, because stdout does not have their sub-agents, who make many of the
 # forecasts.
 #
-# The site is close to GitHub Pages' 1 GB limit, so two things differ from Q1 and Q2:
-#   - the day shards are gzip-compressed (the viewer decompresses them), which keeps the same
-#     10,000-character limit per text field as Q2 at about a third of the size;
+# GitHub Pages allows a site of 1 GB, so the data is kept small in three ways:
+#   - the day shards are gzip-compressed, as Q1's and Q2's are (the viewer decompresses them);
+#   - a text field is cut at 10,000 characters, as in Q2;
 #   - a run whose memory/ folder holds more than 5 MB of files other than Markdown notes (search
-#     dumps, article scans) gets only the notes. The workspace manifest records how many files
-#     were left out, and the viewer says so.
+#     dumps, article scans) gets only the notes, which is new in Q3. The workspace manifest
+#     records how many files were left out, and the viewer says so.
 #
 # The agents ran in a sandbox on a shared cluster. When one lists processes (ps, pgrep) the output
 # shows other people's jobs, so lines of tool output that name a cluster path are left out

@@ -51,5 +51,5 @@ add_run "DeepSeek V4 Flash 0731" deepseek-v4-flash-0731 deepseek-v4-flash-0731 "
 add_run "DeepSeek V4 Flash 0731" deepseek-v4-flash-0731 deepseek-v4-flash-0731 "Claude Code" r02 "$q2_runs/claude_code_aljazeera2026Q2v38_deepseek_v4flash0731_v3_openrouter_r02/26-08-01-20-41-09" claude_code_stdout.jsonl
 add_run "DeepSeek V4 Flash 0731" deepseek-v4-flash-0731 deepseek-v4-flash-0731 "Claude Code" r03 "$q2_runs/claude_code_aljazeera2026Q2v38_deepseek_v4flash0731_v3_openrouter_r03/26-08-02-01-32-56" claude_code_stdout.jsonl
 
-python "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 "${args[@]}"
+python "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 --gzip "${args[@]}"
 python "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q2_runs"

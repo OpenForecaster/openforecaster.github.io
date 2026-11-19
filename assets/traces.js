@@ -322,9 +322,9 @@
     return payload;
   }
 
-  // A day file may be gzip-compressed: 2026 Q3's are, to keep the site within its hosting size
-  // limit. The first two bytes decide, not the file name, because a server may already have
-  // decompressed the file on the way.
+  // The day files are gzip-compressed, to keep the site within its hosting size limit. The first
+  // two bytes decide, not the file name, because a server may already have decompressed the file
+  // on the way, and data from another host may not be compressed at all.
   async function fetchDayTrace(path) {
     const response = await fetch(dataBase + path, { cache: 'no-store' });
     if (!response.ok) throw new Error(`HTTP ${response.status}`);
