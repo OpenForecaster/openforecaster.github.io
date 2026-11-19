@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Build the trace viewer's 2026 Q3 data (futuresim/traces/data/q3) from the 14 leaderboard runs.
+# Build the trace viewer's 2026 Q3 data (futuresim/traces/data/q3) from the 18 leaderboard runs.
 #
-# Claude Code runs are read from their stdout transcript. Codex and Muse runs are read from their
-# session logs, because their sub-agents make most of the forecasts and stdout does not have them.
+# Claude Code runs are read from their stdout transcript. Codex, Muse and Antigravity runs are read
+# from their session logs, because stdout does not have their sub-agents, who make many of the
+# forecasts.
 #
 # The site is close to GitHub Pages' 1 GB limit, so two things differ from Q1 and Q2:
 #   - the day shards are gzip-compressed (the viewer decompresses them), which keeps the same
@@ -68,6 +69,14 @@ add_run "GLM 5.3 Flash" glm-5.3-flash glm-53-flash "Claude Code" r05 "$q3_runs/c
 
 add_run "Muse Wonder Full 1.0" muse-wonder-full-1.0 muse-wonder-full-10 Muse r00 "$q3_runs/muse_aljazeera2026Q3v8_wonderfull_max_exa_r00/26-11-14-15-31-51" muse_sessions
 add_run "Muse Wonder Full 1.0" muse-wonder-full-1.0 muse-wonder-full-10 Muse r01 "$q3_runs/muse_aljazeera2026Q3v8_wonderfull_max_exa_r01/26-11-14-16-00-01" muse_sessions
+
+add_run "Gemini 4 Carbon" gemini-4-carbon gemini-4-carbon-high Antigravity r00 "$q3_runs/agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r00/26-11-16-02-42-54" agy_conversations
+add_run "Gemini 4 Carbon" gemini-4-carbon gemini-4-carbon-high Antigravity r01 "$q3_runs/agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r01/26-11-16-11-33-54" agy_conversations
+
+# Both runs were started in the same second, so their folders have the same name; the trace builder
+# tells them apart by adding the seed to the run id.
+add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r00 "$q3_runs/claude_code_aljazeera2026Q3v8_inkling2small_tinker_exa_r00/26-11-16-16-51-30" claude_code_stdout.jsonl
+add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r01 "$q3_runs/claude_code_aljazeera2026Q3v8_inkling2small_tinker_exa_r01/26-11-16-16-51-30" claude_code_stdout.jsonl
 
 python3 "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 --gzip --hide-host-paths "${args[@]}"
 python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 5000000

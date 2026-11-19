@@ -2,8 +2,8 @@
 """Build static FutureSim trace-viewer data from harness stdout JSONL files.
 
 A run's source is usually its `<backend>_stdout.jsonl`. It can instead be the run's
-`codex_sessions` or `muse_sessions` directory: those session logs also hold the sub-agents'
-work, which stdout leaves out (see futuresim_session_logs.py).
+`codex_sessions`, `muse_sessions` or `agy_conversations` directory: those session logs also hold
+the sub-agents' work, which stdout leaves out (see futuresim_session_logs.py).
 """
 
 from __future__ import annotations
@@ -14,7 +14,7 @@ import gzip
 import json
 import re
 import shutil
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import UTC, date, datetime, timedelta
 from pathlib import Path
 from typing import Any
@@ -72,8 +72,8 @@ def main() -> None:
 
     args.output.mkdir(parents=True, exist_ok=True)
     runs = []
-    for spec in args.run:
-        run = build_run(spec, args.output, args.max_days, args.max_events_per_day, args.max_source_events)
+    for spec, run_id in zip(args.run, unique_run_ids(args.run)):
+        run = build_run(spec, args.output, args.max_days, args.max_events_per_day, args.max_source_events, run_id)
         if run["days"]:
             runs.append(run)
 
@@ -85,14 +85,33 @@ def main() -> None:
     write_json(args.output / "manifest.json", manifest)
 
 
-def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, max_source_events: int = 0) -> dict[str, Any]:
+def run_folder(spec: str) -> Path:
+    """The run's own folder. Its source is <simulation>/<timestamp>/agents/<agent>/<source>."""
+    return parse_source_segments(parse_run_spec(spec)[5])[-1][0].parents[2]
+
+
+def unique_run_ids(specs: list[str]) -> list[str]:
+    """Each run's id: the name of its timestamp folder.
+
+    The viewer finds a run by its agent and id. Two runs of one agent that were started in the same
+    second have the same folder name, so those get their seed label added to it.
+    """
+    keys = [(parse_run_spec(spec)[1], run_folder(spec).name) for spec in specs]
+    shared = {key for key, count in Counter(keys).items() if count > 1}
+    return [f"{key[1]}-{parse_run_spec(spec)[4]}" if key in shared else key[1] for spec, key in zip(specs, keys)]
+
+
+def build_run(
+    spec: str, output: Path, max_days: int, max_events_per_day: int, max_source_events: int = 0, run_id: str = ""
+) -> dict[str, Any]:
     agent_name, agent_slug, model, harness, seed_label, source = parse_run_spec(spec)
     source_segments = parse_source_segments(source)
     final_source_path = source_segments[-1][0]
 
-    run_id = final_source_path.parents[2].name
+    folder = run_folder(spec)
+    run_id = run_id or folder.name
     run_label = run_id
-    harness_name = harness_condition(harness, final_source_path.parents[2] / "config.json")
+    harness_name = harness_condition(harness, folder / "config.json")
     harness_slug = slugify(harness_name)
     run_dir = output / "runs" / agent_slug / run_id
     run_dir.mkdir(parents=True, exist_ok=True)
@@ -166,7 +185,7 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         if max_days and len(days) > max_days:
             break
 
-    metrics = read_metrics(final_source_path.parents[2] / "daily_metrics.csv")
+    metrics = read_metrics(folder / "daily_metrics.csv")
     if metrics:
         final_metric_date = max(
             (date.fromisoformat(row["date"]) for row in metrics if row.get("date")),
@@ -233,6 +252,8 @@ def build_run(spec: str, output: Path, max_days: int, max_events_per_day: int, m
         "seed_label": seed_label,
         "run_id": run_id,
         "run_label": run_label,
+        # Where the run is under the folder of runs. The workspace export looks it up by this.
+        "source_run": f"{folder.parent.name}/{folder.name}",
         "source_filename": final_source_path.name,
         "tool_counts": dict(sorted(run_tool_counts.items(), key=lambda item: (-item[1], item[0]))),
         "compaction_count": sum(day["compaction_count"] for day in day_items),

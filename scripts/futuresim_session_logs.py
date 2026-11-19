@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
-"""Read a Codex or Muse session-log directory as one FutureSim trace.
+"""Read a Codex, Muse or Antigravity session-log directory as one FutureSim trace.
 
-The trace viewer's data is normally built from a harness's stdout transcript. For two harnesses
+The trace viewer's data is normally built from a harness's stdout transcript. For three harnesses
 that transcript leaves out most of the run, so their traces are built from the session logs:
 
 * Codex, `agents/<agent>/codex_sessions/rollout-*.jsonl`. The root agent hands most questions to
   sub-agents, and each sub-agent has a rollout file of its own. stdout has the root agent only.
 * Muse, `agents/<agent>/muse_sessions/**/session.jsonl`. stdout carries no tool arguments, and the
   sub-agents a workflow starts are separate sessions under `subagent/`.
+* Antigravity, `agents/<agent>/agy_conversations/<conversation id>.jsonl`. Each sub-agent is a
+  conversation file of its own, and stdout has the root agent only.
 
 read_session_log(path, start_date) returns (events, notes). Each event is a SessionEvent: a record
 shaped like a Claude Code transcript line (which build_futuresim_trace_viewer_data.py already
@@ -22,9 +24,10 @@ Sub-agents run in parallel with the root agent. Interleaving them by time would 
 unreadable, so each stretch of one sub-agent's work within a day is kept together and placed in
 the root agent's timeline at the moment that stretch began.
 
-What the logs do not contain, and so the trace does not either: model reasoning (stored
-encrypted), and the text of the messages Codex agents send each other (also encrypted; the call is
-shown with a placeholder).
+What the logs do not contain, and so the trace does not either: the model reasoning of Codex and
+Muse (stored encrypted), and the text of the messages Codex agents send each other (also encrypted;
+the call is shown with a placeholder). Antigravity logs a summary of the reasoning; the trace
+builder leaves reasoning out for every harness, so it is not read here.
 
     python3 scripts/futuresim_session_logs.py PATH --start 2026-06-24     # per-day counts
 """
@@ -68,7 +71,7 @@ class _Thread:
 
 
 def is_session_log(path: Path) -> bool:
-    return path.is_dir() and path.name in {"codex_sessions", "muse_sessions"}
+    return path.is_dir() and path.name in {"codex_sessions", "muse_sessions", "agy_conversations"}
 
 
 def read_session_log(path: Path, start_date: date) -> tuple[list[SessionEvent], list[str]]:
@@ -76,6 +79,8 @@ def read_session_log(path: Path, start_date: date) -> tuple[list[SessionEvent], 
         threads = _read_codex(path)
     elif path.name == "muse_sessions":
         threads = _read_muse(path)
+    elif path.name == "agy_conversations":
+        threads = _read_agy(path)
     else:
         raise SystemExit(f"Not a session-log directory: {path}")
     return _merge(threads, start_date)
@@ -459,11 +464,167 @@ def _muse_result(name: str, text: Any) -> tuple[str, bool]:
     return text, False
 
 
+# --- Antigravity ------------------------------------------------------------------------------
+#
+# A conversation file has one record per step. A model step (PLANNER_RESPONSE) holds either text
+# or tool calls, and the results of its calls are the GENERIC records that follow it, one per call
+# and in the same order; calls carry no ids, so the pairing is by position.
+#
+# Shown differently from the log, so that the viewer and the summaries treat these runs like the
+# others:
+# * `call_mcp_tool` names its server and tool in its arguments. It is shown as that tool
+#   (`mcp__forecast__search_news`, as Claude Code names it) with the tool's own arguments.
+#   Forecast outcomes that were sent as a JSON string are shown parsed.
+# * `run_command` is shown as Bash, as Codex's commands are, with `CommandLine` as `command`.
+# * Every result opens with the wall-clock times of the call; those lines are left out.
+# * A call that outlives its wait time returns a note that it now runs in the background, and its
+#   real result arrives later as a system message. That result is added to the call's result.
+#
+# Not shown: prompts and system messages (as for the other harnesses) and the logged reasoning.
+
+AGY_REQUEST_RE = re.compile(r"<USER_REQUEST>\n?(.*?)\n?</USER_REQUEST>", re.S)
+AGY_CALL_TIMES_RE = re.compile(r"\A(?:(?:Created|Completed) At: \S+\n)+")
+AGY_EXIT_CODE_RE = re.compile(r"^Command exited with code (\d+)\.", re.M)
+AGY_BACKGROUND_RE = re.compile(r"running as a background task with task id: (\S+)")
+AGY_MESSAGE_RE = re.compile(r"^\[Message\] timestamp=\S+ sender=(\S+) priority=\S+ content=", re.M)
+AGY_NEW_SUBAGENT_RE = re.compile(r'"conversationId": "([0-9a-f-]{36})"')
+# A workflow's result lists the agents it ran: "- [agent:self] <role>: done (<conversation id>): ..."
+AGY_WORKFLOW_AGENT_RE = re.compile(r"^- \[agent:[^\]]*\] (.+?): \w+ \(([0-9a-f-]{36})\)", re.M)
+AGY_BATCH_RE = re.compile(r"\bBatch \d+: \w+")
+AGY_LATER_RESULT = "[The result, which arrived later as a message]"
+
+
+def _read_agy(conversations_dir: Path) -> dict[str, _Thread]:
+    threads: dict[str, _Thread] = {}
+    roles: dict[str, str] = {}
+    parents: dict[str, str] = {}
+    for path in sorted(conversations_dir.glob("*.jsonl")):
+        thread, started = _read_agy_conversation(path)
+        threads[thread.thread_id] = thread
+        for conversation, role in started.items():
+            roles.setdefault(conversation, role)
+            parents.setdefault(conversation, thread.thread_id)
+
+    # The root agent is the one the simulator prompts; anyone else was started by an agent.
+    roots = sorted(
+        (thread for thread in threads.values() if thread.prompts and _is_day_prompt(thread.prompts[0][1])),
+        key=lambda thread: thread.prompts[0][0],
+    )
+    root_ids = {thread.thread_id for thread in roots}
+    for thread in threads.values():
+        if thread.thread_id in root_ids:
+            thread.prompts = [prompt for prompt in thread.prompts if _is_day_prompt(prompt[1])]
+            continue
+        # A sub-agent is named by the role it was started with. A long workflow result is logged
+        # with its middle cut out, which loses some roles; those agents are named by the batch
+        # their prompt opens with, which is how the runs seen so far word the role as well.
+        batch = AGY_BATCH_RE.search(thread.prompts[0][1][:200]) if thread.prompts else None
+        thread.label = roles.get(thread.thread_id) or (batch.group(0) if batch else thread.thread_id[:8])
+        started_at = thread.items[0][0] if thread.items else 0.0
+        earlier = [root for root in roots if root.prompts[0][0] <= started_at]
+        if thread.thread_id in parents:
+            thread.parent_id = parents[thread.thread_id]
+        elif roots:
+            thread.parent_id = (earlier[-1] if earlier else roots[0]).thread_id
+        thread.prompts = []
+    return threads
+
+
+def _is_day_prompt(text: str) -> bool:
+    return text.startswith(BEGIN_PREFIX) or ADVANCED_RE.match(text) is not None
+
+
+def _read_agy_conversation(path: Path) -> tuple[_Thread, dict[str, str]]:
+    conversation = path.stem
+    thread = _Thread(thread_id=conversation)
+    started: dict[str, str] = {}  # conversation id of a sub-agent this agent started -> its role
+    step: dict[str, Any] | None = None  # the last model step
+    unanswered: list[dict[str, Any]] = []  # its calls that have no result yet
+    background: dict[str, dict[str, Any]] = {}  # task id -> the result of the call that started it
+    with path.open(encoding="utf-8") as handle:
+        for line in handle:
+            if not line.strip():
+                continue
+            record = json.loads(line)
+            kind = record.get("type")
+            time = _iso_seconds(record["created_at"])
+            text = str(record.get("content") or "")
+
+            if kind == "USER_INPUT":
+                request = AGY_REQUEST_RE.search(text)
+                thread.prompts.append((time, (request.group(1) if request else text).strip(), len(thread.items)))
+            elif kind == "PLANNER_RESPONSE":
+                content: list[dict[str, Any]] = [{"type": "text", "text": text.strip()}] if text.strip() else []
+                unanswered = [
+                    _agy_tool(f"{conversation[:8]}-{record.get('step_index')}-{number}", call)
+                    for number, call in enumerate(record.get("tool_calls") or [], 1)
+                ]
+                content.extend(unanswered)
+                if content:
+                    step = _assistant(time, conversation, content)
+                    thread.items.append((time, "", step))
+            elif kind == "GENERIC":
+                if step is None or not unanswered:
+                    continue
+                call = unanswered.pop(0)
+                text = AGY_CALL_TIMES_RE.sub("", text)
+                result = _result(call["id"], text, record.get("status") == "ERROR" or bool(record.get("error")) or _agy_command_failed(text))
+                step["message"]["content"].append(result)
+                task = AGY_BACKGROUND_RE.search(text) if record.get("status") == "RUNNING" else None
+                if task:
+                    background[task.group(1)] = result
+                new_subagent = AGY_NEW_SUBAGENT_RE.search(text) if call["name"] == "invoke_subagent" else None
+                if new_subagent and isinstance(call["input"], dict) and call["input"].get("Role"):
+                    started[new_subagent.group(1)] = str(call["input"]["Role"]).strip()
+            elif kind == "SYSTEM_MESSAGE":
+                for sender, message in _agy_messages(text):
+                    result = background.pop(sender, None)
+                    if result is not None:
+                        result["content"] = f"{result['content'].rstrip()}\n\n{AGY_LATER_RESULT}\n{message}"
+                        result["is_error"] = result["is_error"] or _agy_command_failed(message)
+                    for role, child in AGY_WORKFLOW_AGENT_RE.findall(message):
+                        started.setdefault(child, role.strip())
+            elif kind == "CHECKPOINT":
+                thread.items.append((time, "", {"type": "compacted", "timestamp": record["created_at"], "session_id": conversation}))
+    return thread, started
+
+
+def _agy_tool(call_id: str, call: dict[str, Any]) -> dict[str, Any]:
+    name = str(call.get("name") or "tool")
+    arguments = _json_or_text(call.get("args")) or {}
+    if not isinstance(arguments, dict):
+        return _tool(call_id, name, arguments)
+    if name == "call_mcp_tool" and arguments.get("ServerName") and arguments.get("ToolName"):
+        name = f"mcp__{arguments['ServerName']}__{arguments['ToolName']}"
+        arguments = _json_or_text(arguments.get("Arguments")) or {}
+        if isinstance(arguments, dict) and isinstance(arguments.get("outcomes"), str):
+            arguments = {**arguments, "outcomes": _json_or_text(arguments["outcomes"])}
+    elif name == "run_command" and "CommandLine" in arguments:
+        name = "Bash"
+        arguments = {"command": str(arguments["CommandLine"]), **{key: value for key, value in arguments.items() if key != "CommandLine"}}
+    return _tool(call_id, name, arguments)
+
+
+def _agy_command_failed(text: str) -> bool:
+    exit_code = AGY_EXIT_CODE_RE.search(text)
+    return exit_code is not None and exit_code.group(1) != "0"
+
+
+def _agy_messages(text: str) -> list[tuple[str, str]]:
+    """(sender, text) for each message in a SYSTEM_MESSAGE record."""
+    body = text.split("<SYSTEM_MESSAGE>", 1)[-1].rsplit("</SYSTEM_MESSAGE>", 1)[0]
+    heads = list(AGY_MESSAGE_RE.finditer(body))
+    return [
+        (head.group(1), body[head.end():(heads[index + 1].start() if index + 1 < len(heads) else len(body))].strip())
+        for index, head in enumerate(heads)
+    ]
+
+
 # --- Command line: a quick look at what a log contains ----------------------------------------
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Print per-day counts for a Codex or Muse session-log directory.")
+    parser = argparse.ArgumentParser(description="Print per-day counts for a Codex, Muse or Antigravity session-log directory.")
     parser.add_argument("path", type=Path)
     parser.add_argument("--start", required=True, type=date.fromisoformat, help="First simulation day.")
     args = parser.parse_args()

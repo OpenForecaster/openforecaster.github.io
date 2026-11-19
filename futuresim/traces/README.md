@@ -11,7 +11,7 @@ roots:
 
 Each root contains a manifest, per-day raw trace shards, workspace history, and
 summary overlays. Q1 is generated from `official_runs_complete` with
-`scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 14
+`scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 18
 leaderboard runs in `clean_runs_Q3v8` with:
 
 ```bash
@@ -19,14 +19,22 @@ scripts/build_futuresim_q3_trace_data.sh
 ```
 
 That one script writes the shards, the workspaces and the summaries. Q3 starts
-on `2026-06-24`. It differs from Q1 and Q2 in five ways:
+on `2026-06-24`. It differs from Q1 and Q2 in six ways:
 
-- Codex and Muse runs are read from their session logs (`codex_sessions/`,
-  `muse_sessions/`) by `scripts/futuresim_session_logs.py`, not from stdout.
-  Their sub-agents make most of the forecasts and stdout does not have them.
-  Each event from a sub-agent carries its name in `subagent`. Codex stores the
-  text of messages between agents encrypted, so the viewer shows a placeholder
-  for those.
+- Codex, Muse and Antigravity runs are read from their session logs
+  (`codex_sessions/`, `muse_sessions/`, `agy_conversations/`) by
+  `scripts/futuresim_session_logs.py`, not from stdout. Their sub-agents make
+  many of the forecasts and stdout does not have them. Each event from a
+  sub-agent carries its name in `subagent`. Codex stores the text of messages
+  between agents encrypted, so the viewer shows a placeholder for those.
+  Antigravity (Gemini) calls are shown the way the other harnesses' are: a
+  call to the forecast server as that tool, a shell command as Bash, and the
+  result of a command that finished in the background with the call that
+  started it.
+- A run's id is the name of its timestamp folder. The two Inkling 2 Small runs
+  were started in the same second, so their ids also carry the seed
+  (`26-11-16-16-51-30-r00`). Each run's entry in the manifest records its
+  folder as `source_run`, which is how the workspace export finds it.
 - Day shards are gzip-compressed (`<date>.json.gz`, about a third of the size)
   with the same 10,000-character cap per text field as Q2. The viewer
   decompresses them in the browser.
@@ -75,9 +83,11 @@ stays below GitHub Pages' 1 GB limit. After generating new summary overlays, pla
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
 
-With all three periods the built site is about 990 MB, so there is little room
-left under that limit. Check the size of a Jekyll build before adding more
-trace data.
+With all three periods the built site is about 1,009 MB (0.94 GiB). GitHub's
+deploy step counts the 1 GB limit as 1,073,741,824 bytes, which leaves about
+64 MB. Check the size of a Jekyll build before adding more trace data. The Q1
+and Q2 day shards are not compressed; gzipping them as Q3's are (the viewer
+unpacks any gzipped day file) would take about 430 MB off Q2 and 200 MB off Q1.
 
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.

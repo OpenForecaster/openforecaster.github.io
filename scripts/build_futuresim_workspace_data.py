@@ -69,8 +69,11 @@ def main() -> None:
 
 def find_workspace(data_dir: Path, run: dict[str, Any], roots: list[Path], root_first: bool = False) -> Path | None:
     def under_roots() -> Path | None:
+        # A manifest written before runs recorded their folder only has the id, which is the
+        # folder's name there.
+        run_folder = run.get("source_run") or f"*/{run['run_id']}"
         for root in roots:
-            for path in root.glob(f"*/{run['run_id']}/agents/*/workspace"):
+            for path in root.glob(f"{run_folder}/agents/*/workspace"):
                 if path.exists():
                     return path
         return None
@@ -170,7 +173,9 @@ def workspace_files(workspace: Path) -> list[Path]:
     for dirname in ["memory", "predictions"]:
         root = workspace / dirname
         if root.exists():
-            files.extend(path for path in root.rglob("*") if path.is_file())
+            # Python's bytecode cache is not the agent's work, and git ignores it, so the site
+            # would list files it does not have.
+            files.extend(path for path in root.rglob("*") if path.is_file() and "__pycache__" not in path.parts)
     return files
 
 
