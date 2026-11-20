@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Add each run's token counts and wall-clock time to a trace viewer manifest.
+"""Add each run's token counts, model calls and wall-clock time to a trace viewer manifest.
 
     python3 scripts/build_futuresim_run_usage.py --data-dir futuresim/traces/data/q3 --runs-root <runs>
 
@@ -7,6 +7,7 @@ A run in <data-dir>/manifest.json whose folder (its `source_run`) is under --run
 
     "tokens": {"main": {...}, "subagents": {...}, "other": {...}}
     "wall_clock": {"seconds": ..., "restarts": ..., "restart_wait_seconds": ...}
+    "model_calls": {"main": ..., "subagents": ..., "other": ...}
 
 and each entry of its `days` gets `"tokens": {...}`, the counts of that simulation day.
 
@@ -46,6 +47,15 @@ carries the output count from the start of a message, not from its end.
 * Antigravity, `agy_conversations/*.jsonl`: the per-step counts. The main conversation is the one
   `agy_stdout.jsonl` opens and every other one is a sub-agent. Input is `input_tokens` +
   `cache_read_tokens`.
+
+Model calls
+-----------
+`model_calls` is how many requests each of the three made to the model. A request sends the
+context and gets one reply, which can hold text and several tool calls. Codex and Muse log one
+usage record per request, and Antigravity one step with token counts (a planner response or a
+checkpoint). In Claude Code a request is one message id of the transcripts. That leaves out the
+requests that compact the context: the transcripts do not hold them, and although their tokens
+are counted (see above), how many requests they took is not known.
 
 Days
 ----
@@ -96,6 +106,9 @@ class RunLog:
     """What a run's session logs say about its model calls and its time."""
 
     calls: list[tuple[float, str, Counts]] = field(default_factory=list)  # (time, owner, tokens)
+    # Tokens that no logged call accounts for: what a Claude Code process reports beyond its
+    # transcript messages, which is mostly its context compactions.
+    unlogged: list[tuple[float, str, Counts]] = field(default_factory=list)
     times: list[float] = field(default_factory=list)  # the time of every record, of any agent
     day_starts: list[tuple[float, str]] = field(default_factory=list)  # (time, the day that opens)
     restarts: list[float] = field(default_factory=list)  # the first record of each restarted session
@@ -117,9 +130,10 @@ def main() -> None:
         if log is None:
             run.pop("tokens", None)
             run.pop("wall_clock", None)
+            run.pop("model_calls", None)
             for day in run["days"]:
                 day.pop("tokens", None)
-            print(f"{name}: no session logs, left without tokens and wall-clock time")
+            print(f"{name}: no session logs, left without tokens, model calls and wall-clock time")
             continue
 
         per_day = tokens_per_day(log, dates[0])
@@ -128,11 +142,13 @@ def main() -> None:
             raise SystemExit(f"{name}: the session logs have model calls on {unknown}, which the trace has no day for")
         run["tokens"] = token_totals(log)
         run["wall_clock"] = wall_clock(log)
+        run["model_calls"] = model_calls(log)
         for day in run["days"]:
             day["tokens"] = per_day.get(day["date"]) or dict.fromkeys(QUANTITIES, 0)
         print(
             f"{name}: "
             + ", ".join(f"{quantity} {sum(run['tokens'][owner][quantity] for owner in OWNERS):,}" for quantity in QUANTITIES)
+            + f", {sum(run['model_calls'].values()):,} model calls"
             + f", {run['wall_clock']['seconds'] / 3600:.2f} h"
             + (f" without {run['wall_clock']['restart_wait_seconds'] / 3600:.2f} h before {run['wall_clock']['restarts']} restart(s)" if run["wall_clock"]["restarts"] else "")
         )
@@ -169,7 +185,7 @@ def read_log(agent_dir: Path, first_day: date) -> RunLog | None:
 def token_totals(log: RunLog) -> dict[str, Counts]:
     quantities = QUANTITIES + ((REASONING,) if any(REASONING in counts for _, _, counts in log.calls) else ())
     totals = {owner: dict.fromkeys(quantities, 0) for owner in OWNERS}
-    for _, owner, counts in log.calls:
+    for _, owner, counts in log.calls + log.unlogged:
         for quantity, amount in counts.items():
             totals[owner][quantity] += amount
     return totals
@@ -179,12 +195,19 @@ def tokens_per_day(log: RunLog, first_day: str) -> dict[str, Counts]:
     starts = sorted(log.day_starts)
     times = [time for time, _ in starts]
     per_day: dict[str, Counts] = {}
-    for time, _, counts in log.calls:
+    for time, _, counts in log.calls + log.unlogged:
         index = bisect_right(times, time) - 1
         totals = per_day.setdefault(starts[index][1] if index >= 0 else first_day, dict.fromkeys(QUANTITIES, 0))
         for quantity in QUANTITIES:
             totals[quantity] += counts[quantity]
     return per_day
+
+
+def model_calls(log: RunLog) -> dict[str, int]:
+    made = dict.fromkeys(OWNERS, 0)
+    for _, owner, _ in log.calls:
+        made[owner] += 1
+    return made
 
 
 def wall_clock(log: RunLog) -> dict[str, int]:
@@ -302,7 +325,7 @@ def read_claude_code(agent_dir: Path) -> RunLog:
                 each, remainder = divmod(missing[quantity], len(at))
                 parts[quantity] = each + (position < remainder)
             if any(parts.values()):
-                log.calls.append((time, "main", parts))
+                log.unlogged.append((time, "main", parts))
     return log
 
 

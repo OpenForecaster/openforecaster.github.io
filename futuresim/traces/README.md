@@ -48,16 +48,20 @@ differs from Q1 and Q2 in seven ways:
   which is Muse's reminder sessions). Codex and Muse runs also have
   `reasoning_output`, the part of the output that was reasoning; the other
   harnesses do not log it. Each day of a run has `tokens` too, summed over the
-  three, for the model calls made while that simulation day was open.
+  three, for the model calls made while that simulation day was open. The
+  run's `model_calls` says how many requests to the model each of the three
+  made; for a Claude Code run it leaves out the requests that compact the
+  context, which the transcripts do not hold.
   `scripts/build_futuresim_run_usage.py` reads all of it from the session logs
   (for Claude Code, `claude_config/projects/`) the way
   `analysis/src/q3_v8_output_tokens.py` in the simulator's repository counts
   output tokens, and its header says what each number includes. The viewer
-  shows the totals under Run Activity, a day's tokens in the day's header, and
-  output tokens per day as a third metric of the trajectory chart. Q1 and Q2
-  have no token counts, because only stdout was kept for those runs: Codex's
-  reports the usage of the first turn only, and Claude Code's carries the
-  output count from the start of each message, not its end.
+  shows the totals and the model calls under Run Activity, a day's tokens in
+  the day's header, and output tokens per day as a third metric of the
+  trajectory chart. Q1 and Q2 have no token counts, because only stdout was
+  kept for those runs: Codex's reports the usage of the first turn only, and
+  Claude Code's carries the output count from the start of each message, not
+  its end.
 - Each run's entry also has `wall_clock`, from the same script: `seconds` is
   the time from the run's first log record to its last, without the gap before
   each restart. Five runs were interrupted and restarted in a new session (GPT

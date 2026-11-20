@@ -777,19 +777,21 @@
       acc.compactions += Number(day.compaction_count) || 0;
       return acc;
     }, { toolCalls: 0, forecasts: 0, compactions: 0 });
+    const compactions = Number(run.compaction_count) || totals.compactions;
     const pairs = [
       ['model', run.agent_name || run.agent_slug],
       ['run', runOptionLabel(run)],
       ['days', days.length],
       ['tool calls', totals.toolCalls],
       ['forecast submits', totals.forecasts],
-      ['recorded compactions', compactionCountLabel(Number(run.compaction_count) || totals.compactions)],
+      ['recorded compactions', compactionCountLabel(compactions)],
     ];
     for (const [label, value] of pairs) {
       els.stats.appendChild(el('dt', label));
       els.stats.appendChild(el('dd', String(value)));
     }
     appendWallClock(run.wall_clock);
+    appendModelCalls(run, compactions);
     appendTokenStats(run.tokens);
   }
 
@@ -804,6 +806,29 @@
       clock.restarts
         ? `Not counted: ${stopped} before its ${restarts}, when the run was stopped or doing work that the restart redid.`
         : 'The run was not restarted.',
+    ]);
+  }
+
+  // run.model_calls is { main, subagents, other }: how many requests each made to the model.
+  // Only 2026 Q3 has it.
+  function appendModelCalls(run, compactions) {
+    const calls = run.model_calls;
+    if (!calls) return;
+    const owners = [['main agent', calls.main], ['sub-agents', calls.subagents], ['harness', calls.other]]
+      .map(([name, made]) => [name, Number(made) || 0]);
+    const total = owners.reduce((sum, [, made]) => sum + made, 0);
+    if (!total) return;
+    const others = [['by sub-agents', owners[1][1]], ['by the harness', owners[2][1]]]
+      .filter(([, made]) => made)
+      .map(([by, made]) => `${share(made, total, 0)} ${by}`);
+    // Claude Code's logs do not hold the requests that compact the context.
+    const unlogged = run.harness === 'Claude Code' && compactions
+      ? [`Not counted: the requests behind its ${compactions} context compaction${compactions === 1 ? '' : 's'}, which the logs do not hold.`]
+      : [];
+    appendStatRow('model calls', String(total), others.join(', '), [
+      'Requests to the model. Each one sends the conversation so far and gets one reply, which can hold text and several tool calls.',
+      ...owners.filter(([, made]) => made).map(([name, made]) => `${name}: ${made.toLocaleString('en-US')}`),
+      ...unlogged,
     ]);
   }
 
@@ -822,7 +847,6 @@
     const exact = (key) => owners
       .filter(([, counts]) => count(counts, key))
       .map(([name, counts]) => `${name}: ${count(counts, key).toLocaleString('en-US')}`);
-    const share = (part, whole, digits) => `${(whole ? (100 * part) / whole : 0).toFixed(digits)}%`;
 
     const cached = total('cached_input');
     appendStatRow('input tokens', compactCount(input), `${share(cached, input, 1)} cached`, [
@@ -1619,6 +1643,11 @@
   function formatMetric(value, metric) {
     if (metric === 'output_tokens') return compactCount(value);
     return metric === 'top1_accuracy' ? `${value.toFixed(1)}%` : value.toFixed(3);
+  }
+
+  // (1, 3, 0) -> "33%"
+  function share(part, whole, digits) {
+    return `${(whole ? (100 * part) / whole : 0).toFixed(digits)}%`;
   }
 
   // 1234567 -> "1.23M"
