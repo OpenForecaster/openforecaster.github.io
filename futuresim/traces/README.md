@@ -128,6 +128,17 @@ changes nothing else, and their build scripts pass `--gzip` since then. The
 viewer tells a compressed shard by its first two bytes, not by its name, so it
 also reads plain JSON from another data host.
 
+The "Download trace" button beside the run selector saves the selected run as
+one zip (`futuresim-<period>-<agent>-<seed>.zip`): a `README.txt`, `run.json`
+(the run's entry in the manifest, without `workspace`) and `days/<date>.json`
+for every day. The viewer builds the zip in the browser from the day shards,
+because a second copy of every run would not fit the size limit. A gzip shard's
+deflate stream, CRC and length are what a zip entry stores, so each shard goes
+in as it is and nothing is unpacked or recompressed. That relies on a shard
+being a single gzip member, which is how the build scripts write them. The
+largest run is 36 MB zipped (GPT 5.6 Sol r00 in Q2, 170 MB unpacked). The
+workspace files are not in the zip.
+
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.
 

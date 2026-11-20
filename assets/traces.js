@@ -20,6 +20,7 @@
     trajectoryChart: document.getElementById('trace-trajectory-chart'),
     buildMeta: document.getElementById('trace-build-meta'),
     rawLink: document.getElementById('trace-raw-link'),
+    download: document.getElementById('trace-download'),
     dayList: document.getElementById('trace-day-list'),
     stats: document.getElementById('trace-day-stats'),
     tools: document.getElementById('trace-tool-list'),
@@ -57,6 +58,7 @@
       populateAgents();
       await loadSelection();
     } catch (error) {
+      if (els.download) els.download.disabled = true;
       els.buildMeta.textContent = 'Trace index unavailable';
       els.status.textContent = `Could not load ${dataBase}manifest.json (${error.message}).`;
     }
@@ -97,6 +99,7 @@
       });
     }
     els.expandEnv.addEventListener('change', renderCurrentRun);
+    if (els.download) els.download.addEventListener('click', downloadRun);
     if (els.topButton) {
       els.topButton.addEventListener('click', () => {
         instantScrollTo(0);
@@ -188,6 +191,7 @@
   async function loadSelection(options = {}) {
     const run = selectedRun();
     const days = sortedDays(run);
+    syncDownload();
     if (!run || !days.length) {
       state.currentDays = new Map();
       state.currentSummary = null;
@@ -344,6 +348,181 @@
     if (typeof DecompressionStream === 'undefined') throw new Error('this browser is too old to unpack the trace');
     const unzipped = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
     return new Response(unzipped).json();
+  }
+
+  // The download button: enabled for a run that has days, and busy while a zip is being made.
+  let downloading = false;
+
+  function syncDownload() {
+    if (!els.download || downloading) return;
+    const run = state.manifest && selectedRun();
+    const days = sortedDays(run).length;
+    els.download.disabled = !days;
+    els.download.textContent = 'Download trace';
+    els.download.title = days ? `All ${days} days of ${run.agent_name || run.agent_slug} ${runOptionLabel(run)} in one zip file` : '';
+  }
+
+  // Packs the selected run into one zip, here in the browser: the site hosts each day once, as the
+  // file the viewer reads, and a second copy of every run would not fit its size limit.
+  async function downloadRun() {
+    const run = selectedRun();
+    const days = sortedDays(run);
+    if (downloading || !run || !days.length) return;
+    const base = dataBase;
+    const period = els.period.options[els.period.selectedIndex].text;
+    const folder = `futuresim-${state.period}-${run.agent_slug}-${run.seed_label || run.run_id}`;
+    const built = new Date(state.manifest.created_at_utc || Date.now());
+    downloading = true;
+    els.download.disabled = true;
+    const requests = new AbortController();
+    let failed = false;
+    try {
+      const files = new Array(days.length);
+      let next = 0;
+      let done = 0;
+      const fetchDays = async () => {
+        while (!failed && next < days.length) {
+          const index = next++;
+          const response = await fetch(base + days[index].path, { cache: 'no-store', signal: requests.signal });
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          files[index] = new Uint8Array(await response.arrayBuffer());
+          if (failed) return;
+          done += 1;
+          els.download.textContent = `Fetching day ${done} of ${days.length}`;
+        }
+      };
+      els.download.textContent = `Fetching day 0 of ${days.length}`;
+      // One day that cannot be fetched ends the others too.
+      await Promise.all(Array.from({ length: 6 }, () => fetchDays().catch((error) => {
+        failed = true;
+        requests.abort();
+        throw error;
+      })));
+      const about = { period, ...run, days: days.map((day) => ({ ...day, path: `days/${day.date}.json` })) };
+      delete about.workspace; // the memory files are not part of the download
+      const text = new TextEncoder();
+      const entries = [
+        zipEntry(`${folder}/README.txt`, text.encode(downloadReadme(run, days, period))),
+        zipEntry(`${folder}/run.json`, text.encode(`${JSON.stringify(about, null, 2)}\n`)),
+        ...days.map((day, index) => zipEntry(`${folder}/days/${day.date}.json`, files[index])),
+      ];
+      saveBlob(zipBlob(entries, built), `${folder}.zip`);
+    } catch (_) {
+      failed = true;
+    }
+    downloading = false;
+    syncDownload();
+    if (failed) els.download.textContent = 'Download failed. Try again';
+  }
+
+  function downloadReadme(run, days, period) {
+    return [
+      'FutureSim agent trace',
+      `${run.agent_name || run.agent_slug} (${run.harness}), run ${runOptionLabel(run)}, ${period}`,
+      `${window.location.origin}${window.location.pathname}`,
+      '',
+      'run.json   The run: model, harness, its scores day by day ("metrics") and, for each',
+      '           simulation day, how many events, tool calls and forecasts it has ("days").',
+      `days/      One file per simulation day, ${days[0].date}.json to ${days[days.length - 1].date}.json.`,
+      '',
+      'A day file lists what happened that day, in order, under "events". An event\'s "blocks"',
+      'hold its content: text the agent wrote ("text"), a tool call with its input ("tool_use"),',
+      'what a tool returned ("tool_result", matched to its call by "tool_use_id") or a compaction',
+      'of the agent\'s context ("compaction"). "subagent" names the sub-agent an event belongs to.',
+      '',
+      'These are the files the trace viewer shows, not the raw logs: a long text field is cut',
+      'and then ends with "[...truncated]".',
+      '',
+    ].join('\n');
+  }
+
+  // A gzip file is a header, a deflate stream, then the CRC and the length of the unpacked data,
+  // which is what a zip entry holds. So a day file goes into the zip as it is, without being
+  // unpacked here. (The day files are single gzip members.) Anything else is stored as it is.
+  function zipEntry(name, bytes) {
+    if (bytes[0] !== 0x1f || bytes[1] !== 0x8b || bytes[2] !== 8) {
+      return { name, method: 0, crc: crc32(bytes), size: bytes.length, data: bytes };
+    }
+    const flags = bytes[3];
+    let start = 10;
+    if (flags & 4) start += 2 + (bytes[start] | (bytes[start + 1] << 8));
+    if (flags & 8) start = bytes.indexOf(0, start) + 1;
+    if (flags & 16) start = bytes.indexOf(0, start) + 1;
+    if (flags & 2) start += 2;
+    const trailer = new DataView(bytes.buffer, bytes.byteOffset + bytes.length - 8, 8);
+    return {
+      name,
+      method: 8,
+      crc: trailer.getUint32(0, true),
+      size: trailer.getUint32(4, true),
+      data: bytes.subarray(start, bytes.length - 8),
+    };
+  }
+
+  function zipBlob(entries, modified) {
+    const text = new TextEncoder();
+    const time = (modified.getUTCHours() << 11) | (modified.getUTCMinutes() << 5) | (modified.getUTCSeconds() >> 1);
+    const date = ((modified.getUTCFullYear() - 1980) << 9) | ((modified.getUTCMonth() + 1) << 5) | modified.getUTCDate();
+    const files = [];
+    const directory = [];
+    let offset = 0;
+    for (const entry of entries) {
+      const name = text.encode(entry.name);
+      // The 26 bytes a file's own header and its line in the directory have in common.
+      const fields = new DataView(new ArrayBuffer(26));
+      fields.setUint16(0, 20, true); // zip version needed to unpack
+      fields.setUint16(2, 0x0800, true); // the name is UTF-8
+      fields.setUint16(4, entry.method, true);
+      fields.setUint16(6, time, true);
+      fields.setUint16(8, date, true);
+      fields.setUint32(10, entry.crc, true);
+      fields.setUint32(14, entry.data.length, true);
+      fields.setUint32(18, entry.size, true);
+      fields.setUint16(22, name.length, true);
+      const header = new DataView(new ArrayBuffer(4));
+      header.setUint32(0, 0x04034b50, true);
+      const line = new DataView(new ArrayBuffer(6));
+      line.setUint32(0, 0x02014b50, true);
+      line.setUint16(4, 20, true); // zip version that made it
+      const where = new DataView(new ArrayBuffer(14));
+      where.setUint32(10, offset, true);
+      files.push(header, fields, name, entry.data);
+      directory.push(line, fields, where, name);
+      offset += 30 + name.length + entry.data.length;
+    }
+    const end = new DataView(new ArrayBuffer(22));
+    end.setUint32(0, 0x06054b50, true);
+    end.setUint16(8, entries.length, true);
+    end.setUint16(10, entries.length, true);
+    end.setUint32(12, directory.reduce((sum, part) => sum + part.byteLength, 0), true);
+    end.setUint32(16, offset, true);
+    return new Blob([...files, ...directory, end], { type: 'application/zip' });
+  }
+
+  let crcTable = null;
+
+  function crc32(bytes) {
+    if (!crcTable) {
+      crcTable = new Uint32Array(256);
+      for (let n = 0; n < 256; n += 1) {
+        let c = n;
+        for (let bit = 0; bit < 8; bit += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+        crcTable[n] = c;
+      }
+    }
+    let crc = 0xffffffff;
+    for (let i = 0; i < bytes.length; i += 1) crc = crcTable[(crc ^ bytes[i]) & 0xff] ^ (crc >>> 8);
+    return (crc ^ 0xffffffff) >>> 0;
+  }
+
+  function saveBlob(blob, name) {
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = name;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(link.href), 60000);
   }
 
   function renderSummaryDay(daySummary, visibleEvents, resultById, meta) {
