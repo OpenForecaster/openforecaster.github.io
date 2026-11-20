@@ -22,7 +22,7 @@ scripts/build_futuresim_q3_trace_data.sh
 
 That one script writes the shards, the workspaces and the summaries. Q3 starts
 on `2026-06-24` and caps raw text fields at 10,000 characters, as Q2 does. It
-differs from Q1 and Q2 in five ways:
+differs from Q1 and Q2 in six ways:
 
 - Codex, Muse and Antigravity runs are read from their session logs
   (`codex_sessions/`, `muse_sessions/`, `agy_conversations/`) by
@@ -42,6 +42,17 @@ differs from Q1 and Q2 in five ways:
   Markdown notes (search dumps, article scans) is exported with its notes and
   predictions only. Its workspace manifest records the count and size under
   `data_files_left_out`, and the viewer shows that next to the file count.
+- Each run's entry in the manifest has `tokens`: the input, cached-input and
+  output tokens of the run's own agent (`main`), of the agents it started
+  (`subagents`) and of the model calls the harness made by itself (`other`,
+  which is Muse's reminder sessions). `scripts/build_futuresim_token_usage.py`
+  reads them from the session logs (for Claude Code, `claude_config/projects/`)
+  the way `analysis/src/q3_v8_output_tokens.py` in the simulator's repository
+  counts output tokens, and its header says what each number includes. The
+  viewer shows the totals under Run Activity. Q1 and Q2 have no token counts,
+  because only stdout was kept for those runs: Codex's reports the usage of the
+  first turn only, and Claude Code's carries the output count from the start of
+  each message, not its end.
 - The agents ran in a sandbox (`/agent/workspace`) on a shared cluster. An
   agent that lists processes (`ps`, `pgrep`) sees other people's jobs there, so
   the build passes `--hide-host-paths`: a line of tool output that names a

@@ -750,6 +750,49 @@
       els.stats.appendChild(el('dt', label));
       els.stats.appendChild(el('dd', String(value)));
     }
+    appendTokenStats(run.tokens);
+  }
+
+  // run.tokens is { main, subagents, other }, each { input, cached_input, output }: the run's own
+  // agent, the agents it started, and the model calls the harness made by itself. Only a run whose
+  // session logs were kept has it (2026 Q3), and the rows are left out for the others.
+  function appendTokenStats(tokens) {
+    if (!tokens) return;
+    const owners = [['main agent', tokens.main], ['sub-agents', tokens.subagents], ['harness', tokens.other]];
+    const count = (counts, key) => Number(counts && counts[key]) || 0;
+    const total = (key) => owners.reduce((sum, [, counts]) => sum + count(counts, key), 0);
+    const input = total('input');
+    const output = total('output');
+    if (!input && !output) return;
+    const exact = (key) => owners
+      .filter(([, counts]) => count(counts, key))
+      .map(([name, counts]) => `${name}: ${count(counts, key).toLocaleString('en-US')}`);
+    const share = (part, whole, digits) => `${(whole ? (100 * part) / whole : 0).toFixed(digits)}%`;
+
+    const cached = total('cached_input');
+    appendTokenRow('input tokens', input, `${share(cached, input, 1)} cached`, [
+      'Tokens sent to the model, added up over its calls. The whole context is sent with every call, so the same text is counted many times.',
+      ...exact('input'),
+      `read from the cache: ${cached.toLocaleString('en-US')}`,
+    ]);
+    const others = [['by sub-agents', count(tokens.subagents, 'output')], ['by the harness', count(tokens.other, 'output')]]
+      .filter(([, part]) => part)
+      .map(([by, part]) => `${share(part, output, 0)} ${by}`);
+    appendTokenRow('output tokens', output, others.join(', '), [
+      'Tokens the model generated, reasoning included.',
+      ...exact('output'),
+    ]);
+  }
+
+  function appendTokenRow(label, value, note, details) {
+    const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumSignificantDigits: 3 });
+    const dt = el('dt', label);
+    const dd = el('dd', compact.format(value));
+    if (note) dd.appendChild(el('span', note, 'trace-stat-note'));
+    dt.title = details.join('\n');
+    dd.title = dt.title;
+    els.stats.appendChild(dt);
+    els.stats.appendChild(dd);
   }
 
   function renderDayRail() {
