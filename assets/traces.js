@@ -791,8 +791,8 @@
       els.stats.appendChild(el('dd', String(value)));
     }
     appendWallClock(run.wall_clock);
-    appendModelCalls(run, compactions);
-    appendTokenStats(run.tokens);
+    appendModelCalls(run);
+    appendTokenStats(run.tokens, run.uncounted_compactions);
   }
 
   // run.wall_clock is { seconds, restarts, restart_wait_seconds }: the time between the run's first
@@ -809,9 +809,9 @@
     ]);
   }
 
-  // run.model_calls is { main, subagents, other }: how many requests each made to the model.
-  // Only 2026 Q3 has it.
-  function appendModelCalls(run, compactions) {
+  // run.model_calls is { main, subagents, other }: how many requests each made to the model,
+  // the ones that compact the context included. Only 2026 Q3 has it.
+  function appendModelCalls(run) {
     const calls = run.model_calls;
     if (!calls) return;
     const owners = [['main agent', calls.main], ['sub-agents', calls.subagents], ['harness', calls.other]]
@@ -821,14 +821,9 @@
     const others = [['by sub-agents', owners[1][1]], ['by the harness', owners[2][1]]]
       .filter(([, made]) => made)
       .map(([by, made]) => `${share(made, total, 0)} ${by}`);
-    // Claude Code's logs do not hold the requests that compact the context.
-    const unlogged = run.harness === 'Claude Code' && compactions
-      ? [`Not counted: the requests behind its ${compactions} context compaction${compactions === 1 ? '' : 's'}, which the logs do not hold.`]
-      : [];
     appendStatRow('model calls', String(total), others.join(', '), [
       'Requests to the model. Each one sends the conversation so far and gets one reply, which can hold text and several tool calls.',
       ...owners.filter(([, made]) => made).map(([name, made]) => `${name}: ${made.toLocaleString('en-US')}`),
-      ...unlogged,
     ]);
   }
 
@@ -836,7 +831,9 @@
   // agent, the agents it started, and the model calls the harness made by itself. Codex and Muse
   // runs also have reasoning_output, the part of the output that was reasoning. Only a run whose
   // session logs were kept has tokens (2026 Q3), and the rows are left out for the others.
-  function appendTokenStats(tokens) {
+  // uncounted is { count, context_tokens }: the context compactions of a Claude Code run whose
+  // tokens its logs do not hold, and how much context those summarised.
+  function appendTokenStats(tokens, uncounted) {
     if (!tokens) return;
     const owners = [['main agent', tokens.main], ['sub-agents', tokens.subagents], ['harness', tokens.other]];
     const count = (counts, key) => Number(counts && counts[key]) || 0;
@@ -848,11 +845,20 @@
       .filter(([, counts]) => count(counts, key))
       .map(([name, counts]) => `${name}: ${count(counts, key).toLocaleString('en-US')}`);
 
+    const left = Number(uncounted && uncounted.count) || 0;
+    const compactions = `${left} compaction${left === 1 ? '' : 's'}`;
+    const excludes = left ? [`excludes ${compactions}`] : [];
+    const notCounted = (what) => (left
+      ? [`Not counted: ${what} Claude Code reports a compaction's tokens only when it exits, and here it was stopped first.`]
+      : []);
+    const context = compactCount(uncounted && uncounted.context_tokens);
+
     const cached = total('cached_input');
-    appendStatRow('input tokens', compactCount(input), `${share(cached, input, 1)} cached`, [
+    appendStatRow('input tokens', compactCount(input), [`${share(cached, input, 1)} cached`, ...excludes].join(', '), [
       'Tokens sent to the model, added up over its calls. The whole context is sent with every call, so the same text is counted many times.',
       ...exact('input'),
       `read from the cache: ${cached.toLocaleString('en-US')}`,
+      ...notCounted(`the ${context} or so that ${compactions} of the context sent.`),
     ]);
     const others = [['by sub-agents', count(tokens.subagents, 'output')], ['by the harness', count(tokens.other, 'output')]]
       .filter(([, part]) => part)
@@ -864,10 +870,11 @@
         `messages and tool calls: ${(output - reasoning).toLocaleString('en-US')} (${share(output - reasoning, output, 0)})`,
       ]
       : [];
-    appendStatRow('output tokens', compactCount(output), others.join(', '), [
+    appendStatRow('output tokens', compactCount(output), [...others, ...excludes].join(', '), [
       'Tokens the model generated, reasoning included.',
       ...exact('output'),
       ...split,
+      ...notCounted(`what the model wrote for ${compactions} of the context.`),
     ]);
   }
 

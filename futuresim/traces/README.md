@@ -50,8 +50,12 @@ differs from Q1 and Q2 in seven ways:
   harnesses do not log it. Each day of a run has `tokens` too, summed over the
   three, for the model calls made while that simulation day was open. The
   run's `model_calls` says how many requests to the model each of the three
-  made; for a Claude Code run it leaves out the requests that compact the
-  context, which the transcripts do not hold.
+  made, the ones that compact the context included. Claude Code logs such a
+  request as a marker without its tokens and reports them only in the total a
+  process prints when it exits. Three runs had compactions in a process that
+  was stopped before that (Claude Opus 5.5 r00 and r01, Inkling 2 Small r00):
+  their `tokens` leave those compactions out, and `uncounted_compactions` says
+  how many they are and how many tokens of context they summarised.
   `scripts/build_futuresim_run_usage.py` reads all of it from the session logs
   (for Claude Code, `claude_config/projects/`) the way
   `analysis/src/q3_v8_output_tokens.py` in the simulator's repository counts

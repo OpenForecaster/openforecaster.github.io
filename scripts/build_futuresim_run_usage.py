@@ -9,7 +9,10 @@ A run in <data-dir>/manifest.json whose folder (its `source_run`) is under --run
     "wall_clock": {"seconds": ..., "restarts": ..., "restart_wait_seconds": ...}
     "model_calls": {"main": ..., "subagents": ..., "other": ...}
 
-and each entry of its `days` gets `"tokens": {...}`, the counts of that simulation day.
+and each entry of its `days` gets `"tokens": {...}`, the counts of that simulation day. A Claude
+Code run with context compactions whose tokens are not known also gets
+
+    "uncounted_compactions": {"count": ..., "context_tokens": ...}
 
 Tokens
 ------
@@ -33,13 +36,18 @@ carries the output count from the start of a message, not from its end.
 
 * Claude Code, `claude_config/projects/**/*.jsonl` (the main session and `subagents/`). A message
   is logged once per content block and each copy repeats its usage, so it is counted once per
-  message id. A Claude Code process that ended normally also reports its own total (the
-  `modelUsage` of a `result` line in stdout). That total covers the context-compaction calls,
-  which the transcripts leave out, so it is used in place of the sum of the process's transcript
-  messages, and the difference is put on the main agent: in equal parts at the process's
-  compactions, or over its messages if it had none (then the difference is small). A process that
-  was stopped reports nothing, and its compaction calls are not counted. Input is `input_tokens` +
-  `cache_creation_input_tokens` + `cache_read_input_tokens`.
+  message id. The request that compacts the context is not logged as a message: the transcript
+  has a `compact_boundary` marker with the size of the context that was summarised (`preTokens`)
+  and then the summary, without the request's tokens. A Claude Code process that ended by itself
+  reports its own total (the `modelUsage` of a `result` line in stdout), and that total covers
+  its compactions. So it is used in place of the sum of the process's transcript messages, and
+  the difference is put in equal parts at the process's compactions, or over its messages if it
+  had none (then the difference is small). A process that was stopped reports
+  nothing, and the tokens of its compactions are not counted: `uncounted_compactions` says how
+  many those are and how many tokens of context they summarised, which is about what they sent.
+  The one process with both compactions and a total (Inkling 2 Small r01, 29 compactions) spent
+  194K input and 15K output tokens per compaction, on contexts of 169K. Input is `input_tokens`
+  + `cache_creation_input_tokens` + `cache_read_input_tokens`.
 * Codex, `codex_sessions/**/*.jsonl`, one rollout per thread: the `token_usage_record` lines, which
   also cover context compaction. `input_tokens` already includes the cached ones.
 * Muse, `muse_sessions/**/session.jsonl`: the usage records of the "provider" family. Besides the
@@ -52,10 +60,10 @@ Model calls
 -----------
 `model_calls` is how many requests each of the three made to the model. A request sends the
 context and gets one reply, which can hold text and several tool calls. Codex and Muse log one
-usage record per request, and Antigravity one step with token counts (a planner response or a
-checkpoint). In Claude Code a request is one message id of the transcripts. That leaves out the
-requests that compact the context: the transcripts do not hold them, and although their tokens
-are counted (see above), how many requests they took is not known.
+usage record per request, and Antigravity one step with token counts (a planner response, or a
+checkpoint, which compacts the context). Codex's records cover its compaction requests too. In
+Claude Code a request is one message id of the transcripts, plus one for each `compact_boundary`
+marker: a compaction is one request, which the transcripts mark without logging it as a message.
 
 Days
 ----
@@ -106,9 +114,13 @@ class RunLog:
     """What a run's session logs say about its model calls and its time."""
 
     calls: list[tuple[float, str, Counts]] = field(default_factory=list)  # (time, owner, tokens)
-    # Tokens that no logged call accounts for: what a Claude Code process reports beyond its
-    # transcript messages, which is mostly its context compactions.
+    # Claude Code marks a context compaction without logging the request as a call:
+    # (time, owner, tokens of the context it summarised).
+    compactions: list[tuple[float, str, int]] = field(default_factory=list)
+    # What a Claude Code process reports beyond its transcript messages: the tokens of its
+    # compactions. `uncounted` are the compactions of a process that reported nothing.
     unlogged: list[tuple[float, str, Counts]] = field(default_factory=list)
+    uncounted: list[tuple[float, str, int]] = field(default_factory=list)
     times: list[float] = field(default_factory=list)  # the time of every record, of any agent
     day_starts: list[tuple[float, str]] = field(default_factory=list)  # (time, the day that opens)
     restarts: list[float] = field(default_factory=list)  # the first record of each restarted session
@@ -131,6 +143,7 @@ def main() -> None:
             run.pop("tokens", None)
             run.pop("wall_clock", None)
             run.pop("model_calls", None)
+            run.pop("uncounted_compactions", None)
             for day in run["days"]:
                 day.pop("tokens", None)
             print(f"{name}: no session logs, left without tokens, model calls and wall-clock time")
@@ -143,12 +156,16 @@ def main() -> None:
         run["tokens"] = token_totals(log)
         run["wall_clock"] = wall_clock(log)
         run["model_calls"] = model_calls(log)
+        run.pop("uncounted_compactions", None)
+        if log.uncounted:
+            run["uncounted_compactions"] = {"count": len(log.uncounted), "context_tokens": sum(size for _, _, size in log.uncounted)}
         for day in run["days"]:
             day["tokens"] = per_day.get(day["date"]) or dict.fromkeys(QUANTITIES, 0)
         print(
             f"{name}: "
             + ", ".join(f"{quantity} {sum(run['tokens'][owner][quantity] for owner in OWNERS):,}" for quantity in QUANTITIES)
             + f", {sum(run['model_calls'].values()):,} model calls"
+            + (f" ({len(log.uncounted)} compactions without tokens)" if log.uncounted else "")
             + f", {run['wall_clock']['seconds'] / 3600:.2f} h"
             + (f" without {run['wall_clock']['restart_wait_seconds'] / 3600:.2f} h before {run['wall_clock']['restarts']} restart(s)" if run["wall_clock"]["restarts"] else "")
         )
@@ -205,7 +222,7 @@ def tokens_per_day(log: RunLog, first_day: str) -> dict[str, Counts]:
 
 def model_calls(log: RunLog) -> dict[str, int]:
     made = dict.fromkeys(OWNERS, 0)
-    for _, owner, _ in log.calls:
+    for _, owner, _ in log.calls + log.compactions:
         made[owner] += 1
     return made
 
@@ -241,10 +258,10 @@ def iso_seconds(value: str) -> float:
 def read_claude_code(agent_dir: Path) -> RunLog:
     log = RunLog()
     messages: dict[str, dict[str, Any]] = {}  # message id -> owner, first time, counts
-    compactions: list[float] = []
     sessions: list[tuple[float, str]] = []  # (first record, first prompt) of each main session
     for path in sorted((agent_dir / "claude_config" / "projects").rglob("*.jsonl")):
         is_main = "subagents" not in path.parts
+        owner = "main" if is_main else "subagents"
         first_time, first_prompt = None, None
         next_day_calls: set[str] = set()
         for event in read_jsonl(path):
@@ -261,7 +278,7 @@ def read_claude_code(agent_dir: Path) -> RunLog:
                 fresh = (usage.get("input_tokens") or 0) + (usage.get("cache_creation_input_tokens") or 0)
                 cached = usage.get("cache_read_input_tokens") or 0
                 counts = {"input": fresh + cached, "cached_input": cached, "output": usage.get("output_tokens") or 0}
-                seen = messages.setdefault(event["message"]["id"], {"owner": "main" if is_main else "subagents", "first": time, "counts": counts})
+                seen = messages.setdefault(event["message"]["id"], {"owner": owner, "first": time, "counts": counts})
                 seen["first"] = min(seen["first"], time)
                 seen["counts"] = {quantity: max(seen["counts"][quantity], counts[quantity]) for quantity in QUANTITIES}
                 if is_main:
@@ -275,8 +292,8 @@ def read_claude_code(agent_dir: Path) -> RunLog:
                         advanced = DAY_ADVANCED_RE.search(json.dumps(block.get("content")))
                         if advanced:
                             log.day_starts.append((time, advanced.group(1)))
-            elif kind == "system" and event.get("subtype") == "compact_boundary" and is_main:
-                compactions.append(time)
+            elif kind == "system" and event.get("subtype") == "compact_boundary":
+                log.compactions.append((time, owner, (event.get("compactMetadata") or {}).get("preTokens") or 0))
         if is_main and first_time is not None:
             sessions.append((first_time, first_prompt or ""))
     log.calls = [(message["first"], message["owner"], message["counts"]) for message in messages.values()]
@@ -312,20 +329,25 @@ def read_claude_code(agent_dir: Path) -> RunLog:
     for message in messages.values():
         if starts:
             logged[max(bisect_right(starts, message["first"]) - 1, 0)].append(message)
+    log.compactions.sort()
+    with_total = set()  # positions in log.compactions
     for index, process_reported in enumerate(reported):
         if process_reported is None:
             continue
         missing = {quantity: process_reported[quantity] - sum(message["counts"][quantity] for message in logged[index]) for quantity in QUANTITIES}
         end = starts[index + 1] if index + 1 < len(starts) else float("inf")
-        at = [time for time in compactions if starts[index] <= time < end] or [message["first"] for message in logged[index]]
-        for position, time in enumerate(at):
+        own = [position for position, (time, _, _) in enumerate(log.compactions) if starts[index] <= time < end]
+        with_total.update(own)
+        at = [log.compactions[position][:2] for position in own] or [(message["first"], "main") for message in logged[index]]
+        for position, (time, owner) in enumerate(at):
             parts = {}
             for quantity in QUANTITIES:
                 # Whole tokens that add up to the difference: the first `remainder` parts get one more.
                 each, remainder = divmod(missing[quantity], len(at))
                 parts[quantity] = each + (position < remainder)
             if any(parts.values()):
-                log.unlogged.append((time, "main", parts))
+                log.unlogged.append((time, owner, parts))
+    log.uncounted = [compaction for position, compaction in enumerate(log.compactions) if position not in with_total]
     return log
 
 
