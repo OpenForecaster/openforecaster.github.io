@@ -8,7 +8,7 @@
 # GitHub Pages allows a site of 1 GB, so the data is kept small in three ways:
 #   - the day shards are gzip-compressed, as Q1's and Q2's are (the viewer decompresses them);
 #   - a text field is cut at 10,000 characters, as in Q2;
-#   - a run whose memory/ folder holds more than 5 MB of files other than Markdown notes (search
+#   - a run whose memory/ folder holds more than 10 MB of files other than Markdown notes (search
 #     dumps, article scans) gets only the notes, which is new in Q3. The workspace manifest
 #     records how many files were left out, and the viewer says so.
 #
@@ -79,7 +79,7 @@ add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r00 "$q3
 add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r01 "$q3_runs/claude_code_aljazeera2026Q3v8_inkling2small_tinker_exa_r01/26-11-16-16-51-30" claude_code_stdout.jsonl
 
 python3 "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 --gzip --hide-host-paths "${args[@]}"
-python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 5000000
+python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 10000000
 # Every run has the same market.csv (question titles and resolved answers).
 python3 "$repo/scripts/build_futuresim_trace_summaries.py" --data-dir "$out" --overwrite --join-short \
   --market-csv "$q3_runs/muse_aljazeera2026Q3v8_wonderfull_max_exa_r00/26-11-14-15-31-51/market.csv"

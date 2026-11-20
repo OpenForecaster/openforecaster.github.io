@@ -38,7 +38,7 @@ differs from Q1 and Q2 in five ways:
   were started in the same second, so their ids also carry the seed
   (`26-11-16-16-51-30-r00`). Each run's entry in the manifest records its
   folder as `source_run`, which is how the workspace export finds it.
-- A run whose `memory/` folder holds more than 5 MB of files other than
+- A run whose `memory/` folder holds more than 10 MB of files other than
   Markdown notes (search dumps, article scans) is exported with its notes and
   predictions only. Its workspace manifest records the count and size under
   `data_files_left_out`, and the viewer shows that next to the file count.
@@ -83,7 +83,7 @@ stays below GitHub Pages' 1 GB limit. After generating new summary overlays, pla
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
 
-With all three periods the built site is about 376 MB, of which the day shards
+With all three periods the built site is about 382 MB, of which the day shards
 are 274 MB (Q1 60, Q2 116, Q3 98). GitHub Pages allows 1 GB, which its deploy
 step counts as 1,073,741,824 bytes. Check the size of a Jekyll build before
 adding more trace data.
