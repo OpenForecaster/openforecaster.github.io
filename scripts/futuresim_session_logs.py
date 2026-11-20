@@ -75,23 +75,46 @@ def is_session_log(path: Path) -> bool:
 
 
 def read_session_log(path: Path, start_date: date) -> tuple[list[SessionEvent], list[str]]:
+    return _merge(_read_threads(path), start_date)
+
+
+def day_prompts(path: Path, start_date: date) -> list[tuple[float, str, bool]]:
+    """The root agent's day prompts in order: (time, the simulation day it opens, opens a session).
+
+    The last is true for a "Begin forecasting..." prompt. A run has more than one of those only
+    if it was restarted after an interruption.
+    """
+    prompts: list[tuple[float, str, bool]] = []
+    previous_day: date | None = None
+    for root in _roots(_read_threads(path)):
+        if not root.prompts:
+            continue
+        days = _prompt_days(root.prompts, previous_day, start_date)
+        previous_day = days[-1]
+        prompts.extend((time, day.isoformat(), text.startswith(BEGIN_PREFIX)) for (time, text, _), day in zip(root.prompts, days))
+    return prompts
+
+
+def _read_threads(path: Path) -> dict[str, _Thread]:
     if path.name == "codex_sessions":
-        threads = _read_codex(path)
-    elif path.name == "muse_sessions":
-        threads = _read_muse(path)
-    elif path.name == "agy_conversations":
-        threads = _read_agy(path)
-    else:
-        raise SystemExit(f"Not a session-log directory: {path}")
-    return _merge(threads, start_date)
+        return _read_codex(path)
+    if path.name == "muse_sessions":
+        return _read_muse(path)
+    if path.name == "agy_conversations":
+        return _read_agy(path)
+    raise SystemExit(f"Not a session-log directory: {path}")
 
 
 # --- Shared: days and placement ---------------------------------------------------------------
 
 
+def _roots(threads: dict[str, _Thread]) -> list[_Thread]:
+    return sorted((t for t in threads.values() if not t.label), key=lambda t: t.prompts[0][0] if t.prompts else 0.0)
+
+
 def _merge(threads: dict[str, _Thread], start_date: date) -> tuple[list[SessionEvent], list[str]]:
     notes: list[str] = []
-    roots = sorted((t for t in threads.values() if not t.label), key=lambda t: t.prompts[0][0] if t.prompts else 0.0)
+    roots = _roots(threads)
     if not roots:
         raise SystemExit("No root session found in the session log.")
 

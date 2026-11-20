@@ -52,6 +52,7 @@
       const response = await fetch(dataBase + 'manifest.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.manifest = await response.json();
+      syncMetricButtons();
       state.summaryRuns = await loadSummaryIndex();
       populateAgents();
       await loadSelection();
@@ -109,6 +110,16 @@
         for (const item of els.metricButtons) item.setAttribute('aria-pressed', String(item === button));
         renderTrajectory();
       });
+    }
+  }
+
+  // Tokens per day can be charted only where the manifest gives each day its tokens (2026 Q3).
+  function syncMetricButtons() {
+    const hasDayTokens = state.manifest.runs.some((run) => (run.days || []).some((day) => day.tokens));
+    if (!hasDayTokens && state.metric === 'output_tokens') state.metric = 'brier_skill_score';
+    for (const button of els.metricButtons) {
+      if (button.dataset.traceMetric === 'output_tokens') button.hidden = !hasDayTokens;
+      button.setAttribute('aria-pressed', String(button.dataset.traceMetric === state.metric));
     }
   }
 
@@ -526,8 +537,23 @@
     stats.className = 'trace-day-header-stats';
     stats.appendChild(el('span', `${meta.tool_call_count || 0} tool calls`));
     stats.appendChild(el('span', `${meta.forecast_count || 0} forecasts`));
+    if (meta.tokens) {
+      const chip = el('span', `${compactCount(meta.tokens.input)} input · ${compactCount(meta.tokens.output)} output tokens`);
+      chip.title = [
+        'Tokens of the model calls made while this simulation day was open, by the agent, its sub-agents and the harness.',
+        `input: ${meta.tokens.input.toLocaleString('en-US')} (${meta.tokens.cached_input.toLocaleString('en-US')} read from the cache)`,
+        `output: ${meta.tokens.output.toLocaleString('en-US')}`,
+      ].join('\n');
+      stats.appendChild(chip);
+    }
     header.appendChild(stats);
     return header;
+  }
+
+  // day.tokens is { input, cached_input, output } over every agent of the run. Only 2026 Q3 has it.
+  function dayTokenLines(day) {
+    if (!day || !day.tokens) return [];
+    return [`${compactCount(day.tokens.input)} input tokens`, `${compactCount(day.tokens.output)} output tokens`];
   }
 
   async function loadWorkspace(run) {
@@ -563,20 +589,22 @@
     const points = runs.map((run, index) => ({
       run,
       color: chartColors[index % chartColors.length],
-      values: run.metrics
-        .filter((row) => Number.isFinite(row[state.metric]))
-        .map((row) => ({ date: row.date, day: dayIndex(row.date), value: Number(row[state.metric]) })),
+      values: metricValues(run, state.metric),
     })).filter((series) => series.values.length);
     if (!points.length) {
       els.trajectoryChart.appendChild(el('div', 'No values for this metric.', 'trace-status'));
       return;
     }
 
+    // A run's first day can take a hundred times the tokens of a later one, so token counts are
+    // drawn on a log scale. minValue and maxValue are in the scale's units.
+    const isTokens = state.metric === 'output_tokens';
+    const scale = isTokens ? Math.log10 : (value) => value;
     const allValues = points.flatMap((series) => series.values);
     const minDay = Math.min(...allValues.map((point) => point.day));
     const maxDay = Math.max(...allValues.map((point) => point.day));
-    let minValue = Math.min(...allValues.map((point) => point.value));
-    let maxValue = Math.max(...allValues.map((point) => point.value));
+    let minValue = Math.min(...allValues.map((point) => scale(point.value)));
+    let maxValue = Math.max(...allValues.map((point) => scale(point.value)));
     const pad = Math.max((maxValue - minValue) * 0.08, state.metric === 'top1_accuracy' ? 1 : 0.005);
     minValue -= pad;
     maxValue += pad;
@@ -587,13 +615,13 @@
     const plotW = width - margin.left - margin.right;
     const plotH = height - margin.top - margin.bottom;
     const x = (day) => margin.left + (maxDay === minDay ? plotW / 2 : (day - minDay) / (maxDay - minDay) * plotW);
-    const y = (value) => margin.top + (maxValue === minValue ? plotH / 2 : (maxValue - value) / (maxValue - minValue) * plotH);
+    const y = (value) => margin.top + (maxValue === minValue ? plotH / 2 : (maxValue - scale(value)) / (maxValue - minValue) * plotH);
     const tooltip = document.createElement('div');
     tooltip.className = 'trace-chart-tooltip';
     els.trajectoryChart.appendChild(tooltip);
 
     const svg = svgEl('svg', { viewBox: `0 0 ${width} ${height}`, role: 'img', 'aria-label': `${metricLabel(state.metric)} trajectories` });
-    for (const tick of valueTicks(minValue, maxValue, 5)) {
+    for (const tick of isTokens ? logTicks(10 ** minValue, 10 ** maxValue) : valueTicks(minValue, maxValue, 5)) {
       svg.appendChild(svgEl('line', { x1: margin.left, x2: width - margin.right, y1: y(tick), y2: y(tick), class: 'trace-chart-grid' }));
       const label = svgEl('text', { x: margin.left - 10, y: y(tick) + 4, 'text-anchor': 'end', class: 'trace-chart-label' });
       label.textContent = formatMetric(tick, state.metric);
@@ -674,6 +702,17 @@
     els.trajectoryChart.appendChild(legend);
   }
 
+  // One point per day of a run: a score from its daily metrics, or the day's output tokens. A day
+  // without output tokens has no place on the log scale and is left out.
+  function metricValues(run, metric) {
+    const rows = metric === 'output_tokens'
+      ? sortedDays(run).map((day) => ({ date: day.date, value: day.tokens ? day.tokens.output : null }))
+      : run.metrics.map((row) => ({ date: row.date, value: row[metric] }));
+    return rows
+      .filter((row) => Number.isFinite(row.value) && (metric !== 'output_tokens' || row.value > 0))
+      .map((row) => ({ date: row.date, day: dayIndex(row.date), value: Number(row.value) }));
+  }
+
   function shouldShowEvent(event) {
     if (event.kind === 'tool_result') return false;
     if (event.kind === 'user' && isOnlyToolResults(event)) return false;
@@ -750,12 +789,28 @@
       els.stats.appendChild(el('dt', label));
       els.stats.appendChild(el('dd', String(value)));
     }
+    appendWallClock(run.wall_clock);
     appendTokenStats(run.tokens);
   }
 
+  // run.wall_clock is { seconds, restarts, restart_wait_seconds }: the time between the run's first
+  // and last log records, without the gap before each restart. Only 2026 Q3 has it.
+  function appendWallClock(clock) {
+    if (!clock || !clock.seconds) return;
+    const stopped = formatDuration(clock.restart_wait_seconds);
+    const restarts = `${clock.restarts} restart${clock.restarts === 1 ? '' : 's'}`;
+    appendStatRow('wall-clock time', formatDuration(clock.seconds), clock.restarts ? `excludes ${stopped} stopped` : '', [
+      "Time the run was working, from its first log record to its last: model calls, tools and the simulator's step to the next day.",
+      clock.restarts
+        ? `Not counted: ${stopped} before its ${restarts}, when the run was stopped or doing work that the restart redid.`
+        : 'The run was not restarted.',
+    ]);
+  }
+
   // run.tokens is { main, subagents, other }, each { input, cached_input, output }: the run's own
-  // agent, the agents it started, and the model calls the harness made by itself. Only a run whose
-  // session logs were kept has it (2026 Q3), and the rows are left out for the others.
+  // agent, the agents it started, and the model calls the harness made by itself. Codex and Muse
+  // runs also have reasoning_output, the part of the output that was reasoning. Only a run whose
+  // session logs were kept has tokens (2026 Q3), and the rows are left out for the others.
   function appendTokenStats(tokens) {
     if (!tokens) return;
     const owners = [['main agent', tokens.main], ['sub-agents', tokens.subagents], ['harness', tokens.other]];
@@ -770,7 +825,7 @@
     const share = (part, whole, digits) => `${(whole ? (100 * part) / whole : 0).toFixed(digits)}%`;
 
     const cached = total('cached_input');
-    appendTokenRow('input tokens', input, `${share(cached, input, 1)} cached`, [
+    appendStatRow('input tokens', compactCount(input), `${share(cached, input, 1)} cached`, [
       'Tokens sent to the model, added up over its calls. The whole context is sent with every call, so the same text is counted many times.',
       ...exact('input'),
       `read from the cache: ${cached.toLocaleString('en-US')}`,
@@ -778,16 +833,23 @@
     const others = [['by sub-agents', count(tokens.subagents, 'output')], ['by the harness', count(tokens.other, 'output')]]
       .filter(([, part]) => part)
       .map(([by, part]) => `${share(part, output, 0)} ${by}`);
-    appendTokenRow('output tokens', output, others.join(', '), [
+    const reasoning = total('reasoning_output');
+    const split = owners.some(([, counts]) => counts && 'reasoning_output' in counts)
+      ? [
+        `reasoning: ${reasoning.toLocaleString('en-US')} (${share(reasoning, output, 0)})`,
+        `messages and tool calls: ${(output - reasoning).toLocaleString('en-US')} (${share(output - reasoning, output, 0)})`,
+      ]
+      : [];
+    appendStatRow('output tokens', compactCount(output), others.join(', '), [
       'Tokens the model generated, reasoning included.',
       ...exact('output'),
+      ...split,
     ]);
   }
 
-  function appendTokenRow(label, value, note, details) {
-    const compact = new Intl.NumberFormat('en-US', { notation: 'compact', maximumSignificantDigits: 3 });
+  function appendStatRow(label, value, note, details) {
     const dt = el('dt', label);
-    const dd = el('dd', compact.format(value));
+    const dd = el('dd', value);
     if (note) dd.appendChild(el('span', note, 'trace-stat-note'));
     dt.title = details.join('\n');
     dd.title = dt.title;
@@ -805,7 +867,7 @@
       button.href = `#trace-day-${day.date}`;
       button.className = `trace-day-button${day.date === state.day ? ' is-active' : ''}`;
       button.dataset.day = day.date;
-      button.title = `${formatShortDate(day.date)}\n${day.tool_call_count} tool calls\n${day.forecast_count} forecasts`;
+      button.title = [formatShortDate(day.date), `${day.tool_call_count} tool calls`, `${day.forecast_count} forecasts`, ...dayTokenLines(day)].join('\n');
       button.setAttribute('aria-pressed', String(day.date === state.day));
       button.appendChild(el('span', formatShortDate(day.date), 'trace-day-date'));
       button.appendChild(el('span', `${day.tool_call_count || 0} tool calls`, 'trace-day-meta'));
@@ -1527,12 +1589,16 @@
     tooltip.replaceChildren();
     if (run) tooltip.appendChild(el('span', runOptionLabel(run)));
     tooltip.appendChild(el('strong', point.date));
-    tooltip.appendChild(el('span', `${metricLabel(metric)}: ${formatMetric(point.value, metric)}`));
+    // The token lines already give the value plotted by the token metric.
+    if (metric !== 'output_tokens') tooltip.appendChild(el('span', `${metricLabel(metric)}: ${formatMetric(point.value, metric)}`));
     tooltip.appendChild(el('span', `${toolCalls} tool calls`));
     tooltip.appendChild(el('span', `${forecasts} forecasts`));
+    for (const line of dayTokenLines(dayMeta)) tooltip.appendChild(el('span', line));
     tooltip.style.left = `${x / width * 100}%`;
     tooltip.style.top = `${y / 330 * 100}%`;
     tooltip.classList.toggle('is-right', x > width - 190);
+    // On a narrow screen the first days sit at the page's edge: there the box opens to the right.
+    tooltip.classList.toggle('is-left', x / width * tooltip.parentElement.clientWidth < tooltip.offsetWidth / 2);
     tooltip.classList.add('is-visible');
   }
 
@@ -1541,15 +1607,29 @@
   }
 
   function metricLabel(metric) {
+    if (metric === 'output_tokens') return 'Output tokens per day';
     return metric === 'top1_accuracy' ? 'Top 1 accuracy' : 'Brier skill score';
   }
 
   function axisMetricLabel(metric) {
+    if (metric === 'output_tokens') return 'Output tokens (log scale)';
     return metric === 'top1_accuracy' ? 'Accuracy' : 'Skill score';
   }
 
   function formatMetric(value, metric) {
+    if (metric === 'output_tokens') return compactCount(value);
     return metric === 'top1_accuracy' ? `${value.toFixed(1)}%` : value.toFixed(3);
+  }
+
+  // 1234567 -> "1.23M"
+  function compactCount(value) {
+    return new Intl.NumberFormat('en-US', { notation: 'compact', maximumSignificantDigits: 3 }).format(Number(value) || 0);
+  }
+
+  // 60360 -> "16 h 46 min"
+  function formatDuration(seconds) {
+    const minutes = Math.round(seconds / 60);
+    return minutes < 60 ? `${minutes} min` : `${Math.floor(minutes / 60)} h ${minutes % 60} min`;
   }
 
   function formatProbability(value) {
@@ -1591,6 +1671,20 @@
     if (count <= 1 || min === max) return [min];
     const ticks = [];
     for (let i = 0; i < count; i += 1) ticks.push(min + (max - min) * i / (count - 1));
+    return ticks;
+  }
+
+  // Round values between min and max for a log axis: powers of ten, with 2 and 5 times each when
+  // the range is too short for powers of ten to give three ticks.
+  function logTicks(min, max) {
+    const steps = Math.log10(max / min) >= 3 ? [1] : [1, 2, 5];
+    const ticks = [];
+    for (let power = Math.floor(Math.log10(min)); power <= Math.ceil(Math.log10(max)); power += 1) {
+      for (const step of steps) {
+        const tick = step * 10 ** power;
+        if (tick >= min && tick <= max) ticks.push(tick);
+      }
+    }
     return ticks;
   }
 
