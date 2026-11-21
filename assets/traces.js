@@ -1209,9 +1209,12 @@
     loadWorkspace(run).then((workspace) => {
       if (token !== `${state.agent}/${state.runId}/${state.day}`) return;
       const files = workspaceFilesForDay((workspace && workspace.files) || [], state.day);
-      // Set when the export kept only the Markdown notes of a memory folder full of data files.
+      // Set when the export left files of the memory folder out: the ones over 1 MB each, or
+      // everything but the Markdown notes when the rest is over the size cap.
       const leftOut = workspace && workspace.data_files_left_out;
-      const leftOutNote = leftOut ? ` · ${Number(leftOut.file_count).toLocaleString('en-US')} data files (${formatBytes(leftOut.bytes)}) not shown` : '';
+      const leftOutNote = leftOut
+        ? ` · ${Number(leftOut.file_count).toLocaleString('en-US')} data file${Number(leftOut.file_count) === 1 ? '' : 's'} (${formatBytes(leftOut.bytes)}) not shown`
+        : '';
       if (!files.length) {
         els.workspaceStatus.textContent = `${state.day} · no relevant files${leftOutNote}`;
         return;
@@ -1264,7 +1267,9 @@
 
   function workspaceFileRank(file, day) {
     const kindRank = file.kind === 'memory' ? 0 : file.kind === 'predictions' ? 1 : 2;
-    if (file.date === day) return kindRank * 100000;
+    // The selected day's own files lead the list, notes before forecasts. A run can have hundreds
+    // of older notes, and the day's forecasts would sit below all of them.
+    if (file.date === day) return kindRank;
     if (file.date && file.date < day) return kindRank * 100000 + 1000 + dayIndex(day) - dayIndex(file.date);
     if (!file.date) return kindRank * 100000 + 5000;
     return kindRank * 100000 + 9000 + dayIndex(file.date) - dayIndex(day);

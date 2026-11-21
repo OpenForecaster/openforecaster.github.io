@@ -38,10 +38,24 @@ differs from Q1 and Q2 in seven ways:
   were started in the same second, so their ids also carry the seed
   (`26-11-16-16-51-30-r00`). Each run's entry in the manifest records its
   folder as `source_run`, which is how the workspace export finds it.
-- A run whose `memory/` folder holds more than 10 MB of files other than
-  Markdown notes (search dumps, article scans) is exported with its notes and
-  predictions only. Its workspace manifest records the count and size under
-  `data_files_left_out`, and the viewer shows that next to the file count.
+- The workspace export covers `AGENTS.md`, `predictions/` and `memory/` and
+  skips any file larger than 1 MB, as for Q1 and Q2. Q3 adds a cap
+  (`--max-data-bytes 30000000`) on the files in `memory/` that are not
+  Markdown: when the ones under 1 MB still add up to more than 30 MB, the run
+  is exported with its Markdown notes and predictions only. Three runs are
+  over the cap, with search results and article scans: GPT 6.1 Sol r00 (209 MB
+  in files under 1 MB), GPT 6.1 Sol r01 (260 MB) and GLM 5.3 Flash r05
+  (30.06 MB). Two more lose one file each, an article database of 1.4 GB
+  (Gemini 4 Carbon r00, Gemini 4 Neon r01). A run's workspace manifest records
+  the count and size of everything that was
+  left out under `data_files_left_out`, and the viewer shows that next to the
+  file count. Markdown is exempt because most agents write their notes in it,
+  but the file type is a weak sign of what a note is: the Gemini runs keep
+  their state, daily plans and model scripts as JSON and Python (28 MB for
+  Gemini 4 Neon r00), which is why the cap is not lower. A file's date is the
+  one in its name, or else in its folder's name
+  (`memory/daily_batches/2026-07-09/`); the viewer lists a dated file from
+  that day on and an undated one on every day.
 - Each run's entry in the manifest has `tokens`: the input, cached-input and
   output tokens of the run's own agent (`main`), of the agents it started
   (`subagents`) and of the model calls the harness made by itself (`other`,
@@ -115,10 +129,10 @@ stays below GitHub Pages' 1 GB limit. After generating new summary overlays, pla
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
 
-With all three periods the built site is about 435 MB, of which the day shards
-are 323 MB (Q1 60, Q2 116, Q3 147). GitHub Pages allows 1 GB, which its deploy
-step counts as 1,073,741,824 bytes. Check the size of a Jekyll build before
-adding more trace data.
+With all three periods the built site is about 483 MB, of which the day shards
+are 323 MB (Q1 60, Q2 116, Q3 147) and the Q3 workspaces 66 MB. GitHub Pages
+allows 1 GB, which its deploy step counts as 1,073,741,824 bytes. Check the
+size of a Jekyll build before adding more trace data.
 
 Q1 and Q2 were first published with plain JSON shards (260 MB and 549 MB). They
 were compressed in place with `scripts/gzip_futuresim_trace_shards.py`, which

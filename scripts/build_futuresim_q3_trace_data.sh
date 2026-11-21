@@ -82,7 +82,7 @@ add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r00 "$q3
 add_run "Inkling 2 Small" inkling-2-small inkling-2-small "Claude Code" r01 "$q3_runs/claude_code_aljazeera2026Q3v8_inkling2small_tinker_exa_r01/26-11-16-16-51-30" claude_code_stdout.jsonl
 
 python3 "$repo/scripts/build_futuresim_trace_viewer_data.py" --output "$out" --max-string-chars 10000 --gzip --hide-host-paths "${args[@]}"
-python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 10000000
+python3 "$repo/scripts/build_futuresim_workspace_data.py" --data-dir "$out" --workspace-root "$q3_runs" --root-first --max-data-bytes 30000000
 # Each run's tokens (in total and per day) and wall-clock time, from the harnesses' session logs.
 python3 "$repo/scripts/build_futuresim_run_usage.py" --data-dir "$out" --runs-root "$q3_runs"
 # Every run has the same market.csv (question titles and resolved answers).

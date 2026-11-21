@@ -39,8 +39,10 @@ def main() -> None:
         "--max-data-bytes",
         type=int,
         default=0,
-        help="Per run. When the files under memory/ that are not Markdown notes add up to more than this, "
-        "leave them out and record how many there were. 0 (the default) exports everything.",
+        help="Per run, for the files under memory/ that are not Markdown notes. One larger than 1 MB is never "
+        "exported, with or without this option. When the others add up to more than this, leave them out as well, "
+        "so that the run keeps its Markdown notes and predictions. The run's workspace manifest records how many "
+        "files were left out. 0 (the default) sets no cap and records nothing.",
     )
     args = parser.parse_args()
 
@@ -113,12 +115,19 @@ def export_workspace(
     files = []
     sources = workspace_files(workspace)
     left_out: dict[str, int] | None = None
+    hidden = is_data_file
     if max_data_bytes:
         data_files = [source for source in sources if is_data_file(source.relative_to(workspace))]
-        data_bytes = sum(source.stat().st_size for source in data_files)
-        if data_bytes > max_data_bytes:
-            left_out = {"file_count": len(data_files), "bytes": data_bytes}
-            skip = set(data_files)
+        # A file over the per-file limit (a database, a scan of every article) is not exported in
+        # any case, so it does not count towards the cap. One such file would otherwise hide a
+        # run's small files: its state, its plans, the scripts it wrote.
+        skip = [source for source in data_files if source.stat().st_size > MAX_FILE_BYTES]
+        if sum(source.stat().st_size for source in data_files if source not in skip) > max_data_bytes:
+            skip = data_files
+        else:
+            hidden = {source.relative_to(workspace) for source in skip}.__contains__
+        if skip:
+            left_out = {"file_count": len(skip), "bytes": sum(source.stat().st_size for source in skip)}
             sources = [source for source in sources if source not in skip]
     for source in sources:
         if source.stat().st_size > MAX_FILE_BYTES:
@@ -130,7 +139,7 @@ def export_workspace(
         files.append({
             "label": str(rel),
             "kind": file_kind(rel),
-            "date": file_date(rel.name),
+            "date": file_date(rel),
             "size": target.stat().st_size,
             "path": str(target.relative_to(data_dir)),
             "source": "final_workspace",
@@ -140,9 +149,9 @@ def export_workspace(
     if left_out:
         # Files left out of the export are left out of its day-by-day history too.
         for item in history:
-            if is_data_file(Path(item["label"])):
+            if hidden(Path(item["label"])):
                 (data_dir / item["path"]).unlink()
-        history = [item for item in history if not is_data_file(Path(item["label"]))]
+        history = [item for item in history if not hidden(Path(item["label"]))]
     files.extend(history)
     files.sort(key=lambda item: (item["kind"] != "memory", item["date"] or "9999-99-99", item["label"]))
     payload = {
@@ -304,9 +313,13 @@ def file_kind(path: Path) -> str:
     return "workspace"
 
 
-def file_date(name: str) -> str:
-    match = DATE_RE.search(name)
-    return match.group(1).replace("_", "-") if match else ""
+def file_date(path: Path) -> str:
+    """The date in a file's name, or else in the nearest folder that has one (memory/batches/2026-07-09/world.json)."""
+    for part in reversed(path.parts):
+        match = DATE_RE.search(part)
+        if match:
+            return match.group(1).replace("_", "-")
+    return ""
 
 
 if __name__ == "__main__":
