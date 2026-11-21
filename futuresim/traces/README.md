@@ -166,6 +166,14 @@ being a single gzip member, which is how the build scripts write them. The
 largest run is 36 MB zipped (GPT 5.6 Sol r00 in Q2, 170 MB unpacked). The
 workspace files are not in the zip.
 
+The "Download all <period> traces" button in the page header does the same for
+every run of the selected period (`futuresim-<period>-traces.zip`): one
+`README.txt` that lists the runs, then a folder `<agent>-<seed>/` for each run
+with its `run.json` and `days/`. The zips are 148 MB for Q3 (505 MB unpacked),
+117 MB for Q2 (521 MB) and 61 MB for Q1 (241 MB), and the browser holds the
+whole zip in memory until it is saved. Only one zip is made at a time, so both
+buttons are off while either one works.
+
 The raw legacy trajectory browser is linked from the page header through
 `window.FSIM_RAW_TRACE_URL` in `config.js`.
 

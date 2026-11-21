@@ -2,7 +2,7 @@
   const rootDataBase = (window.FSIM_TRACE_DATA_BASE || './data/').replace(/\/?$/, '/');
   const periodPaths = { '2026-q3': 'q3/', '2026-q2': 'q2/', '2026-q1': '' };
   let dataBase = rootDataBase + periodPaths['2026-q3'];
-  const state = { period: '2026-q3', manifest: null, agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
+  const state = { period: '2026-q3', manifest: null, manifestPeriod: '', agent: '', runId: '', day: '', metric: 'brier_skill_score', currentDays: new Map(), currentSummary: null, summaryRuns: new Set(), workspaceFile: '', loadedRunKey: '' };
   const chartColors = ['#0f766e', '#2563eb', '#b45309', '#9333ea', '#be123c', '#047857', '#4f46e5', '#a16207'];
   const workspaceCache = new Map();
   const summaryCache = new Map();
@@ -21,6 +21,7 @@
     buildMeta: document.getElementById('trace-build-meta'),
     rawLink: document.getElementById('trace-raw-link'),
     download: document.getElementById('trace-download'),
+    downloadAll: document.getElementById('trace-download-all'),
     dayList: document.getElementById('trace-day-list'),
     stats: document.getElementById('trace-day-stats'),
     tools: document.getElementById('trace-tool-list'),
@@ -48,17 +49,22 @@
     state.currentDays = new Map();
     state.currentSummary = null;
     state.loadedRunKey = '';
+    // Until this period's manifest is here, the one in `state` is the last period's.
+    state.manifestPeriod = '';
+    syncDownload();
     els.status.textContent = `Loading ${els.period.options[els.period.selectedIndex].text} traces...`;
     try {
       const response = await fetch(dataBase + 'manifest.json', { cache: 'no-store' });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       state.manifest = await response.json();
+      state.manifestPeriod = period;
       syncMetricButtons();
       state.summaryRuns = await loadSummaryIndex();
       populateAgents();
       await loadSelection();
     } catch (error) {
-      if (els.download) els.download.disabled = true;
+      state.manifestPeriod = '';
+      syncDownload();
       els.buildMeta.textContent = 'Trace index unavailable';
       els.status.textContent = `Could not load ${dataBase}manifest.json (${error.message}).`;
     }
@@ -100,6 +106,7 @@
     }
     els.expandEnv.addEventListener('change', renderCurrentRun);
     if (els.download) els.download.addEventListener('click', downloadRun);
+    if (els.downloadAll) els.downloadAll.addEventListener('click', downloadPeriod);
     if (els.topButton) {
       els.topButton.addEventListener('click', () => {
         instantScrollTo(0);
@@ -350,80 +357,153 @@
     return new Response(unzipped).json();
   }
 
-  // The download button: enabled for a run that has days, and busy while a zip is being made.
+  // The download buttons: one for the selected run, one for every run of the period. They work
+  // once the period's manifest is here, and one zip is made at a time.
   let downloading = false;
 
-  function syncDownload() {
-    if (!els.download || downloading) return;
-    const run = state.manifest && selectedRun();
-    const days = sortedDays(run).length;
-    els.download.disabled = !days;
-    els.download.textContent = 'Download trace';
-    els.download.title = days ? `All ${days} days of ${run.agent_name || run.agent_slug} ${runOptionLabel(run)} in one zip file` : '';
+  function periodLabel() {
+    return els.period.options[els.period.selectedIndex].text;
   }
 
-  // Packs the selected run into one zip, here in the browser: the site hosts each day once, as the
-  // file the viewer reads, and a second copy of every run would not fit its size limit.
-  async function downloadRun() {
+  function runsWithDays() {
+    return state.manifest.runs.filter((run) => (run.days || []).length);
+  }
+
+  function syncDownload() {
+    if (downloading) return;
+    const loaded = state.manifest && state.manifestPeriod === state.period;
+    if (els.download) {
+      const run = loaded && selectedRun();
+      const days = sortedDays(run).length;
+      els.download.disabled = !days;
+      els.download.textContent = 'Download trace';
+      els.download.title = days ? `All ${days} days of ${run.agent_name || run.agent_slug} ${runOptionLabel(run)} in one zip file` : '';
+    }
+    if (els.downloadAll) {
+      const runs = loaded ? runsWithDays().length : 0;
+      els.downloadAll.disabled = !runs;
+      els.downloadAll.textContent = `Download all ${periodLabel()} traces`;
+      els.downloadAll.title = runs ? `All ${runs} runs of ${periodLabel()} in one zip file` : '';
+    }
+  }
+
+  function downloadRun() {
     const run = selectedRun();
+    if (downloading || !run || !sortedDays(run).length) return;
+    const period = periodLabel();
+    saveZip(els.download, `futuresim-${state.period}-${run.agent_slug}-${run.seed_label || run.run_id}`, [
+      { name: 'README.txt', text: runReadme(run, period) },
+      ...runParts(run, period, ''),
+    ], (done, total) => `Fetching day ${done} of ${total}`);
+  }
+
+  function downloadPeriod() {
+    if (downloading || !state.manifest || state.manifestPeriod !== state.period) return;
+    const runs = runsWithDays();
+    if (!runs.length) return;
+    const period = periodLabel();
+    // A run's folder is named by its seed, or by its id if an agent has the seed's label twice.
+    const bySeed = runs.map((run) => `${run.agent_slug}-${run.seed_label || run.run_id}`);
+    const folders = runs.map((run, index) => (
+      bySeed.indexOf(bySeed[index]) === bySeed.lastIndexOf(bySeed[index]) ? bySeed[index] : `${run.agent_slug}-${run.run_id}`
+    ));
+    const count = (number) => number.toLocaleString('en-US');
+    saveZip(els.downloadAll, `futuresim-${state.period}-traces`, [
+      { name: 'README.txt', text: periodReadme(runs, folders, period) },
+      ...runs.flatMap((run, index) => runParts(run, period, `${folders[index]}/`)),
+    ], (done, total) => `Fetching ${count(done)} of ${count(total)} files`);
+  }
+
+  // A run's files in a zip: run.json, then one file for each day, to be fetched from its path.
+  function runParts(run, period, prefix) {
     const days = sortedDays(run);
-    if (downloading || !run || !days.length) return;
+    const about = { period, ...run, days: days.map((day) => ({ ...day, path: `days/${day.date}.json` })) };
+    delete about.workspace; // the memory files are not part of the download
+    return [
+      { name: `${prefix}run.json`, text: `${JSON.stringify(about, null, 2)}\n` },
+      ...days.map((day) => ({ name: `${prefix}days/${day.date}.json`, path: day.path })),
+    ];
+  }
+
+  // Fetches the parts that have a path and saves all the parts as one zip, here in the browser:
+  // the site hosts each day once, as the file the viewer reads, and a second copy of every run
+  // would not fit its size limit. `progress` words the button while the files arrive.
+  async function saveZip(button, folder, parts, progress) {
     const base = dataBase;
-    const period = els.period.options[els.period.selectedIndex].text;
-    const folder = `futuresim-${state.period}-${run.agent_slug}-${run.seed_label || run.run_id}`;
     const built = new Date(state.manifest.created_at_utc || Date.now());
+    const wanted = parts.filter((part) => part.path);
     downloading = true;
-    els.download.disabled = true;
+    for (const item of [els.download, els.downloadAll]) if (item) item.disabled = true;
+    button.style.minWidth = `${button.offsetWidth}px`; // it keeps its width while its words change
     const requests = new AbortController();
     let failed = false;
     try {
-      const files = new Array(days.length);
       let next = 0;
       let done = 0;
-      const fetchDays = async () => {
-        while (!failed && next < days.length) {
-          const index = next++;
-          const response = await fetch(base + days[index].path, { cache: 'no-store', signal: requests.signal });
+      const fetchParts = async () => {
+        while (!failed && next < wanted.length) {
+          const part = wanted[next++];
+          const response = await fetch(base + part.path, { cache: 'no-store', signal: requests.signal });
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
-          files[index] = new Uint8Array(await response.arrayBuffer());
+          part.bytes = new Uint8Array(await response.arrayBuffer());
           if (failed) return;
           done += 1;
-          els.download.textContent = `Fetching day ${done} of ${days.length}`;
+          button.textContent = progress(done, wanted.length);
         }
       };
-      els.download.textContent = `Fetching day 0 of ${days.length}`;
-      // One day that cannot be fetched ends the others too.
-      await Promise.all(Array.from({ length: 6 }, () => fetchDays().catch((error) => {
+      button.textContent = progress(0, wanted.length);
+      // One file that cannot be fetched ends the others too.
+      await Promise.all(Array.from({ length: 6 }, () => fetchParts().catch((error) => {
         failed = true;
         requests.abort();
         throw error;
       })));
-      const about = { period, ...run, days: days.map((day) => ({ ...day, path: `days/${day.date}.json` })) };
-      delete about.workspace; // the memory files are not part of the download
       const text = new TextEncoder();
-      const entries = [
-        zipEntry(`${folder}/README.txt`, text.encode(downloadReadme(run, days, period))),
-        zipEntry(`${folder}/run.json`, text.encode(`${JSON.stringify(about, null, 2)}\n`)),
-        ...days.map((day, index) => zipEntry(`${folder}/days/${day.date}.json`, files[index])),
-      ];
+      const entries = parts.map((part) => zipEntry(`${folder}/${part.name}`, part.bytes || text.encode(part.text)));
       saveBlob(zipBlob(entries, built), `${folder}.zip`);
     } catch (_) {
       failed = true;
     }
     downloading = false;
+    button.style.minWidth = '';
     syncDownload();
-    if (failed) els.download.textContent = 'Download failed. Try again';
+    if (failed) button.textContent = 'Download failed. Try again';
   }
 
-  function downloadReadme(run, days, period) {
+  function runReadme(run, period) {
+    const days = sortedDays(run);
     return [
       'FutureSim agent trace',
       `${run.agent_name || run.agent_slug} (${run.harness}), run ${runOptionLabel(run)}, ${period}`,
       `${window.location.origin}${window.location.pathname}`,
       '',
+      ...fileNotes(`One file per simulation day, ${days[0].date}.json to ${days[days.length - 1].date}.json.`),
+    ].join('\n');
+  }
+
+  function periodReadme(runs, folders, period) {
+    const width = Math.max(...folders.map((folder) => folder.length));
+    return [
+      `FutureSim agent traces, ${period}`,
+      `${runs.length} runs of ${new Set(runs.map((run) => run.agent_slug)).size} agents`,
+      `${window.location.origin}${window.location.pathname}`,
+      '',
+      'One folder for each run:',
+      '',
+      ...runs.map((run, index) => `${folders[index].padEnd(width)}   ${run.agent_name || run.agent_slug} (${run.harness}), run ${runOptionLabel(run)}`),
+      '',
+      'In each folder:',
+      '',
+      ...fileNotes('One file per simulation day.'),
+    ].join('\n');
+  }
+
+  // What a run's files are, for a zip's README.
+  function fileNotes(daysLine) {
+    return [
       'run.json   The run: model, harness, its scores day by day ("metrics") and, for each',
       '           simulation day, how many events, tool calls and forecasts it has ("days").',
-      `days/      One file per simulation day, ${days[0].date}.json to ${days[days.length - 1].date}.json.`,
+      `days/      ${daysLine}`,
       '',
       'A day file lists what happened that day, in order, under "events". An event\'s "blocks"',
       'hold its content: text the agent wrote ("text"), a tool call with its input ("tool_use"),',
@@ -433,7 +513,7 @@
       'These are the files the trace viewer shows, not the raw logs: a long text field is cut',
       'and then ends with "[...truncated]".',
       '',
-    ].join('\n');
+    ];
   }
 
   // A gzip file is a header, a deflate stream, then the CRC and the length of the unpacked data,
