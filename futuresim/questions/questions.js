@@ -976,7 +976,7 @@
     dlg.dayLabel = h('span');
     dayHead.append('Forecasts on ', dlg.dayLabel);
     dlg.dayGrid = h('div', 'fq-day-grid');
-    // Up to five cards to a row; with more agents the rows fill evenly (seven sit four and three).
+    // Up to five cards to a row; with more agents the rows fill evenly (eight sit four and four).
     const agentRows = Math.ceil(data.models.length / 5);
     dlg.dayGrid.style.setProperty('--fq-per-row', Math.ceil(data.models.length / agentRows));
     dayBox.append(dayHead, dlg.dayGrid);

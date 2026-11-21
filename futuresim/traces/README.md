@@ -13,7 +13,7 @@ Each root contains a manifest, per-day raw trace shards, workspace history, and
 summary overlays. The day shards are gzip-compressed
 (`runs/<agent>/<run>/<date>.json.gz`) and the viewer decompresses them in the
 browser. Q1 is generated from `official_runs_complete` with
-`scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 18
+`scripts/build_futuresim_official_trace_data.sh`. Q3 is generated from the 20
 leaderboard runs in `clean_runs_Q3v8` with:
 
 ```bash
@@ -74,7 +74,7 @@ differs from Q1 and Q2 in seven ways:
   restart's first record, when the run was stopped or doing work on a day that
   the restart redid, so that gap is not counted; `restarts` and
   `restart_wait_seconds` say how many there were and how long. No run is
-  silent for more than seven minutes anywhere else.
+  silent for more than eight minutes anywhere else.
 - The agents ran in a sandbox (`/agent/workspace`) on a shared cluster, so a
   cluster path in their tool output belongs to someone else's job. The build
   passes `--hide-host-paths`: a line of tool output that names a cluster path
@@ -115,8 +115,8 @@ stays below GitHub Pages' 1 GB limit. After generating new summary overlays, pla
 `data/q2/summaries/`, align their dates and `trace_path` values with the Q2
 manifest, and refresh `data/q2/summaries/index.json`.
 
-With all three periods the built site is about 382 MB, of which the day shards
-are 274 MB (Q1 60, Q2 116, Q3 98). GitHub Pages allows 1 GB, which its deploy
+With all three periods the built site is about 435 MB, of which the day shards
+are 323 MB (Q1 60, Q2 116, Q3 147). GitHub Pages allows 1 GB, which its deploy
 step counts as 1,073,741,824 bytes. Check the size of a Jekyll build before
 adding more trace data.
 

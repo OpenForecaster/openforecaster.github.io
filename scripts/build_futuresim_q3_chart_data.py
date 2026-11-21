@@ -65,6 +65,10 @@ MODELS = [
         [f"agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r{i:02d}" for i in range(2)],
     ),
     (
+        "gemini-4-neon (Antigravity)", "Gemini 4 Neon", "gemini-4-neon", "google", "Antigravity", "#9F1E71",
+        [f"agy_aljazeera2026Q3v8_gemini4neon_xhigh_exa_r{i:02d}" for i in range(2)],
+    ),
+    (
         # r00 and r01, as in the main figure; r02 is in clean_runs_Q3v8 but left out.
         "inkling-2-small (Claude Code)", "Inkling 2 Small", "inkling-2-small", "thinkingmachines", "Claude Code",
         "#B8860B",

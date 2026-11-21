@@ -82,7 +82,7 @@ run was stopped, or doing work on a day that the restart redid. That gap is left
 is how many there were and `restart_wait_seconds` their total. Everything else is counted: the
 model's and the tools' time, the simulator's own step from one day to the next, and the seconds
 a harness takes to start an agent again. In the 2026 Q3 runs no other silence is longer than
-seven minutes, so no threshold is needed to tell a wait from work.
+eight minutes, so no threshold is needed to tell a wait from work.
 
 A run with none of these logs is left without the fields. For a run that was restarted, the work
 of the days that the restart redid is not in its folder, so neither its tokens nor its time are

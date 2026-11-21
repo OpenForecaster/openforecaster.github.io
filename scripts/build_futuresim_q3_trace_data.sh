@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Build the trace viewer's 2026 Q3 data (futuresim/traces/data/q3) from the 18 leaderboard runs.
+# Build the trace viewer's 2026 Q3 data (futuresim/traces/data/q3) from the 20 leaderboard runs.
 #
 # Claude Code runs are read from their stdout transcript. Codex, Muse and Antigravity runs are read
 # from their session logs, because stdout does not have their sub-agents, who make many of the
@@ -72,6 +72,9 @@ add_run "Muse Wonder Full 1.0" muse-wonder-full-1.0 muse-wonder-full-10 Muse r01
 
 add_run "Gemini 4 Carbon" gemini-4-carbon gemini-4-carbon-high Antigravity r00 "$q3_runs/agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r00/26-11-16-02-42-54" agy_conversations
 add_run "Gemini 4 Carbon" gemini-4-carbon gemini-4-carbon-high Antigravity r01 "$q3_runs/agy_aljazeera2026Q3v8_gemini4carbon_high_exa_r01/26-11-16-11-33-54" agy_conversations
+
+add_run "Gemini 4 Neon" gemini-4-neon gemini-4-neon-xhigh Antigravity r00 "$q3_runs/agy_aljazeera2026Q3v8_gemini4neon_xhigh_exa_r00/26-11-19-16-15-28" agy_conversations
+add_run "Gemini 4 Neon" gemini-4-neon gemini-4-neon-xhigh Antigravity r01 "$q3_runs/agy_aljazeera2026Q3v8_gemini4neon_xhigh_exa_r01/26-11-19-16-15-30" agy_conversations
 
 # Both runs were started in the same second, so their folders have the same name; the trace builder
 # tells them apart by adding the seed to the run id.
