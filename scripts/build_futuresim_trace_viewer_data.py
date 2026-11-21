@@ -20,19 +20,13 @@ from pathlib import Path
 from typing import Any
 
 from futuresim_session_logs import is_session_log, read_session_log
+from futuresim_trace_masks import mask_blocks
 
 
 START_SIM_DATE = date(2025, 12, 24)
 DAY_ADVANCED_RE = re.compile(r"Day advanced to (20\d{2}-\d{2}-\d{2})")
 SECRET_RE = re.compile(
     r"(?i)(sk-[A-Za-z0-9_-]{20,}|[A-Za-z0-9_-]*(?:api|token|key)[A-Za-z0-9_-]*[=:][A-Za-z0-9_.-]{16,})"
-)
-# An agent that lists processes (ps, pgrep) sees other people's jobs on the shared cluster. With
-# --hide-host-paths, a line of tool output that names a path in someone's area there is left out.
-# /home/user and the like are an agent's guesses at its own home folder, not accounts on the cluster.
-HOST_PATH_RE = re.compile(
-    r"(?<![\w.:/-])/(?:lustre|fast|scratch|is/cluster|local/condor_execute"
-    r"|home/(?!(?:user|claude|agent|ubuntu|root)/)[\w.-]+)/[\w.-]"
 )
 DROP_KEYS = {"thinking", "signature"}
 MAX_STRING_CHARS = 20000
@@ -60,7 +54,7 @@ def main() -> None:
         "--hide-host-paths",
         action="store_true",
         help="Leave out lines of tool output that name a path on the shared cluster. For runs whose agents "
-        "work in a sandbox (/agent/workspace): there, such paths only appear when an agent lists processes.",
+        "work in a sandbox (/agent/workspace): there, such a path belongs to someone else's job.",
     )
     args = parser.parse_args()
     MAX_STRING_CHARS = args.max_string_chars
@@ -120,6 +114,7 @@ def build_run(
     turn = 0
     event_idx = 0
     forecast_history: dict[str, dict[str, float]] = {}
+    process_calls: dict[str, bool] = {}
 
     for segment_index, (source_path, segment_start) in enumerate(source_segments):
         segment_end = (
@@ -140,7 +135,7 @@ def build_run(
                 if max_source_events and event_idx >= max_source_events:
                     break
                 current_day = date.fromisoformat(record.day)
-                event = normalize_event(record.raw, event_idx, record.day, turn)
+                event = normalize_event(record.raw, event_idx, record.day, turn, process_calls)
                 if record.subagent:
                     event["subagent"] = record.subagent
                 event_idx += 1
@@ -160,7 +155,7 @@ def build_run(
                 if not line.strip():
                     continue
                 raw = json.loads(line)
-                event = normalize_event(raw, event_idx, current_day.isoformat(), turn)
+                event = normalize_event(raw, event_idx, current_day.isoformat(), turn, process_calls)
                 event_idx += 1
                 annotate_forecast_history(event, forecast_history)
                 if any(block.get("type") == "tool_use" and "next_day" in block.get("name", "") for block in event["blocks"]):
@@ -349,7 +344,9 @@ def parse_float(value: Any) -> float | None:
     return float(value)
 
 
-def normalize_event(raw: dict[str, Any], idx: int, sim_date: str, turn: int) -> dict[str, Any]:
+def normalize_event(
+    raw: dict[str, Any], idx: int, sim_date: str, turn: int, process_calls: dict[str, bool]
+) -> dict[str, Any]:
     kind = str(raw.get("type") or "event")
     payload = raw.get("payload") if isinstance(raw.get("payload"), dict) else {}
     message = raw.get("message") if isinstance(raw.get("message"), dict) else {}
@@ -384,10 +381,7 @@ def normalize_event(raw: dict[str, Any], idx: int, sim_date: str, turn: int) -> 
         if not blocks:
             blocks = [{"type": "system", "text": compact_text(raw)}]
 
-    if HIDE_HOST_PATHS:
-        for block in blocks:
-            if block.get("type") == "tool_result" and isinstance(block.get("content"), str):
-                block["content"] = without_host_lines(block["content"])
+    mask_blocks(blocks, process_calls, HIDE_HOST_PATHS)
 
     return {
         "idx": idx,
@@ -607,30 +601,6 @@ def clean_string(value: str) -> str:
     if len(value) > MAX_STRING_CHARS:
         value = value[:MAX_STRING_CHARS] + "\n[...truncated]"
     return SECRET_RE.sub("[redacted]", value)
-
-
-def without_host_lines(text: str) -> str:
-    """Replace each run of lines that name a path on the shared cluster with one note."""
-    if not HOST_PATH_RE.search(text):
-        return text
-    kept: list[str] = []
-    dropped = 0
-
-    def note() -> str:
-        lines = "1 line" if dropped == 1 else f"{dropped} lines"
-        return f"[{lines} left out: paths on the shared cluster, outside the agent's sandbox]"
-
-    for line in text.split("\n"):
-        if HOST_PATH_RE.search(line):
-            dropped += 1
-            continue
-        if dropped:
-            kept.append(note())
-            dropped = 0
-        kept.append(line)
-    if dropped:
-        kept.append(note())
-    return "\n".join(kept)
 
 
 def event_time(raw: dict[str, Any]) -> str:

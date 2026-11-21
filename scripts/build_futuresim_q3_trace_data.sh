@@ -12,9 +12,9 @@
 #     dumps, article scans) gets only the notes, which is new in Q3. The workspace manifest
 #     records how many files were left out, and the viewer says so.
 #
-# The agents ran in a sandbox on a shared cluster. When one lists processes (ps, pgrep) the output
-# shows other people's jobs, so lines of tool output that name a cluster path are left out
-# (--hide-host-paths); the trace says how many lines were left out at that spot.
+# The agents ran in a sandbox on a shared cluster, so a cluster path in their tool output belongs
+# to someone else's job. Lines that name one are left out (--hide-host-paths), on top of what every
+# build leaves out (futuresim_trace_masks.py); the trace says how many lines were left out at each spot.
 #
 #   FSIM_Q3_RUNS   where the runs are      (default: the clean_runs_Q3v8 folder)
 #   FSIM_Q3_OUT    where to write the data (default: futuresim/traces/data/q3)

@@ -75,13 +75,12 @@ differs from Q1 and Q2 in seven ways:
   the restart redid, so that gap is not counted; `restarts` and
   `restart_wait_seconds` say how many there were and how long. No run is
   silent for more than seven minutes anywhere else.
-- The agents ran in a sandbox (`/agent/workspace`) on a shared cluster. An
-  agent that lists processes (`ps`, `pgrep`) sees other people's jobs there, so
-  the build passes `--hide-host-paths`: a line of tool output that names a
-  cluster path (`/lustre/…`, `/fast/…`, `/is/cluster/…`, `/scratch/…`,
-  `/home/<account>/…`) is replaced by a note saying how many lines were left
-  out. Do not use this option for Q1 or Q2, whose agents worked directly in a
-  cluster folder.
+- The agents ran in a sandbox (`/agent/workspace`) on a shared cluster, so a
+  cluster path in their tool output belongs to someone else's job. The build
+  passes `--hide-host-paths`: a line of tool output that names a cluster path
+  (`/lustre/…`, `/fast/…`, `/is/cluster/…`, `/scratch/…`, `/home/<account>/…`)
+  is replaced by a note saying how many lines were left out. Do not use this
+  option for Q1 or Q2, whose agents worked directly in a cluster folder.
 - The summaries get their segments, counts and sample forecasts from
   `scripts/build_futuresim_trace_summaries.py`, as for Q1, run with
   `--join-short`. A segment ends where the acting agent changes, a sub-agent's
@@ -127,6 +126,25 @@ renames each shard in the manifest and in the summaries' `trace_path` and
 changes nothing else, and their build scripts pass `--gzip` since then. The
 viewer tells a compressed shard by its first two bytes, not by its name, so it
 also reads plain JSON from another data host.
+
+Every build leaves four things out of the traces. The rules are in
+`scripts/futuresim_trace_masks.py`:
+
+- A listing of the job's environment variables (`env`, `printenv`) is left out
+  whole.
+- The rows of a process listing (`ps`, `pgrep`, `top`) are left out. On a
+  shared node they are mostly other people's jobs, and the agent's own rows
+  cannot be told apart from them, so those go too.
+- A line of tool output that names the cluster's file server (its address, in
+  `df` or `mount`) is left out.
+- A home folder on someone's own computer loses the name: `/Users/<name>/…`
+  becomes `/Users/[redacted]/…`, in commands and messages as well as in output.
+
+A note such as `[18 lines left out: processes on the shared cluster]` stands
+where lines were left out. The published shards were built before these rules
+existed, and `scripts/mask_futuresim_trace_shards.py` applied them in place (20
+events in 14 shards). Run it without `--write` to list what a new rule would
+change in published data.
 
 The "Download trace" button beside the run selector saves the selected run as
 one zip (`futuresim-<period>-<agent>-<seed>.zip`): a `README.txt`, `run.json`
