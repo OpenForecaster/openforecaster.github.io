@@ -22,7 +22,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build_futuresim_trace_viewer_data import preview_from_blocks, write_json  # noqa: E402
-from futuresim_trace_masks import mask_blocks, without_home_names  # noqa: E402
+from futuresim_trace_masks import mask_blocks, without_account_names  # noqa: E402
 
 
 def main():
@@ -61,7 +61,7 @@ def mask_run(job):
             mask_blocks(event["blocks"], process_calls)
             if json.dumps(event["blocks"], ensure_ascii=False) == before:
                 continue
-            event["preview"] = preview_from_blocks(event["blocks"]) if derived else without_home_names(event["preview"])
+            event["preview"] = preview_from_blocks(event["blocks"]) if derived else without_account_names(event["preview"])
             indexes.append(event["idx"])
         if not indexes:
             continue

@@ -127,7 +127,7 @@ changes nothing else, and their build scripts pass `--gzip` since then. The
 viewer tells a compressed shard by its first two bytes, not by its name, so it
 also reads plain JSON from another data host.
 
-Every build leaves four things out of the traces. The rules are in
+Every build leaves these out of the traces. The rules are in
 `scripts/futuresim_trace_masks.py`:
 
 - A listing of the job's environment variables (`env`, `printenv`) is left out
@@ -137,14 +137,23 @@ Every build leaves four things out of the traces. The rules are in
   cannot be told apart from them, so those go too.
 - A line of tool output that names the cluster's file server (its address, in
   `df` or `mount`) is left out.
+- An entry of a listing of Claude Code's projects folder (`~/.claude/projects`)
+  is left out: a line of tool output that is only a project folder's name, or
+  only a path into the projects folder. The folder holds one folder for every
+  place the account has run Claude Code in, so most entries are other runs'.
 - A home folder on someone's own computer loses the name: `/Users/<name>/…`
   becomes `/Users/[redacted]/…`, in commands and messages as well as in output.
+  The simulator's own checkout, `/fast/<name>/forecast-sim`, loses it the same
+  way; Python names that path in every traceback that passes through its
+  packages.
+- In a row of `ls -l`, an owner or group that the cluster knows by name
+  becomes `[redacted]`. Numeric ids, `root` and `nobody` stay.
 
 A note such as `[18 lines left out: processes on the shared cluster]` stands
 where lines were left out. The published shards were built before these rules
-existed, and `scripts/mask_futuresim_trace_shards.py` applied them in place (20
-events in 14 shards). Run it without `--write` to list what a new rule would
-change in published data.
+existed, and `scripts/mask_futuresim_trace_shards.py` applied them in place (43
+events in 30 shards, over two passes). Run it without `--write` to list what a
+new rule would change in published data.
 
 The "Download trace" button beside the run selector saves the selected run as
 one zip (`futuresim-<period>-<agent>-<seed>.zip`): a `README.txt`, `run.json`

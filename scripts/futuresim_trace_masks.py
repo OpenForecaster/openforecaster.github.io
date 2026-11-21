@@ -8,7 +8,12 @@ mask_futuresim_trace_shards.py applies it to day shards that are already publish
     other people's jobs, and the agent's own rows cannot be told apart from them.
   - A line of tool output that names the cluster's file server (df, mount) is left out.
   - With hide_host_paths, so is a line of tool output that names a path on the shared cluster.
+  - An entry of a listing of Claude Code's projects folder is left out. That folder holds one
+    folder for every place the account has run Claude Code in, so most entries are other runs'.
   - A home folder on someone's own computer, /Users/<name>, loses the name wherever it is written.
+    So does the simulator's own checkout, /fast/<name>/forecast-sim, which Python names in every
+    traceback that passes through its packages.
+  - In a row of ls -l, an owner or group that the cluster knows by name loses the name.
 
 Where lines are left out, a note in their place says how many and why.
 """
@@ -23,6 +28,7 @@ ENVIRONMENT = "the job's environment variables"
 PROCESSES = "processes on the shared cluster"
 FILE_SERVER = "the cluster's file server"
 HOST_PATHS = "paths on the shared cluster, outside the agent's sandbox"
+PROJECTS = "folders in Claude Code's projects folder"
 
 ENV_LINE_RE = re.compile(r"^(?:declare -x |export )?([A-Za-z_][A-Za-z0-9_]*)=", re.M)
 # A Lustre mount is named by its server's address: 10.1.2.3@tcp:/name.
@@ -33,7 +39,20 @@ HOST_PATH_RE = re.compile(
     r"|home/(?!(?:user|claude|agent|ubuntu|root)/)[\w.-]+)/[\w.-]"
 )
 HOST_NOTE_RE = re.compile(r"\[(\d+) lines? left out: " + re.escape(HOST_PATHS) + r"\]")
+# Claude Code names a project's folder after the path it was run in, with a dash for every character
+# that is not a letter or a digit. A listing has such a name alone on a line (ls), or a path into
+# the projects folder alone on a line (find).
+PROJECT_ENTRY_RE = re.compile(
+    r"^[ \t]*(?:\S*/\.claude/projects/\S+"
+    r"|-(?:lustre|fast|scratch|is-cluster|local-condor-execute|home)(?:-[A-Za-z0-9]*){2,})[ \t]*$",
+    re.M,
+)
 HOME_NAME_RE = re.compile(r"(?<![\w.-])/Users/[A-Za-z][\w.-]*")
+CHECKOUT_NAME_RE = re.compile(r"(?<=/fast/)[\w.-]+(?=/forecast-sim(?![\w.-]))")
+# drwxrwxr-x+ 3 owner group 4096 May  2 17:31 name: a row of ls -l, up to the group.
+LS_OWNER_RE = re.compile(r"^([-dlcbps][-rwxsStT]{9}[+.@]?[ \t]+\d+[ \t]+)(\S+)([ \t]+)(\S+)(?=[ \t]+\d)", re.M)
+# Not an account on the cluster: an id the machine has no name for, or a name every machine has.
+NOT_AN_ACCOUNT_RE = re.compile(r"\d+|root|nobody|nogroup|user|claude|agent|ubuntu")
 
 COMMAND_KEYS = ("command", "cmd", "script", "CommandLine")
 # bash -lc "<commands>": the commands are what is looked at.
@@ -65,7 +84,7 @@ def mask_blocks(blocks: list[dict[str, Any]], process_calls: dict[str, bool], hi
         if kind == "tool_use":
             # Codex numbers its calls from one in every session, so a later call replaces an earlier one.
             process_calls[str(block.get("id", ""))] = lists_processes(block.get("input"))
-            block["input"] = without_home_names(block.get("input"))
+            block["input"] = without_account_names(block.get("input"))
         elif kind == "tool_result" and isinstance(block.get("content"), str):
             text = block["content"]
             if is_environment_listing(text):
@@ -77,9 +96,11 @@ def mask_blocks(blocks: list[dict[str, Any]], process_calls: dict[str, bool], hi
                 if process_calls.get(str(block.get("tool_use_id", ""))):
                     text = without_process_rows(text)
                 text = without_lines(text, FILE_SERVER_RE, FILE_SERVER)
-            block["content"] = without_home_names(text)
+                text = without_lines(text, PROJECT_ENTRY_RE, PROJECTS)
+                text = without_owner_names(text)
+            block["content"] = without_account_names(text)
         elif isinstance(block.get("text"), str):
-            block["text"] = without_home_names(block["text"])
+            block["text"] = without_account_names(block["text"])
 
 
 def left_out(count: int, what: str) -> str:
@@ -156,11 +177,19 @@ def without_process_rows(text: str) -> str:
     return "\n".join(kept)
 
 
-def without_home_names(value: Any) -> Any:
+def without_owner_names(text: str) -> str:
+    def row(found: re.Match[str]) -> str:
+        owner, group = (name if NOT_AN_ACCOUNT_RE.fullmatch(name) else "[redacted]" for name in (found[2], found[4]))
+        return f"{found[1]}{owner}{found[3]}{group}"
+
+    return LS_OWNER_RE.sub(row, text)
+
+
+def without_account_names(value: Any) -> Any:
     if isinstance(value, str):
-        return HOME_NAME_RE.sub("/Users/[redacted]", value)
+        return CHECKOUT_NAME_RE.sub("[redacted]", HOME_NAME_RE.sub("/Users/[redacted]", value))
     if isinstance(value, dict):
-        return {key: without_home_names(item) for key, item in value.items()}
+        return {key: without_account_names(item) for key, item in value.items()}
     if isinstance(value, list):
-        return [without_home_names(item) for item in value]
+        return [without_account_names(item) for item in value]
     return value
